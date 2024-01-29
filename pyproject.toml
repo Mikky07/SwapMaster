@@ -6,6 +6,7 @@ authors = ["Mikky07 <mesarevartem9@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
+alembic = "^1.13.1"
 
 
 [build-system]
