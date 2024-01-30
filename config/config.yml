@@ -1,0 +1,8 @@
+db:
+  dialect: postgresql
+  driver: asyncpg
+  host: localhost
+  user: postgres
+  password: postgres
+  database: postgres
+  port: 5432

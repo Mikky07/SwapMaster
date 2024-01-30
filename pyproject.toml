@@ -7,6 +7,8 @@ authors = ["Mikky07 <mesarevartem9@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.12"
 alembic = "^1.13.1"
+fastapi = {extras = ["all"], version = "^0.109.0"}
+colorlog = "^6.8.2"
 
 
 [build-system]
