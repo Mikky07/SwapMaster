@@ -12,8 +12,8 @@ class DBConfig:
     dialect: str
 
     @property
-    def uri(self) -> str:
-        db_uri = "{dialect}+{driver}://{user}:{password}@{host}:{port}/{database}".format(
+    def url(self) -> str:
+        db_url = "{dialect}+{driver}://{user}:{password}@{host}:{port}/{database}".format(
             dialect=self.dialect,
             driver=self.driver,
             user=self.user,
@@ -22,4 +22,4 @@ class DBConfig:
             port=str(self.port),
             database=self.database
         )
-        return db_uri
+        return db_url

@@ -12,5 +12,5 @@ def create_session_maker(engine: AsyncEngine):
 
 
 def create_pool(db_config: DBConfig) -> async_sessionmaker[AsyncSession]:
-    engine = create_engine(url=db_config.uri)
+    engine = create_engine(url=db_config.url)
     return create_session_maker(engine)

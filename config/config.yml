@@ -4,5 +4,5 @@ db:
   host: localhost
   user: postgres
   password: postgres
-  database: postgres
+  database: swapmaster
   port: 5432
