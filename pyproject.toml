@@ -9,6 +9,7 @@ python = "^3.12"
 alembic = "^1.13.1"
 fastapi = {extras = ["all"], version = "^0.109.0"}
 colorlog = "^6.8.2"
+asyncpg = "^0.29.0"
 
 
 [build-system]
