@@ -3,10 +3,12 @@ from fastapi import Depends
 
 from swapmaster.adapters.db.currency_db import CurrencyGateway
 from swapmaster.presentation.api.depends.stub import Stub
-from swapmaster.core.models import dto
+from swapmaster.core.models import Currency
 
 
-async def get_all_currencies(currency_db: CurrencyGateway = Depends(Stub(CurrencyGateway))) -> list[dto.Currency]:
+async def get_all_currencies(
+        currency_db: CurrencyGateway = Depends(Stub(CurrencyGateway))
+) -> list[Currency]:
     return await currency_db.get_currency_list()
 
 

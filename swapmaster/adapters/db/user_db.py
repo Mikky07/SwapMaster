@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from swapmaster.core.models.dto.user import User, UserId
+from swapmaster.core.models.user import User, UserId
 from swapmaster.application.common.user_gateway import UserReader, UserSaver
 
 

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from swapmaster.core.models.dto.user import UserId, User
+from swapmaster.core.models.user import UserId, User
 
 
 class UserReader(Protocol):

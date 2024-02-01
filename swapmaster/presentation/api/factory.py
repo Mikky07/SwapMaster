@@ -13,8 +13,8 @@ def create_app(api_config: Config):
     app = FastAPI()
     pool = create_pool(api_config.db)
 
-    setup_routes(app)
     setup_dependencies(app, pool)
+    setup_routes(app)
 
     return app
 
