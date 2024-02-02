@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from swapmaster.core.models.user import User, UserId
-from swapmaster.application.common.user_gateway import UserReader, UserSaver
+from swapmaster.application.common.protocols.user_gateway import UserReader, UserSaver
 
 
 class UserGateway(UserReader, UserSaver):

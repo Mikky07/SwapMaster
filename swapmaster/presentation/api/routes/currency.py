@@ -1,7 +1,7 @@
 from fastapi.routing import APIRouter
 from fastapi import Depends
 
-from swapmaster.adapters.db.currency_db import CurrencyGateway
+from swapmaster.adapters.db.gateways.currency import CurrencyGateway
 from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.core.models import Currency
 

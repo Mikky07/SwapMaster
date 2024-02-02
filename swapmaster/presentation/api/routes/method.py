@@ -3,7 +3,6 @@ import logging
 from fastapi.routing import APIRouter
 from fastapi import Depends
 
-from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.application.create_method import NewMethodDTO, AddMethod
 from swapmaster.core.models import Method
 

@@ -5,7 +5,7 @@ from sqlalchemy import select, ScalarResult
 
 from swapmaster.adapters.db import models
 from swapmaster.core.models import Currency
-from swapmaster.application.common.currency_gateway import CurrencyListReader
+from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
 
 
 logger = logging.getLogger(__name__)
