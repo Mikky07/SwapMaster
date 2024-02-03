@@ -20,7 +20,6 @@ from swapmaster.presentation.api.depends.stub import Stub
 logger = logging.getLogger(__name__)
 
 
-# get_from https://github.com/Tishka17/fastapi-template/blob/master/src/app/main/di.py#L19-L28
 def set_depends_as_defaults(cls: type) -> None:
     init = cls.__init__
     args_count = init.__code__.co_kwonlyargcount + init.__code__.co_argcount - 1
@@ -67,13 +66,18 @@ def setup_dependencies(
     method_service = MethodService()
     commission_service = CommissionService()
 
-    app.dependency_overrides[MethodGateway] = new_method_gateway
-    app.dependency_overrides[CommissionGateway] = new_commission_gateway
-    app.dependency_overrides[CurrencyGateway] = new_currency_gateway
-    app.dependency_overrides[AsyncSession] = partial(new_session, pool)
-    app.dependency_overrides[MethodService] = lambda: method_service
-    app.dependency_overrides[CommissionService] = lambda: commission_service
-    app.dependency_overrides[UoW] = new_uow
+    app.dependency_overrides.update(
+        {
+            MethodWriter: new_method_gateway,
+            CommissionWriter: new_commission_gateway,
+            CurrencyGateway: new_currency_gateway,
+            AsyncSession: partial(new_session, pool),
+            MethodService: lambda: method_service,
+            CommissionService: lambda: commission_service,
+            UoW: new_uow,
+        }
+    )
+
     set_depends_as_defaults(AddMethod)
     set_depends_as_defaults(AddCommission)
 

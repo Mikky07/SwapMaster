@@ -10,7 +10,7 @@ from .commission import setup_commission
 logger = logging.getLogger(__name__)
 
 
-def setup_routes(app: FastAPI):
+def setup_routers(app: FastAPI):
 
     routers = (
         setup_commission(),

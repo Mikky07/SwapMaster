@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.exc import InternalError
 
 from swapmaster.application.common.protocols.commission_gateway import CommissionWriter
@@ -25,3 +25,9 @@ class CommissionGateway(CommissionWriter):
             commission_id=result.id,
             value=result.value
         )
+
+    async def is_commission_available(self, value: float) -> bool:
+        commission = await self.session.scalar(
+            select(models.Commission).where(models.Commission.value == value)
+        )
+        return commission is None

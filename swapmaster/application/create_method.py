@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from swapmaster.application.common.protocols.method_gateway import MethodWriter
 from swapmaster.core.services.method import MethodService
 from swapmaster.core.models import Method, CurrencyId
+from swapmaster.core.utils.exceptions import AlreadyExists
 from .common.interactor import Interactor
 from .common.uow import UoW
 
@@ -25,6 +26,14 @@ class AddMethod(Interactor[NewMethodDTO, Method]):
         self.uow = uow
 
     async def __call__(self, data: NewMethodDTO) -> Method:
+        method_available = await self.method_db_gateway.is_method_available(
+            name=data.name,
+            currency_id=data.currency_id
+        )
+        if not method_available:
+            raise AlreadyExists(
+                text="the same method already exists"
+            )
         new_method: Method = self.method_service.create_method(
             name=data.name,
             currency_id=data.currency_id

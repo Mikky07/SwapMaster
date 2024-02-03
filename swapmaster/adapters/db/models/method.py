@@ -9,7 +9,7 @@ class Method(Base):
     __mapper_args__ = {"eager_defaults": True}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(unique=True)
+    name: Mapped[str]
 
     currency_id = mapped_column(
         ForeignKey(

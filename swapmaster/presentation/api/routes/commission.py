@@ -7,17 +7,24 @@ from starlette import status
 
 from swapmaster.application.create_commission import NewCommissionDTO, AddCommission
 from swapmaster.core.models import Commission
+from swapmaster.core.utils import exceptions
 from swapmaster.presentation.api import models
 
 logger = logging.getLogger(__name__)
 
 
 async def add_commission(
-    commission: Annotated[models.Commission, Body(embed=True)],
+    commission: models.Commission,
     interactor: AddCommission = Depends(),
 ) -> Commission:
     commission_dto: NewCommissionDTO = commission.to_dto()
-    new_commission = await interactor(data=commission_dto)
+    try:
+        new_commission = await interactor(data=commission_dto)
+    except exceptions.AlreadyExists as e:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail=str(e)
+        )
     return new_commission
 
 
