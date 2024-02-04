@@ -17,5 +17,5 @@ async def healthcheck():
 
 def setup_healthcheck() -> APIRouter:
     healthcheck_router = APIRouter(prefix='/healthcheck')
-    healthcheck_router.add_api_route(path='/', endpoint=healthcheck, methods=["GET"])
+    healthcheck_router.add_api_route(path='', endpoint=healthcheck, methods=["GET"])
     return healthcheck_router

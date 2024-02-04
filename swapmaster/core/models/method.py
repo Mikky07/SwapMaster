@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import NewType, Optional
+from typing import Optional, TypeAlias
 
 from swapmaster.core.models.currency import CurrencyId
 
-MethodId = NewType("MethodId", int)
+MethodId: TypeAlias = int
 
 
 @dataclass

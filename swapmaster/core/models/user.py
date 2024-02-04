@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import NewType, Optional
+from typing import Optional, TypeAlias
 
-UserId = NewType("UserId", int)
+UserId: TypeAlias = int
 
 
 @dataclass

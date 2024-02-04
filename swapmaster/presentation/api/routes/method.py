@@ -31,7 +31,7 @@ async def get_all_methods() -> list[Method]:
 
 
 def setup_method() -> APIRouter:
-    method_router = APIRouter(prefix="/method")
-    method_router.add_api_route(path="/new", endpoint=add_method, methods=["POST"])
+    method_router = APIRouter(prefix="/methods")
+    method_router.add_api_route(path="", endpoint=add_method, methods=["POST"])
 
     return method_router

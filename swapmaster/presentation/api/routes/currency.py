@@ -6,6 +6,10 @@ from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.core.models import Currency
 
 
+async def add_currency():
+    ...
+
+
 async def get_all_currencies(
         currency_db: CurrencyGateway = Depends(Stub(CurrencyGateway))
 ) -> list[Currency]:
@@ -13,7 +17,7 @@ async def get_all_currencies(
 
 
 def setup_currency() -> APIRouter:
-    currency_router = APIRouter(prefix="/currency")
-    currency_router.add_api_route(path="/all", endpoint=get_all_currencies, methods=["GET"])
+    currency_router = APIRouter(prefix="/currencies")
+    currency_router.add_api_route(path="", endpoint=get_all_currencies, methods=["GET"])
 
     return currency_router

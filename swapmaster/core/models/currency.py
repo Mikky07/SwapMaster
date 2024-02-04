@@ -1,7 +1,7 @@
-from typing import NewType, Optional
+from typing import Optional, TypeAlias
 from dataclasses import dataclass
 
-CurrencyId = NewType("CurrencyId", int)
+CurrencyId: TypeAlias = int
 
 
 @dataclass(frozen=True)

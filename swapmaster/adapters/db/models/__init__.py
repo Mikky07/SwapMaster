@@ -4,3 +4,4 @@ from .currency import Currency
 from .method import Method
 from .commission import Commission
 from .pair import Pair
+from .order import Order

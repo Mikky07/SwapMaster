@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import NewType, Optional
+from typing import Optional, TypeAlias
 
-CommissionId = NewType("CommissionId", int)
+CommissionId: TypeAlias = int
 
 
 @dataclass

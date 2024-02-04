@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
 from swapmaster.common.config.models import Paths, Config
-from .routes import setup_routers
-from .depends import setup_dependencies
+from .routes import *
+from .depends import *
 from swapmaster.adapters.db.factory import create_pool
 from swapmaster.common.config.parser import (
     get_paths,
