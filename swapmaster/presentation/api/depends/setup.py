@@ -9,9 +9,12 @@ from swapmaster.adapters.db.gateways.commission import CommissionGateway
 from swapmaster.adapters.db.gateways.currency import CurrencyGateway
 from swapmaster.adapters.db.gateways.method import MethodGateway
 from swapmaster.adapters.db.gateways.order import OrderGateway
+from swapmaster.adapters.db.gateways.pair import PairGateway
+from swapmaster.application.calculate_send_total import CalculateSendTotal
 from swapmaster.application.common.protocols.commission_gateway import CommissionWriter
 from swapmaster.application.common.protocols.method_gateway import MethodWriter
 from swapmaster.application.common.protocols.order_gateway import OrderWriter
+from swapmaster.application.common.protocols.pair_gateway import PairReader
 from swapmaster.application.create_commission import AddCommission
 from swapmaster.application.create_method import AddMethod
 from swapmaster.application.common.uow import UoW
@@ -63,6 +66,12 @@ async def new_order_gateway(
     yield OrderGateway(async_session)
 
 
+async def new_pair_gateway(
+    async_session=Depends(Stub(AsyncSession))
+) -> PairGateway:
+    yield PairGateway(async_session)
+
+
 async def new_uow(
     async_session=Depends(Stub(AsyncSession))
 ) -> AsyncSession:
@@ -83,6 +92,7 @@ def setup_dependencies(
             CommissionWriter: new_commission_gateway,
             OrderWriter: new_order_gateway,
             CurrencyGateway: new_currency_gateway,
+            PairReader: new_pair_gateway,
             AsyncSession: partial(new_session, pool),
             MethodService: lambda: method_service,
             CommissionService: lambda: commission_service,
@@ -91,6 +101,7 @@ def setup_dependencies(
         }
     )
 
+    set_depends_as_defaults(CalculateSendTotal)
     set_depends_as_defaults(AddMethod)
     set_depends_as_defaults(AddCommission)
     set_depends_as_defaults(AddOrder)

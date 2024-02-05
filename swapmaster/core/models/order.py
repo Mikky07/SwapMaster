@@ -19,4 +19,4 @@ class Order:
     to_send: float
     date_start: Optional[datetime]
     date_finish: Optional[datetime]
-    status: OrderStatusEnum = OrderStatusEnum.PROCESSING
+    status: OrderStatusEnum

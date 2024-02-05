@@ -15,10 +15,10 @@ class NewCommissionDTO:
 
 class AddCommission(Interactor[NewCommissionDTO, Commission]):
     def __init__(
-            self,
-            commission_db_gateway: CommissionWriter,
-            commission_service: CommissionService,
-            uow: UoW
+        self,
+        commission_db_gateway: CommissionWriter,
+        commission_service: CommissionService,
+        uow: UoW
     ):
         self.commission_db_gateway = commission_db_gateway
         self.commission_service = commission_service

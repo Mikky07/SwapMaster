@@ -16,10 +16,10 @@ class NewMethodDTO:
 
 class AddMethod(Interactor[NewMethodDTO, Method]):
     def __init__(
-            self,
-            method_db_gateway: MethodWriter,
-            method_service: MethodService,
-            uow: UoW
+        self,
+        method_db_gateway: MethodWriter,
+        method_service: MethodService,
+        uow: UoW
     ):
         self.method_db_gateway = method_db_gateway
         self.method_service = method_service
