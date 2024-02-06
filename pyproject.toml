@@ -10,6 +10,7 @@ alembic = "^1.13.1"
 fastapi = {extras = ["all"], version = "^0.109.0"}
 colorlog = "^6.8.2"
 asyncpg = "^0.29.0"
+aiohttp = "^3.9.3"
 
 
 [build-system]

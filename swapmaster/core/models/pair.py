@@ -15,7 +15,6 @@ class Pair:
     method_from: MethodId
     method_to: MethodId
     commission: CommissionId
-    course_obtaining_method: CourseObtainingMethod = CourseObtainingMethod.STATIC
 
 
 @dataclass

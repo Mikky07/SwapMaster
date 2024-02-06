@@ -11,10 +11,6 @@ class Pair(Base):
     __mapper_args__ = {"eager_defaults": True}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    course_obtaining_method: Mapped[CourseObtainingMethod] = mapped_column(
-        ENUM(CourseObtainingMethod),
-        default=CourseObtainingMethod.STATIC
-    )
 
     method_from_id = mapped_column(
         ForeignKey("methods.id", ondelete="CASCADE")
@@ -33,7 +29,6 @@ class Pair(Base):
     def __repr__(self):
         return (
             f"<Pair id={self.id}"
-            f" course_obtaining_method={self.course_obtaining_method}"
             f" method_from_id={self.method_from_id}"
             f" method_to_id={self.method_to_id}"
             f" commission_id={self.commission_id}>"

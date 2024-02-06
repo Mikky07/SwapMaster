@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 from swapmaster.application.common.protocols.pair_gateway import PairReader
-from swapmaster.core.models import Pair, PairId
+from swapmaster.core.models import Pair, PairId, Currency
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
 
@@ -26,8 +26,7 @@ class PairGateway(PairReader):
             pair_id=result.id,
             method_from=result.method_from_id,
             method_to=result.method_to_id,
-            commission=result.commission_id,
-            course_obtaining_method=result.course_obtaining_method
+            commission=result.commission_id
         )
 
     async def get_pair_currencies(self, pair_id: PairId) -> PairCurrencies:
@@ -35,18 +34,24 @@ class PairGateway(PairReader):
             select(models.Currency)
             .join(models.Pair.method_from)
             .where(models.Pair.id == pair_id)
+            .where(models.Currency.id == models.Method.currency_id)
         )
         currency_to = await self.session.scalar(
             select(models.Currency)
             .join(models.Pair.method_to)
             .where(models.Pair.id == pair_id)
+            .where(models.Currency.id == models.Method.currency_id)
         )
-        logger.info(currency_to)
-        logger.info(currency_from)
         if not currency_to and currency_from:
             raise NoResultFound
         return PairCurrencies(
-            currency_from=currency_from,
-            currency_to=currency_to,
+            currency_from=Currency(
+                currency_id=currency_from.id,
+                name=currency_from.name,
+            ),
+            currency_to=Currency(
+                currency_id=currency_to.id,
+                name=currency_to.name,
+            ),
             pair_id=pair_id
         )
