@@ -1,6 +1,5 @@
 from pydantic import BaseModel, ValidationInfo, field_validator
 
-from swapmaster.application.calculate_send_total import CalculateTotalDTO
 from swapmaster.core.models import PairId
 
 

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from swapmaster.core.models import Commission
+from swapmaster.core.models import Commission, CommissionId
 
 
 class CommissionWriter(Protocol):
@@ -11,4 +11,10 @@ class CommissionWriter(Protocol):
 
     @abstractmethod
     async def is_commission_available(self, value: float) -> bool:
+        raise NotImplementedError
+
+
+class CommissionReader(Protocol):
+    @abstractmethod
+    async def get_commission(self, commission_id: CommissionId) -> Commission:
         raise NotImplementedError

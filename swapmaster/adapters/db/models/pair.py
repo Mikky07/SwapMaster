@@ -3,7 +3,6 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM
 
 from .base import Base
-from swapmaster.core.constants import CourseObtainingMethod
 
 
 class Pair(Base):

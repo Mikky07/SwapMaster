@@ -1,14 +1,16 @@
 import logging
 from functools import partial
 
-from aiohttp import ClientSession
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.currency import CurrencyGateway
 from swapmaster.application.calculate_send_total import CalculateSendTotal
 from swapmaster.application.common.course_obtainer import CourseObtainer
-from swapmaster.application.common.protocols.commission_gateway import CommissionWriter
+from swapmaster.application.common.protocols.commission_gateway import (
+    CommissionWriter,
+    CommissionReader
+)
 from swapmaster.application.common.protocols.method_gateway import MethodWriter
 from swapmaster.application.common.protocols.order_gateway import OrderWriter
 from swapmaster.application.common.protocols.pair_gateway import PairReader
@@ -45,7 +47,6 @@ def setup_dependencies(
     app: FastAPI,
     pool: async_sessionmaker[AsyncSession]
 ):
-    client_session = ClientSession()
     method_service = MethodService()
     commission_service = CommissionService()
     order_service = OrderService()
@@ -54,12 +55,12 @@ def setup_dependencies(
         {
             MethodWriter: new_method_gateway,
             CommissionWriter: new_commission_gateway,
+            CommissionReader: new_commission_gateway,
             OrderWriter: new_order_gateway,
             CurrencyGateway: new_currency_gateway,
             PairReader: new_pair_gateway,
             CourseObtainer: new_course_obtainer_gateway,
             AsyncSession: partial(new_db_session, pool),
-            ClientSession: lambda: client_session,
             MethodService: lambda: method_service,
             CommissionService: lambda: commission_service,
             OrderService: lambda: order_service,

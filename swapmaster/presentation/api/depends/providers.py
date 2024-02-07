@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from typing import AsyncContextManager
 
 from aiohttp import ClientSession
 from fastapi import Depends
@@ -50,10 +51,8 @@ async def new_pair_gateway(
     yield PairGateway(async_session)
 
 
-async def new_course_obtainer_gateway(
-    aiohttp_session=Depends(Stub(ClientSession))
-) -> CourseObtainerGateway:
-    yield CourseObtainerGateway(aiohttp_session)
+async def new_course_obtainer_gateway() -> CourseObtainerGateway:
+    yield CourseObtainerGateway()
 
 
 async def new_uow(

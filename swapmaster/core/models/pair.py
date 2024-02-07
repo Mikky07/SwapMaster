@@ -4,7 +4,6 @@ from typing import Optional, TypeAlias
 from .method import MethodId
 from .currency import Currency
 from .commission import CommissionId
-from ..constants import CourseObtainingMethod
 
 PairId: TypeAlias = int
 
