@@ -14,6 +14,7 @@ from swapmaster.application.common.protocols.commission_gateway import (
 from swapmaster.application.common.protocols.method_gateway import MethodWriter
 from swapmaster.application.common.protocols.order_gateway import OrderWriter
 from swapmaster.application.common.protocols.pair_gateway import PairReader
+from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
 from swapmaster.application.create_commission import AddCommission
 from swapmaster.application.create_method import AddMethod
 from swapmaster.application.common.uow import UoW
@@ -58,6 +59,7 @@ def setup_dependencies(
             CommissionReader: new_commission_gateway,
             OrderWriter: new_order_gateway,
             CurrencyGateway: new_currency_gateway,
+            CurrencyListReader: new_currency_gateway,
             PairReader: new_pair_gateway,
             CourseObtainer: new_course_obtainer_gateway,
             AsyncSession: partial(new_db_session, pool),

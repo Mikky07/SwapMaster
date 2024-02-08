@@ -1,7 +1,7 @@
 from fastapi.routing import APIRouter
 from fastapi import Depends
 
-from swapmaster.adapters.db.gateways.currency import CurrencyGateway
+from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
 from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.core.models import Currency
 
@@ -11,7 +11,7 @@ async def add_currency():
 
 
 async def get_all_currencies(
-        currency_db: CurrencyGateway = Depends(Stub(CurrencyGateway))
+        currency_db: CurrencyListReader = Depends(Stub(CurrencyListReader))
 ) -> list[Currency]:
     return await currency_db.get_currency_list()
 

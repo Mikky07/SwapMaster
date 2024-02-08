@@ -13,3 +13,9 @@ class PairReader(Protocol):
     @abstractmethod
     async def get_pair_currencies(self, pair_id: PairId) -> PairCurrencies:
         raise NotImplementedError
+
+
+class PairWriter(Protocol):
+    @abstractmethod
+    async def add_pair(self, pair: Pair) -> Pair:
+        raise NotImplementedError
