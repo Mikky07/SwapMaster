@@ -1,10 +1,10 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy import select, insert
+from sqlalchemy.exc import NoResultFound, InternalError
 
-from swapmaster.application.common.protocols.pair_gateway import PairReader
+from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import Pair, PairId, Currency
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
@@ -12,7 +12,7 @@ from swapmaster.core.models.pair import PairCurrencies
 logger = logging.getLogger(__name__)
 
 
-class PairGateway(PairReader):
+class PairGateway(PairReader, PairWriter):
 
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -54,4 +54,22 @@ class PairGateway(PairReader):
                 name=currency_to.name,
             ),
             pair_id=pair_id
+        )
+
+    async def add_pair(self, pair: Pair) -> Pair:
+        logger.info(pair)
+        kwargs = dict(
+            method_to_id=pair.method_to,
+            method_from_id=pair.method_from,
+            commission_id=pair.commission
+        )
+        stmt = insert(models.Pair).values(kwargs).returning(models.Pair)
+        saved_pair = await self.session.execute(stmt)
+        if not (result := saved_pair.scalar_one()):
+            raise InternalError
+        return Pair(
+            pair_id=result.id,
+            method_to=result.method_to_id,
+            method_from=result.method_from_id,
+            commission=result.commission_id
         )

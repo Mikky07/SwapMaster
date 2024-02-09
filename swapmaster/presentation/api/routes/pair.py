@@ -11,6 +11,7 @@ async def add_pair(
         interactor: AddPair = Depends()
 ) -> Pair:
     new_pair = await interactor(data=data)
+
     return new_pair
 
 
@@ -24,7 +25,7 @@ async def get_pair(
 
 def setup_pair() -> APIRouter:
     pair_router = APIRouter(prefix="/pairs")
-    pair_router.add_api_route("", get_pair, methods=["GET"])
-    pair_router.add_api_route("", add_pair, methods=["POST"])
+    pair_router.add_api_route("", endpoint=add_pair, methods=["POST"])
+    pair_router.add_api_route("", endpoint=get_pair, methods=["GET"])
 
     return pair_router

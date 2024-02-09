@@ -13,15 +13,17 @@ from swapmaster.application.common.protocols.commission_gateway import (
 )
 from swapmaster.application.common.protocols.method_gateway import MethodWriter
 from swapmaster.application.common.protocols.order_gateway import OrderWriter
-from swapmaster.application.common.protocols.pair_gateway import PairReader
+from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
 from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
 from swapmaster.application.create_commission import AddCommission
 from swapmaster.application.create_method import AddMethod
 from swapmaster.application.common.uow import UoW
 from swapmaster.application.create_order import AddOrder
+from swapmaster.application.create_pair import AddPair
 from swapmaster.core.services.commission import CommissionService
 from swapmaster.core.services.method import MethodService
 from swapmaster.core.services.order import OrderService
+from swapmaster.core.services.pair import PairService
 from swapmaster.presentation.api.depends.providers import (
     new_order_gateway,
     new_uow,
@@ -51,6 +53,7 @@ def setup_dependencies(
     method_service = MethodService()
     commission_service = CommissionService()
     order_service = OrderService()
+    pair_service = PairService()
 
     app.dependency_overrides.update(
         {
@@ -61,8 +64,10 @@ def setup_dependencies(
             CurrencyGateway: new_currency_gateway,
             CurrencyListReader: new_currency_gateway,
             PairReader: new_pair_gateway,
+            PairWriter: new_pair_gateway,
             CourseObtainer: new_course_obtainer_gateway,
             AsyncSession: partial(new_db_session, pool),
+            PairService: lambda: pair_service,
             MethodService: lambda: method_service,
             CommissionService: lambda: commission_service,
             OrderService: lambda: order_service,
@@ -74,5 +79,6 @@ def setup_dependencies(
     set_depends_as_defaults(AddCommission)
     set_depends_as_defaults(AddOrder)
     set_depends_as_defaults(CalculateSendTotal)
+    set_depends_as_defaults(AddPair)
 
     logger.info("dependencies set up!")
