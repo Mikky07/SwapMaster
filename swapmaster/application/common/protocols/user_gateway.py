@@ -9,6 +9,10 @@ class UserReader(Protocol):
     async def get_user(self, user_id: UserId) -> User:
         raise NotImplementedError
 
+    @abstractmethod
+    async def get_user_by_username(self, username: str) -> User:
+        raise NotImplementedError
+
 
 class UserSaver(Protocol):
     @abstractmethod

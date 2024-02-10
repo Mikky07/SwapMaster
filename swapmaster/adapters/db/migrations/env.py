@@ -1,5 +1,6 @@
 import asyncio
 from logging.config import fileConfig
+from typing import Any
 
 from sqlalchemy import engine_from_config
 from sqlalchemy.engine import Connection
@@ -15,7 +16,7 @@ from swapmaster.common.config.parser import get_paths, read_config
 
 def get_database_url() -> str:
     paths = get_paths("")
-    config_dct = read_config(paths=paths)
+    config_dct: dict[Any, Any] = read_config(paths=paths)
     db_config = load_db_config(config_dct.get("db"))
     return db_config.url
 

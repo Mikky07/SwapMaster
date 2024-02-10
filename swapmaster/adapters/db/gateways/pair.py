@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert
@@ -19,7 +20,7 @@ class PairGateway(PairReader, PairWriter):
 
     async def get_pair(self, pair_id: PairId) -> Pair:
         stmt = select(models.Pair).where(models.Pair.id == pair_id)
-        result: models.Pair = await self.session.scalar(stmt)
+        result: Optional[models.Pair] = await self.session.scalar(stmt)
         if not result:
             raise NoResultFound
         return Pair(

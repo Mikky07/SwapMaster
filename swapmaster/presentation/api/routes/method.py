@@ -26,8 +26,8 @@ async def add_method(
     return new_method
 
 
-async def get_all_methods() -> list[Method]:
-    ...
+# async def get_all_methods() -> list[Method]:
+#     ...
 
 
 def setup_method() -> APIRouter:

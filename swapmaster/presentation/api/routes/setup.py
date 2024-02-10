@@ -9,6 +9,7 @@ from .commission import setup_commission
 from .order import setup_order
 from .calculate import setup_calculator
 from .pair import setup_pair
+from .auth import setup_auth
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,8 @@ def setup_routers(app: FastAPI):
         setup_method(),
         setup_order(),
         setup_calculator(),
-        setup_pair()
+        setup_pair(),
+        setup_auth()
     )
 
     for router in routers:

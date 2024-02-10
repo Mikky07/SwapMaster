@@ -15,6 +15,7 @@ from swapmaster.application.common.protocols.method_gateway import MethodWriter
 from swapmaster.application.common.protocols.order_gateway import OrderWriter
 from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
 from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
+from swapmaster.application.common.protocols.user_gateway import UserReader
 from swapmaster.application.create_commission import AddCommission
 from swapmaster.application.create_method import AddMethod
 from swapmaster.application.common.uow import UoW
@@ -24,6 +25,9 @@ from swapmaster.core.services.commission import CommissionService
 from swapmaster.core.services.method import MethodService
 from swapmaster.core.services.order import OrderService
 from swapmaster.core.services.pair import PairService
+from swapmaster.presentation.api.config.models.auth import AuthConfig
+from swapmaster.presentation.api.config.models.main import APIConfig
+from swapmaster.presentation.api.depends.auth import AuthProvider
 from swapmaster.presentation.api.depends.providers import (
     new_order_gateway,
     new_uow,
@@ -32,7 +36,8 @@ from swapmaster.presentation.api.depends.providers import (
     new_currency_gateway,
     new_method_gateway,
     new_commission_gateway,
-    new_course_obtainer_gateway
+    new_course_obtainer_gateway,
+    new_user_gateway
 )
 
 logger = logging.getLogger(__name__)
@@ -48,7 +53,8 @@ def set_depends_as_defaults(cls: type) -> None:
 
 def setup_dependencies(
     app: FastAPI,
-    pool: async_sessionmaker[AsyncSession]
+    pool: async_sessionmaker[AsyncSession],
+    config: APIConfig
 ):
     method_service = MethodService()
     commission_service = CommissionService()
@@ -65,8 +71,10 @@ def setup_dependencies(
             CurrencyListReader: new_currency_gateway,
             PairReader: new_pair_gateway,
             PairWriter: new_pair_gateway,
+            UserReader: new_user_gateway,
             CourseObtainer: new_course_obtainer_gateway,
             AsyncSession: partial(new_db_session, pool),
+            AuthConfig: lambda: config.auth,
             PairService: lambda: pair_service,
             MethodService: lambda: method_service,
             CommissionService: lambda: commission_service,
@@ -80,5 +88,6 @@ def setup_dependencies(
     set_depends_as_defaults(AddOrder)
     set_depends_as_defaults(CalculateSendTotal)
     set_depends_as_defaults(AddPair)
+    set_depends_as_defaults(AuthProvider)
 
     logger.info("dependencies set up!")

@@ -7,6 +7,7 @@ from swapmaster.application.common.protocols.commission_gateway import Commissio
 from swapmaster.core.models import PairId
 from swapmaster.application.common.protocols.pair_gateway import PairReader
 from swapmaster.core.models.pair import Pair
+from swapmaster.core.utils.exceptions import SMError
 
 
 @dataclass
@@ -42,8 +43,12 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
         pair: Pair = await self.pair_gateway.get_pair(
             pair_id=data.pair_id
         )
+
+        if not pair:
+            raise SMError("pair did not get")
+
         pair_currencies = await self.pair_gateway.get_pair_currencies(
-            pair_id=pair.pair_id
+            pair_id=data.pair_id
         )
         course = await self.course_obtainer.obtain(
             pair_currencies=pair_currencies
@@ -53,6 +58,6 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
         result_course = round(result_course, 2)
 
         return CalculatedTotalDTO(
-            pair_id=pair.pair_id,
+            pair_id=data.pair_id,
             to_send_quantity=result_course
         )
