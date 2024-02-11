@@ -23,5 +23,7 @@ class Method(Base):
         foreign_keys=currency_id,
     )
 
+    reserve: Mapped["Reserve"] = relationship(back_populates="method", foreign_keys="Reserve.method_id")
+
     def __repr__(self):
         return f"<Method id={self.id} name={self.name} currency_id={self.currency_id}>"
