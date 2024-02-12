@@ -4,3 +4,5 @@ from .user import User, UserId
 from .commission import CommissionId, Commission
 from .pair import Pair, PairId
 from .order import Order, OrderId
+from .wallet import Wallet, WalletId
+from .reserve import Reserve, ReserveId

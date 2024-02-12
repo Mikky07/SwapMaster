@@ -1,14 +1,24 @@
+import logging
+
 from sqlalchemy.exc import InternalError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, update
+from sqlalchemy import insert, update, select
 
 from swapmaster.adapters.db import models
-from swapmaster.application.common.protocols.reserve_gateway import ReserveWriter, ReserveUpdater
+from swapmaster.application.common.protocols.reserve_gateway import (
+    ReserveWriter,
+    ReserveUpdater,
+    ReserveReader
+)
+from swapmaster.application.common.reserve_refresh import RemoteReserve
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
 
 
-class ReserveGateway(ReserveWriter, ReserveUpdater):
+logger = logging.getLogger(__name__)
+
+
+class ReserveGateway(ReserveWriter, ReserveUpdater, ReserveReader):
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -29,7 +39,6 @@ class ReserveGateway(ReserveWriter, ReserveUpdater):
     async def add_reserve(self, reserve: Reserve) -> Reserve:
         kwargs = dict(
             size=reserve.size,
-            method_id=reserve.method_id,
             update_method=reserve.update_method
         )
         stmt = (
@@ -41,3 +50,11 @@ class ReserveGateway(ReserveWriter, ReserveUpdater):
         if not (result := new_reserve.scalar_one()):
             raise InternalError
         return result.to_dto()
+
+    async def get_all_remote_reserves(self) -> RemoteReserve:
+        stmt = (
+            select(models.Reserve.id, models.Wallet.link)
+            .where(models.Reserve.wallet_id == models.Wallet.id)
+        )
+        result = await self.session.scalars(stmt)
+        print(result.all())

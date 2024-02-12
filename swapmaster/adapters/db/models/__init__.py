@@ -7,3 +7,4 @@ from .pair import Pair
 from .order import Order
 from .course import Course
 from .reserve import Reserve
+from .wallet import Wallet

@@ -10,6 +10,6 @@ MethodId: TypeAlias = int
 @dataclass
 class Method:
     method_id: Optional[MethodId]
-    # reserve: ReserveId
+    reserve: ReserveId
     currency_id: CurrencyId
     name: str

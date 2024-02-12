@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 from swapmaster.core.constants import ReserveUpdateMethodEnum
-from swapmaster.core.models.reserve import Reserve
+from swapmaster.core import models
 from .base import Base
 
 
@@ -19,8 +19,7 @@ class Reserve(Base):
         ENUM(ReserveUpdateMethodEnum)
     )
 
-    method_id: Mapped[int] = mapped_column(ForeignKey("methods.id", ondelete="CASCADE"))
-    method: Mapped['Method'] = relationship(back_populates="reserve", foreign_keys=method_id)
+    method: Mapped['Method'] = relationship(back_populates="reserve", foreign_keys="method.reserve_id")
 
     wallet_id: Mapped[Optional[int]] = mapped_column(ForeignKey("wallets.id"))
     wallet: Mapped[Optional['Method']] = relationship(back_populates="reserve", foreign_keys=wallet_id)
@@ -30,15 +29,13 @@ class Reserve(Base):
             f"<Reserve"
             f" id={self.id}"
             f" size={self.size}"
-            f" method_id={self.method_id}"
             f" update_method={self.update_method}"
             f" wallet_id={self.wallet_id}>"
         )
 
-    def to_dto(self) -> Reserve:
+    def to_dto(self) -> models.Reserve:
         return Reserve(
             reserve_id=self.id,
-            method_id=self.method_id,
             size=self.size,
             update_method=self.update_method,
             wallet_id=self.wallet_id
