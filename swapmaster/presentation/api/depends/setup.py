@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.currency import CurrencyGateway
 from swapmaster.application.calculate_send_total import CalculateSendTotal
-from swapmaster.application.common.course_obtainer import CourseObtainer
+from swapmaster.application.common.protocols.course_obtainer import CourseObtainer
 from swapmaster.application.common.protocols.commission_gateway import (
     CommissionWriter,
     CommissionReader

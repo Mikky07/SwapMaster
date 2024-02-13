@@ -8,4 +8,6 @@ WalletId: TypeAlias = int
 @dataclass
 class Wallet:
     wallet_id: WalletId
-    link: str
+    name: str
+    blockchain: str
+    address: str

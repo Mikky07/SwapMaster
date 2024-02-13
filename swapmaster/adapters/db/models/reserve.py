@@ -19,10 +19,10 @@ class Reserve(Base):
         ENUM(ReserveUpdateMethodEnum)
     )
 
-    method: Mapped['Method'] = relationship(back_populates="reserve", foreign_keys="method.reserve_id")
+    method: Mapped['Method'] = relationship(back_populates="reserve")
 
     wallet_id: Mapped[Optional[int]] = mapped_column(ForeignKey("wallets.id"))
-    wallet: Mapped[Optional['Method']] = relationship(back_populates="reserve", foreign_keys=wallet_id)
+    wallet: Mapped[Optional['Wallet']] = relationship(back_populates="reserve", foreign_keys=wallet_id)
 
     def __repr__(self):
         return (

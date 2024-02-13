@@ -1,9 +1,9 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from swapmaster.application.common.reserve_refresh import RemoteReserve
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
+from swapmaster.application.common.protocols.reserve_size_obtainer import RemoteReserve
 
 
 class ReserveWriter(Protocol):
@@ -17,8 +17,12 @@ class ReserveUpdater(Protocol):
     async def attach_wallet(self, wallet_id: WalletId, reserve_id: ReserveId) -> Reserve:
         raise NotImplementedError
 
+    @abstractmethod
+    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> None:
+        raise NotImplementedError
+
 
 class ReserveReader(Protocol):
     @abstractmethod
-    async def get_all_remote_reserves(self) -> RemoteReserve:
+    async def get_all_remote_reserves(self) -> list[RemoteReserve]:
         raise NotImplementedError

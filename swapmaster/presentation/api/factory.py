@@ -1,13 +1,9 @@
 from fastapi import FastAPI
 
-from swapmaster.common.config.models import Paths
 from .config.models.main import APIConfig
 from .routes import *
 from .depends import *
 from swapmaster.adapters.db.factory import create_pool
-from swapmaster.common.config.parser import (
-    get_paths,
-)
 
 
 def create_app(api_config: APIConfig):
@@ -23,6 +19,3 @@ def create_app(api_config: APIConfig):
 
     return app
 
-
-def get_paths_common() -> Paths:
-    return get_paths("API_PATH")

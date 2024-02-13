@@ -10,7 +10,7 @@ from swapmaster.application.common.protocols.reserve_gateway import (
     ReserveUpdater,
     ReserveReader
 )
-from swapmaster.application.common.reserve_refresh import RemoteReserve
+from swapmaster.application.common.protocols.reserve_size_obtainer import RemoteReserve
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
 
@@ -51,10 +51,29 @@ class ReserveGateway(ReserveWriter, ReserveUpdater, ReserveReader):
             raise InternalError
         return result.to_dto()
 
-    async def get_all_remote_reserves(self) -> RemoteReserve:
+    async def get_all_remote_reserves(self) -> list[RemoteReserve]:
         stmt = (
-            select(models.Reserve.id, models.Wallet.link)
+            select(models.Reserve.id, models.Wallet.address)
             .where(models.Reserve.wallet_id == models.Wallet.id)
         )
         result = await self.session.scalars(stmt)
-        print(result.all())
+        return [
+            RemoteReserve(
+                reserve_id=remote_reserve.id,
+                wallet_address=remote_reserve.address
+            )
+            for remote_reserve in result.all()
+        ]
+
+    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> None:
+        logger.info("Reserve with id: %s and size %s is updating", reserve_id, size)
+        kwargs = dict(size=size)
+        stmt = (
+            update(models.Reserve)
+            .values(kwargs)
+            .where(models.Reserve.id == reserve_id)
+            .returning(models.Reserve)
+        )
+        updated_reserve = await self.session.execute(stmt)
+        if not updated_reserve.scalar_one():
+            raise InternalError

@@ -1,8 +1,8 @@
 """Added wallets table
 
-Revision ID: 46323b046607
+Revision ID: 4f0fde8783fa
 Revises: ed884e4566f6
-Create Date: 2024-02-12 18:19:09.973618
+Create Date: 2024-02-13 19:23:34.848103
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '46323b046607'
+revision: str = '4f0fde8783fa'
 down_revision: Union[str, None] = 'ed884e4566f6'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,7 +23,8 @@ def upgrade() -> None:
     op.create_table('wallets',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('link', sa.String(), nullable=False),
+    sa.Column('blockchain', sa.String(), nullable=False),
+    sa.Column('address', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_wallets')),
     sa.UniqueConstraint('name', name=op.f('uq_wallets_name'))
     )

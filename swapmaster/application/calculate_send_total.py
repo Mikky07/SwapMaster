@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 
-from swapmaster.application.common.course_obtainer import CourseObtainer
+from swapmaster.application.common.protocols.course_obtainer import CourseObtainer
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.protocols.commission_gateway import CommissionReader
 from swapmaster.core.models import PairId

@@ -9,7 +9,8 @@ class Wallet(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(unique=True)
-    link: Mapped[str]
+    blockchain: Mapped[str]
+    address: Mapped[str]
 
     reserve: Mapped['Reserve'] = relationship(back_populates="wallet", foreign_keys="reserves.wallet_id")
 
@@ -18,5 +19,6 @@ class Wallet(Base):
             f"<Wallet"
             f" id={self.id}"
             f" name={self.name}"
-            f" link={self.link}>"
+            f" blockchain={self.blockchain}"
+            f" address={self.address}>"
         )

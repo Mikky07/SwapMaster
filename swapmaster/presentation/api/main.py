@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 
 from swapmaster.common.config.parser import logging_setup
+from swapmaster.main.web import get_paths_common
 from swapmaster.presentation.api.config.parser.main import load_api_config
-from swapmaster.presentation.api.factory import create_app, get_paths_common
+from swapmaster.presentation.api.factory import create_app
 
 
 def setup() -> FastAPI:
