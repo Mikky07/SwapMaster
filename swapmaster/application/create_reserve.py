@@ -34,8 +34,6 @@ class AddReserve(Interactor):
             initial_size=data.size,
             update_method=data.update_method
         )
-        if new_reserve.update_method == ReserveUpdateMethodEnum.REMOTE:
-            ...
         saved_reserve = await self.reserve_gateway.add_reserve(reserve=new_reserve)
         await self.uow.commit()
         return saved_reserve

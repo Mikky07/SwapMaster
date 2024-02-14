@@ -12,7 +12,7 @@ class Wallet(Base):
     blockchain: Mapped[str]
     address: Mapped[str]
 
-    reserve: Mapped['Reserve'] = relationship(back_populates="wallet", foreign_keys="reserves.wallet_id")
+    reserve: Mapped['Reserve'] = relationship(back_populates="wallet", foreign_keys="Reserve.wallet_id")
 
     def __repr__(self):
         return (

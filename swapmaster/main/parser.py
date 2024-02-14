@@ -17,6 +17,7 @@ def get_paths_common() -> Paths:
     return get_paths("")
 
 
+# stub
 class DBUoW(UoW):
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -28,6 +29,7 @@ class DBUoW(UoW):
         await self.session.rollback()
 
 
+# stub
 async def refresh(pool: async_sessionmaker[AsyncSession]):
     async with pool() as session:
         reserve_gateway = ReserveGateway(session=session)
@@ -49,9 +51,8 @@ async def main():
     pool = create_pool(db_config)
     scheduler = AsyncIOScheduler()
     await refresh(pool)
-    # scheduler.add_job(refresh, args=[pool], trigger="interval", seconds=10)
-    # scheduler.start()
-    # await asyncio.sleep(100)
+    scheduler.add_job(refresh, args=[pool], trigger="interval", seconds=10)
+    scheduler.start()
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -30,7 +30,7 @@ class ReserveObtainer(ReserveSizeObtainer):
         fake_result = [
             ReserveSize(
                 reserve_id=reserve.reserve_id,
-                size=101.0
+                size=103.0
             )
             for reserve in reserves
         ]

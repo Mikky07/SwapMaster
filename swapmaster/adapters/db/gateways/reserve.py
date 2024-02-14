@@ -54,9 +54,9 @@ class ReserveGateway(ReserveWriter, ReserveUpdater, ReserveReader):
     async def get_all_remote_reserves(self) -> list[RemoteReserve]:
         stmt = (
             select(models.Reserve.id, models.Wallet.address)
-            .where(models.Reserve.wallet_id == models.Wallet.id)
+            .join(models.Reserve.wallet)
         )
-        result = await self.session.scalars(stmt)
+        result = await self.session.execute(stmt)
         return [
             RemoteReserve(
                 reserve_id=remote_reserve.id,
