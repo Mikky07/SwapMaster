@@ -66,7 +66,6 @@ class ReserveGateway(ReserveWriter, ReserveUpdater, ReserveReader):
         ]
 
     async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> None:
-        logger.info("Reserve with id: %s and size %s is updating", reserve_id, size)
         kwargs = dict(size=size)
         stmt = (
             update(models.Reserve)

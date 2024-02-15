@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from .config.models.main import APIConfig
-from .routes import *
-from .depends import *
+from swapmaster.presentation.api.config.models.main import APIConfig
+from swapmaster.presentation.api.routes import *
+from swapmaster.presentation.api.depends import *
 from swapmaster.adapters.db.factory import create_pool
 
 
@@ -18,4 +18,3 @@ def create_app(api_config: APIConfig):
     setup_routers(app)
 
     return app
-

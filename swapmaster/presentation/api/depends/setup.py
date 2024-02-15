@@ -11,8 +11,8 @@ from swapmaster.application.common.protocols.commission_gateway import (
     CommissionWriter,
     CommissionReader
 )
-from swapmaster.application.common.protocols.method_gateway import MethodWriter
-from swapmaster.application.common.protocols.order_gateway import OrderWriter
+from swapmaster.application.common.protocols.method_gateway import MethodWriter, MethodListReader
+from swapmaster.application.common.protocols.order_gateway import OrderWriter, OrderReader, OrderUpdater
 from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
 from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
 from swapmaster.application.common.protocols.user_gateway import UserReader
@@ -21,6 +21,7 @@ from swapmaster.application.create_method import AddMethod
 from swapmaster.application.common.uow import UoW
 from swapmaster.application.create_order import AddOrder
 from swapmaster.application.create_pair import AddPair
+from swapmaster.application.finish_order import FinishOrder
 from swapmaster.core.services.commission import CommissionService
 from swapmaster.core.services.method import MethodService
 from swapmaster.core.services.order import OrderService
@@ -64,9 +65,12 @@ def setup_dependencies(
     app.dependency_overrides.update(
         {
             MethodWriter: new_method_gateway,
+            MethodListReader: new_method_gateway,
             CommissionWriter: new_commission_gateway,
             CommissionReader: new_commission_gateway,
             OrderWriter: new_order_gateway,
+            OrderReader: new_order_gateway,
+            OrderUpdater: new_order_gateway,
             CurrencyGateway: new_currency_gateway,
             CurrencyListReader: new_currency_gateway,
             PairReader: new_pair_gateway,
@@ -89,5 +93,6 @@ def setup_dependencies(
     set_depends_as_defaults(CalculateSendTotal)
     set_depends_as_defaults(AddPair)
     set_depends_as_defaults(AuthProvider)
+    set_depends_as_defaults(FinishOrder)
 
     logger.info("dependencies set up!")
