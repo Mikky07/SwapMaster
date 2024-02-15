@@ -11,5 +11,6 @@ class MethodService:
         return Method(
             method_id=None,
             name=name,
-            currency_id=currency_id
+            currency_id=currency_id,
+            reserve=None
         )

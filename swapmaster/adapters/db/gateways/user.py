@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .base import BaseGateway
 from swapmaster.adapters.db import models
 from swapmaster.core.models.user import User, UserId
 from swapmaster.application.common.protocols.user_gateway import UserReader, UserSaver
