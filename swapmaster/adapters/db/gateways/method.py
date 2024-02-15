@@ -39,8 +39,8 @@ class MethodGateway(BaseGateway[models.Method], MethodWriter, MethodListReader):
     async def is_method_available(self, name: str, currency_id: CurrencyId) -> bool:
         result = await self.read_model(
             [
-                (models.Method.name == name),
-                (models.Method.currency_id == currency_id)
+                models.Method.name == name,
+                models.Method.currency_id == currency_id
             ]
         )
         return result is None

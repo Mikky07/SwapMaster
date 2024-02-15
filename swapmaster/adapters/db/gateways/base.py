@@ -17,25 +17,25 @@ class BaseGateway(Generic[Model]):
 
     async def get_model_list(
             self,
-            options: Sequence[ORMOption] | None = None
-    ):
-        result = await self._read_model_with_options(options=options)
+            filters: Sequence[ORMOption] | None = None
+    ) -> Sequence[Model]:
+        result = await self.__read_model_with_options(filters=filters)
         return result.all()
 
     async def read_model(
             self,
-            options: Sequence[ORMOption] | None = None
-    ):
-        result = await self._read_model_with_options(options=options)
+            filters: Sequence[ORMOption] | None = None
+    ) -> Model:
+        result = await self.__read_model_with_options(filters=filters)
         return result.first()
 
-    async def _read_model_with_options(
+    async def __read_model_with_options(
             self,
-            options: Sequence[ORMOption] | None = None
+            filters: Sequence[ORMOption] | None = None
     ):
         stmt = select(self.model)
-        if options:
-            stmt.options = options
+        if filters:
+            stmt = stmt.filter(*filters)
         return await self.session.scalars(stmt)
 
     async def create_model(
@@ -45,7 +45,7 @@ class BaseGateway(Generic[Model]):
         stmt = insert(self.model).values(kwargs).returning(self.model)
         saved_model = await self.session.execute(stmt)
         if not (result := saved_model.scalar_one()):
-            raise SMError("Some troubles with insert occurred")
+            raise SMError(f"Some troubles with insert of {self.model.__name__} occurred")
         return result
 
     async def update_model(
@@ -55,5 +55,5 @@ class BaseGateway(Generic[Model]):
         stmt = update(self.model).values(kwargs).returning(self.model)
         updated_model = await self.session.execute(stmt)
         if not (result := updated_model.scalar_one()):
-            raise SMError("Some troubles with insert occurred")
+            raise SMError(f"Some troubles with update of {self.model.__name__} occurred")
         return result
