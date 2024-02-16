@@ -20,8 +20,7 @@ class MethodGateway(BaseGateway[models.Method], MethodWriter, MethodListReader):
         return [method.to_dto() for method in methods]
 
     async def add_method(self, method: Method) -> Method:
-        kwargs = dict(name=method.name, currency_id=method.currency_id)
-        saved_method = await self.create_model(kwargs=kwargs)
+        saved_method = await self.create_model(name=method.name, currency_id=method.currency_id)
         return saved_method.to_dto()
 
     async def is_method_available(self, name: str, currency_id: CurrencyId) -> bool:

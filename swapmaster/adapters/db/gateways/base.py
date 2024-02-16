@@ -2,7 +2,7 @@ from typing import Generic, TypeVar, Sequence
 
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm.interfaces import ORMOption
+from sqlalchemy.sql.roles import ExpressionElementRole
 
 from swapmaster.adapters.db.models import Base
 from swapmaster.core.utils.exceptions import SMError
@@ -17,21 +17,23 @@ class BaseGateway(Generic[Model]):
 
     async def get_model_list(
             self,
-            filters: Sequence[ORMOption] | None = None
+            filters: Sequence[ExpressionElementRole] | None = None
     ) -> Sequence[Model]:
-        result = await self.__read_model_with_filters(filters=filters)
+        result = await self.__read_model_with_filters(
+            filters=filters
+        )
         return result.all()
 
     async def read_model(
             self,
-            filters: Sequence[ORMOption] | None = None
+            filters: Sequence[ExpressionElementRole] | None = None
     ) -> Model:
         result = await self.__read_model_with_filters(filters=filters)
         return result.first()
 
     async def __read_model_with_filters(
             self,
-            filters: Sequence[ORMOption] | None = None
+            filters: Sequence[ExpressionElementRole] | None = None
     ):
         stmt = select(self.model)
         if filters:
@@ -40,7 +42,7 @@ class BaseGateway(Generic[Model]):
 
     async def create_model(
             self,
-            kwargs: dict
+            **kwargs
     ) -> Model:
         stmt = insert(self.model).values(kwargs).returning(self.model)
         saved_model = await self.session.execute(stmt)
@@ -50,8 +52,8 @@ class BaseGateway(Generic[Model]):
 
     async def update_model(
             self,
-            kwargs: dict,
-            filters: Sequence[ORMOption] | None = None
+            filters: Sequence[ExpressionElementRole] | None = None,
+            **kwargs
     ):
         stmt = update(self.model).values(kwargs).returning(self.model)
         if filters:

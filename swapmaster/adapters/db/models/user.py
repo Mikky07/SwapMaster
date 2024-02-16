@@ -1,5 +1,7 @@
-from .base import Base
 from sqlalchemy.orm import mapped_column, Mapped
+
+from .base import Base
+from swapmaster.core import models as dto
 
 
 class User(Base):
@@ -16,4 +18,11 @@ class User(Base):
             f" id={self.id}"
             f" username={self.username}"
             f" hashed_password={self.hashed_password}>"
+        )
+
+    def to_dto(self) -> dto.User:
+        return dto.User(
+            user_id=self.id,
+            username=self.username,
+            hashed_password=self.hashed_password
         )

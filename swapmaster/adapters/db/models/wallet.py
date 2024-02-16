@@ -1,6 +1,7 @@
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 from .base import Base
+from swapmaster.core import models as dto
 
 
 class Wallet(Base):
@@ -21,4 +22,12 @@ class Wallet(Base):
             f" name={self.name}"
             f" blockchain={self.blockchain}"
             f" address={self.address}>"
+        )
+
+    def to_dto(self) -> dto.Wallet:
+        return dto.Wallet(
+            wallet_id=self.id,
+            name=self.name,
+            blockchain=self.blockchain,
+            address=self.address,
         )

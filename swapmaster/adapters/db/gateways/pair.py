@@ -44,10 +44,9 @@ class PairGateway(BaseGateway[models.Pair], PairReader, PairWriter):
         )
 
     async def add_pair(self, pair: Pair) -> Pair:
-        kwargs = dict(
+        saved_pair = await self.create_model(
             method_to_id=pair.method_to,
             method_from_id=pair.method_from,
             commission_id=pair.commission
         )
-        saved_pair = await self.create_model(kwargs)
         return saved_pair.to_dto()

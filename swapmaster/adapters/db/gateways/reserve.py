@@ -1,9 +1,9 @@
 import logging
 
-from sqlalchemy.exc import InternalError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, update, select
+from sqlalchemy import select
 
+from .base import BaseGateway
 from swapmaster.adapters.db import models
 from swapmaster.application.common.protocols.reserve_gateway import (
     ReserveWriter,
@@ -18,38 +18,26 @@ from swapmaster.core.models.wallet import WalletId
 logger = logging.getLogger(__name__)
 
 
-class ReserveGateway(ReserveWriter, ReserveUpdater, ReserveReader):
+class ReserveGateway(BaseGateway[models.Reserve], ReserveWriter, ReserveUpdater, ReserveReader):
     def __init__(self, session: AsyncSession):
-        self.session = session
+        super().__init__(models.Reserve, session)
 
     async def is_reserve_available(self, reserve_id) -> ReserveId:
         ...
 
     async def attach_wallet(self, wallet_id: WalletId, reserve_id: ReserveId) -> Reserve:
-        kwargs = dict(wallet_id=wallet_id)
-        stmt = (
-            update(models.Reserve)
-            .values(kwargs)
-            .where(models.Reserve.id == reserve_id)
-            .returning(models.Reserve)
+        updated_reserve = await self.update_model(
+            wallet_id=wallet_id,
+            filters=[models.Reserve.id == reserve_id]
         )
-        updated_reserve = await self.session.execute(stmt)
-        return updated_reserve.scalar_one().to_dto()
+        return updated_reserve.to_dto()
 
     async def add_reserve(self, reserve: Reserve) -> Reserve:
-        kwargs = dict(
+        saved_reserve = await self.update_model(
             size=reserve.size,
             update_method=reserve.update_method
         )
-        stmt = (
-            insert(models.Reserve)
-            .values(kwargs)
-            .returning(models.Reserve)
-        )
-        new_reserve = await self.session.execute(stmt)
-        if not (result := new_reserve.scalar_one()):
-            raise InternalError
-        return result.to_dto()
+        return saved_reserve.to_dto()
 
     async def get_all_remote_reserves(self) -> list[RemoteReserve]:
         stmt = (
@@ -65,14 +53,9 @@ class ReserveGateway(ReserveWriter, ReserveUpdater, ReserveReader):
             for remote_reserve in result.all()
         ]
 
-    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> None:
-        kwargs = dict(size=size)
-        stmt = (
-            update(models.Reserve)
-            .values(kwargs)
-            .where(models.Reserve.id == reserve_id)
-            .returning(models.Reserve)
+    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> Reserve:
+        updated_reserve = await self.update_model(
+            size=size,
+            filters=[models.Reserve.id == reserve_id]
         )
-        updated_reserve = await self.session.execute(stmt)
-        if not updated_reserve.scalar_one():
-            raise InternalError
+        return updated_reserve

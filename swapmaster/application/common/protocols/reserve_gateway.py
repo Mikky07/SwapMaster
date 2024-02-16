@@ -18,7 +18,7 @@ class ReserveUpdater(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> None:
+    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> Reserve:
         raise NotImplementedError
 
 

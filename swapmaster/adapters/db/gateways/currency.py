@@ -17,9 +17,4 @@ class CurrencyGateway(BaseGateway[models.Currency], CurrencyListReader):
 
     async def get_currency_list(self) -> list[Currency]:
         currencies = await self.get_model_list()
-        return [
-            Currency(
-                currency_id=currency.id,
-                name=currency.name
-            ) for currency in currencies
-        ]
+        return [currency.to_dto() for currency in currencies]

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
+from swapmaster.core import models as dto
 
 
 class Commission(Base):
@@ -12,3 +13,9 @@ class Commission(Base):
 
     def __repr__(self):
         return f"<Commission id={self.id} value={self.value}>"
+
+    def to_dto(self) -> dto.Commission:
+        return dto.Commission(
+            commission_id=self.id,
+            value=self.value
+        )
