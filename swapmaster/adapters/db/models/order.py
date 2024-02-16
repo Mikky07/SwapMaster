@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM
 
+from swapmaster.core import models as dto
 from .base import Base
 from swapmaster.core.constants import OrderStatusEnum
 
@@ -38,4 +39,16 @@ class Order(Base):
             f" date_start={self.date_start}"
             f" date_finish={self.date_finish}"
             f" status={self.status}"
+        )
+
+    def to_dto(self) -> dto.Order:
+        return dto.Order(
+            order_id=self.id,
+            pair_id=self.pair_id,
+            user_id=self.user_id,
+            to_receive=self.to_receive,
+            to_send=self.to_send,
+            date_start=self.date_start,
+            date_finish=self.date_finish,
+            status=self.status
         )

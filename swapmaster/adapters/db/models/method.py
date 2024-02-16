@@ -3,6 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
+from swapmaster.core import models as dto
 from .base import Base
 
 
@@ -34,4 +35,12 @@ class Method(Base):
             f" name={self.name} "
             f" currency_id={self.currency_id}"
             f" reserve_id={self.reserve_id}>"
+        )
+
+    def to_dto(self) -> dto.Method:
+        return dto.Method(
+            method_id=self.id,
+            reserve=self.reserve_id,
+            currency_id=self.currency_id,
+            name=self.name
         )

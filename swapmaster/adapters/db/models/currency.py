@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
+from swapmaster.core import models as dto
 
 
 class Currency(Base):
@@ -17,3 +18,9 @@ class Currency(Base):
 
     def __repr__(self):
         return f"<Currency id={self.id} name={self.name}>"
+
+    def to_dto(self) -> dto.Currency:
+        return dto.Currency(
+            currency_id=self.id,
+            name=self.name
+        )

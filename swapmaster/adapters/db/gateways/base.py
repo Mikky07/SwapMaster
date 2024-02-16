@@ -19,17 +19,17 @@ class BaseGateway(Generic[Model]):
             self,
             filters: Sequence[ORMOption] | None = None
     ) -> Sequence[Model]:
-        result = await self.__read_model_with_options(filters=filters)
+        result = await self.__read_model_with_filters(filters=filters)
         return result.all()
 
     async def read_model(
             self,
             filters: Sequence[ORMOption] | None = None
     ) -> Model:
-        result = await self.__read_model_with_options(filters=filters)
+        result = await self.__read_model_with_filters(filters=filters)
         return result.first()
 
-    async def __read_model_with_options(
+    async def __read_model_with_filters(
             self,
             filters: Sequence[ORMOption] | None = None
     ):
@@ -45,15 +45,18 @@ class BaseGateway(Generic[Model]):
         stmt = insert(self.model).values(kwargs).returning(self.model)
         saved_model = await self.session.execute(stmt)
         if not (result := saved_model.scalar_one()):
-            raise SMError(f"Some troubles with insert of {self.model.__name__} occurred")
+            raise SMError(f"Some troubles with inserting of {self.model.__name__} occurred")
         return result
 
     async def update_model(
             self,
-            kwargs: dict
+            kwargs: dict,
+            filters: Sequence[ORMOption] | None = None
     ):
         stmt = update(self.model).values(kwargs).returning(self.model)
+        if filters:
+            stmt = stmt.filter(*filters)
         updated_model = await self.session.execute(stmt)
         if not (result := updated_model.scalar_one()):
-            raise SMError(f"Some troubles with update of {self.model.__name__} occurred")
+            raise SMError(f"Some troubles with updating of {self.model.__name__} occurred")
         return result

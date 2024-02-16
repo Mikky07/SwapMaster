@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import ENUM
 
+from swapmaster.core import models as dto
 from .base import Base
 
 
@@ -31,4 +31,12 @@ class Pair(Base):
             f" method_from_id={self.method_from_id}"
             f" method_to_id={self.method_to_id}"
             f" commission_id={self.commission_id}>"
+        )
+
+    def to_dto(self) -> dto.Pair:
+        return dto.Pair(
+            pair_id=self.id,
+            method_from=self.method_from_id,
+            method_to=self.method_to_id,
+            commission=self.commission_id
         )

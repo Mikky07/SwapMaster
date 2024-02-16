@@ -17,24 +17,12 @@ class MethodGateway(BaseGateway[models.Method], MethodWriter, MethodListReader):
 
     async def get_method_list(self) -> list[Method]:
         methods = await self.get_model_list()
-        return [
-            Method(
-                method_id=method.id,
-                reserve=method.reserve_id,
-                currency_id=method.currency_id,
-                name=method.name
-            ) for method in methods
-        ]
+        return [method.to_dto() for method in methods]
 
     async def add_method(self, method: Method) -> Method:
         kwargs = dict(name=method.name, currency_id=method.currency_id)
-        result = await self.create_model(kwargs=kwargs)
-        return Method(
-            method_id=result.id,
-            name=result.name,
-            currency_id=result.currency_id,
-            reserve=result.reserve_id
-        )
+        saved_method = await self.create_model(kwargs=kwargs)
+        return saved_method.to_dto()
 
     async def is_method_available(self, name: str, currency_id: CurrencyId) -> bool:
         result = await self.read_model(
