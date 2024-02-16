@@ -3,7 +3,7 @@ import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from .base import BaseGateway
+from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.application.common.protocols.reserve_gateway import (
     ReserveWriter,
@@ -18,7 +18,7 @@ from swapmaster.core.models.wallet import WalletId
 logger = logging.getLogger(__name__)
 
 
-class ReserveGateway(BaseGateway[models.Reserve], ReserveWriter, ReserveUpdater, ReserveReader):
+class ReserveGateway(BaseDBGateway[models.Reserve], ReserveWriter, ReserveUpdater, ReserveReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Reserve, session)
 

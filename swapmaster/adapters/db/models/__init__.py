@@ -8,3 +8,4 @@ from .order import Order
 from .course import Course
 from .reserve import Reserve
 from .wallet import Wallet
+from .requisite import Requisite

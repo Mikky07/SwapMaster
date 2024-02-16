@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from swapmaster.adapters.db.gateways.base import BaseGateway
+from swapmaster.adapters.db.gateways.base import BaseDBGateway
 from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import Pair, PairId
 from swapmaster.adapters.db import models
@@ -13,7 +13,7 @@ from swapmaster.core.models.pair import PairCurrencies
 logger = logging.getLogger(__name__)
 
 
-class PairGateway(BaseGateway[models.Pair], PairReader, PairWriter):
+class PairGateway(BaseDBGateway[models.Pair], PairReader, PairWriter):
 
     def __init__(self, session: AsyncSession):
         super().__init__(models.Pair, session)

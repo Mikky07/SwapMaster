@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
@@ -24,6 +26,8 @@ class Pair(Base):
     method_from: Mapped["Method"] = relationship(foreign_keys=method_from_id)
     method_to: Mapped["Method"] = relationship(foreign_keys=method_to_id)
     commission: Mapped["Commission"] = relationship()
+
+    requisites: Mapped[Optional[list["Requisite"]]] = relationship(back_populates="pair")
 
     def __repr__(self):
         return (

@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .base import BaseGateway
+from .base import BaseDBGateway
 from swapmaster.application.common.protocols.commission_gateway import (
     CommissionWriter,
     CommissionReader
@@ -13,7 +13,7 @@ from swapmaster.adapters.db import models
 logger = logging.getLogger(__name__)
 
 
-class CommissionGateway(BaseGateway[models.Commission], CommissionWriter, CommissionReader):
+class CommissionGateway(BaseDBGateway[models.Commission], CommissionWriter, CommissionReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Commission, session)
 

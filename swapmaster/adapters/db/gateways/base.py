@@ -10,7 +10,7 @@ from swapmaster.core.utils.exceptions import SMError
 Model = TypeVar("Model", bound=Base)
 
 
-class BaseGateway(Generic[Model]):
+class BaseDBGateway(Generic[Model]):
     def __init__(self, model: type[Model], session: AsyncSession):
         self.model = model
         self.session = session

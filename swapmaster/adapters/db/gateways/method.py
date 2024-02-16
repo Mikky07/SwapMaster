@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .base import BaseGateway
+from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.application.common.protocols.method_gateway import MethodListReader, MethodWriter
 from swapmaster.core.models import CurrencyId
@@ -11,7 +11,7 @@ from swapmaster.core.models.method import Method
 logger = logging.getLogger(__name__)
 
 
-class MethodGateway(BaseGateway[models.Method], MethodWriter, MethodListReader):
+class MethodGateway(BaseDBGateway[models.Method], MethodWriter, MethodListReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Method, session)
 

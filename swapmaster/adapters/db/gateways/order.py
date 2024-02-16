@@ -3,14 +3,14 @@ from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .base import BaseGateway
+from .base import BaseDBGateway
 from swapmaster.application.common.protocols.order_gateway import OrderWriter, OrderReader, OrderUpdater
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId
 from swapmaster.adapters.db import models
 
 
-class OrderGateway(BaseGateway[models.Order], OrderWriter, OrderReader, OrderUpdater):
+class OrderGateway(BaseDBGateway[models.Order], OrderWriter, OrderReader, OrderUpdater):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Order, session)
 
