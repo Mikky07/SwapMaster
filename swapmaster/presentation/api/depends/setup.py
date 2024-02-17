@@ -14,6 +14,7 @@ from swapmaster.application.common.protocols.commission_gateway import (
 from swapmaster.application.common.protocols.method_gateway import MethodWriter, MethodListReader
 from swapmaster.application.common.protocols.order_gateway import OrderWriter, OrderReader, OrderUpdater
 from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
+from swapmaster.application.common.protocols.requisite_gateway import RequisiteWriter, RequisiteReader
 from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
 from swapmaster.application.common.protocols.user_gateway import UserReader
 from swapmaster.application.create_commission import AddCommission
@@ -21,11 +22,13 @@ from swapmaster.application.create_method import AddMethod
 from swapmaster.application.common.uow import UoW
 from swapmaster.application.create_order import AddOrder
 from swapmaster.application.create_pair import AddPair
+from swapmaster.application.create_requisite import AddRequisite
 from swapmaster.application.finish_order import FinishOrder
 from swapmaster.core.services.commission import CommissionService
 from swapmaster.core.services.method import MethodService
 from swapmaster.core.services.order import OrderService
 from swapmaster.core.services.pair import PairService
+from swapmaster.core.services.requisite import RequisiteService
 from swapmaster.presentation.api.config.models.auth import AuthConfig
 from swapmaster.presentation.api.config.models.main import APIConfig
 from swapmaster.presentation.api.depends.auth import AuthProvider
@@ -38,7 +41,7 @@ from swapmaster.presentation.api.depends.providers import (
     new_method_gateway,
     new_commission_gateway,
     new_course_obtainer_gateway,
-    new_user_gateway
+    new_user_gateway, new_requisite_gateway
 )
 
 logger = logging.getLogger(__name__)
@@ -61,6 +64,7 @@ def setup_dependencies(
     commission_service = CommissionService()
     order_service = OrderService()
     pair_service = PairService()
+    requisite_service = RequisiteService()
 
     app.dependency_overrides.update(
         {
@@ -71,6 +75,8 @@ def setup_dependencies(
             OrderWriter: new_order_gateway,
             OrderReader: new_order_gateway,
             OrderUpdater: new_order_gateway,
+            RequisiteWriter: new_requisite_gateway,
+            RequisiteReader: new_requisite_gateway,
             CurrencyGateway: new_currency_gateway,
             CurrencyListReader: new_currency_gateway,
             PairReader: new_pair_gateway,
@@ -83,6 +89,7 @@ def setup_dependencies(
             MethodService: lambda: method_service,
             CommissionService: lambda: commission_service,
             OrderService: lambda: order_service,
+            RequisiteService: lambda: requisite_service,
             UoW: new_uow,
         }
     )
@@ -94,5 +101,6 @@ def setup_dependencies(
     set_depends_as_defaults(AddPair)
     set_depends_as_defaults(AuthProvider)
     set_depends_as_defaults(FinishOrder)
+    set_depends_as_defaults(AddRequisite)
 
     logger.info("dependencies set up!")

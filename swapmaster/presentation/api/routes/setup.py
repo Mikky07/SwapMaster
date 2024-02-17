@@ -10,6 +10,7 @@ from .order import setup_order
 from .calculate import setup_calculator
 from .pair import setup_pair
 from .auth import setup_auth
+from .requisite import setup_requisite
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,8 @@ def setup_routers(app: FastAPI):
         setup_order(),
         setup_calculator(),
         setup_pair(),
-        setup_auth()
+        setup_auth(),
+        setup_requisite()
     )
 
     for router in routers:

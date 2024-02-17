@@ -31,6 +31,7 @@ class AddRequisite(Interactor[NewRequisiteDTO, Requisite]):
             pair_id=data.pair_id,
             regular_expression=data.regular_expression
         )
+        # check if requisite is available
         saved_requisite = await self.requisite_gateway.add_requisite(requisite=new_requisite)
         await self.uow.commit()
         return saved_requisite

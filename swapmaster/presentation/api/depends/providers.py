@@ -12,6 +12,7 @@ from swapmaster.adapters.db.gateways.currency import CurrencyGateway
 from swapmaster.adapters.db.gateways.method import MethodGateway
 from swapmaster.adapters.db.gateways.order import OrderGateway
 from swapmaster.adapters.db.gateways.pair import PairGateway
+from swapmaster.adapters.db.gateways.requisite import RequisiteGateway
 from swapmaster.presentation.api.depends.stub import Stub
 
 
@@ -38,6 +39,12 @@ async def new_commission_gateway(
     async_session=Depends(Stub(AsyncSession))
 ) -> AsyncGenerator[CommissionGateway]:
     yield CommissionGateway(async_session)
+
+
+async def new_requisite_gateway(
+        async_session: AsyncSession = Depends(Stub(AsyncSession))
+) -> AsyncGenerator[RequisiteGateway]:
+    yield RequisiteGateway(async_session)
 
 
 async def new_order_gateway(

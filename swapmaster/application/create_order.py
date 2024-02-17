@@ -27,6 +27,7 @@ class AddOrder(Interactor[NewOrderDTO, Order]):
         self.order_service = order_service
 
     async def __call__(self, data: NewOrderDTO) -> Order:
+        # have to add fetching requisites
         new_order: Order = self.order_service.create_service(
             pair_id=data.pair_id,
             user_id=data.user_id,

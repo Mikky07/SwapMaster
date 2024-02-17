@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import TypeAlias, Optional
 
-from swapmaster.core.models import PairId
+from swapmaster.core.models.pair import PairId
 
 RequisiteId: TypeAlias = int
 

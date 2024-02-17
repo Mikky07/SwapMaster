@@ -1,6 +1,7 @@
 from typing import Generic, TypeVar, Sequence
 
 from sqlalchemy import select, insert, update
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.roles import ExpressionElementRole
 
@@ -28,8 +29,10 @@ class BaseDBGateway(Generic[Model]):
             self,
             filters: Sequence[ExpressionElementRole] | None = None
     ) -> Model:
-        result = await self.__read_model_with_filters(filters=filters)
-        return result.first()
+        model_read = await self.__read_model_with_filters(filters=filters)
+        if not (result := model_read.first()):
+            raise NoResultFound
+        return result
 
     async def __read_model_with_filters(
             self,

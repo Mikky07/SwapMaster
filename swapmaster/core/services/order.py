@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from swapmaster.core.constants import OrderStatusEnum
-from swapmaster.core.models import Order, PairId, UserId
+from swapmaster.core.models import Order, PairId, UserId, Requisite
 
 
 class OrderService:
@@ -10,7 +10,8 @@ class OrderService:
         pair_id: PairId,
         user_id: UserId,
         to_receive: float,
-        to_send: float
+        to_send: float,
+        requisites: list[Requisite] | None = None
     ) -> Order:
         return Order(
             order_id=None,
@@ -20,5 +21,6 @@ class OrderService:
             to_send=to_send,
             date_start=datetime.now(),
             date_finish=None,
-            status=OrderStatusEnum.PROCESSING
+            status=OrderStatusEnum.PROCESSING,
+            requisites=requisites
         )
