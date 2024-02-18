@@ -13,6 +13,10 @@ class RequisiteReader(Protocol):
     async def is_requisite_available(self, requisite_id: RequisiteId) -> bool:
         raise NotImplementedError
 
+    @abstractmethod
+    async def get_requisites_of_pair(self, pair_id: PairId) -> list[Requisite]:
+        raise NotImplementedError
+
 
 class RequisiteUpdater(Protocol):
     ...

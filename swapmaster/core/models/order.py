@@ -21,4 +21,8 @@ class Order:
     date_start: Optional[datetime]
     date_finish: Optional[datetime]
     status: OrderStatusEnum
-    requisites: Optional[list[Requisite]]
+
+
+@dataclass
+class OrderWithRequisites(Order):
+    requisites: list[Optional[Requisite]]

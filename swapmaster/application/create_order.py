@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from swapmaster.application.common.protocols import RequisiteReader
 from swapmaster.core.models import Order, PairId, UserId
 from swapmaster.core.services.order import OrderService
 from .common.protocols.order_gateway import OrderWriter
@@ -20,14 +21,15 @@ class AddOrder(Interactor[NewOrderDTO, Order]):
         self,
         uow: UoW,
         order_gateway: OrderWriter,
-        order_service: OrderService
+        order_service: OrderService,
+        requisites_gateway: RequisiteReader,
     ):
         self.order_gateway = order_gateway
         self.uow = uow
         self.order_service = order_service
+        self.requisites_gateway = requisites_gateway
 
     async def __call__(self, data: NewOrderDTO) -> Order:
-        # have to add fetching requisites
         new_order: Order = self.order_service.create_service(
             pair_id=data.pair_id,
             user_id=data.user_id,

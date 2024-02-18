@@ -1,8 +1,6 @@
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from swapmaster.core.models import RequisiteId, Requisite, PairId
-from swapmaster.core.utils.exceptions import SMError
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.application.common.protocols.requisite_gateway import (
@@ -26,8 +24,9 @@ class RequisiteGateway(
         return requisite.to_dto()
 
     async def is_requisite_available(self, requisite_id: RequisiteId) -> bool:
-        requisite = await self.get_requisite(requisite_id)
-        return requisite is not None
+        filters = [models.Requisite.id == requisite_id]
+        is_requisite_available = await self.is_model_exists(filters)
+        return is_requisite_available
 
     async def add_requisite(self, requisite: Requisite) -> Requisite:
         saved_requisite = await self.create_model(

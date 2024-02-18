@@ -4,6 +4,7 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import BaseDBGateway
+from swapmaster.core.utils.exceptions import SMError
 from swapmaster.application.common.protocols.order_gateway import OrderWriter, OrderReader, OrderUpdater
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId
@@ -15,10 +16,14 @@ class OrderGateway(BaseDBGateway[models.Order], OrderWriter, OrderReader, OrderU
         super().__init__(models.Order, session)
 
     async def finish_order(self, order_id: OrderId, date_finish: datetime) -> Order:
+        filters = [models.Order.id == order_id, models.Order.status == OrderStatusEnum.PROCESSING]
+        is_order_exists = await self.is_model_exists(filters)
+        if not is_order_exists:
+            raise SMError("Order does not exists or already finished")
         finished_order = await self.update_model(
             status=OrderStatusEnum.FINISHED,
             date_finish=date_finish,
-            filters=[models.Order.id == order_id]
+            filters=filters
         )
         return finished_order.to_dto()
 

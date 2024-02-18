@@ -2,6 +2,7 @@ from typing import Generic, TypeVar, Sequence
 
 from sqlalchemy import select, insert, update
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.roles import ExpressionElementRole
 
@@ -15,6 +16,14 @@ class BaseDBGateway(Generic[Model]):
     def __init__(self, model: type[Model], session: AsyncSession):
         self.model = model
         self.session = session
+
+    async def is_model_exists(
+            self,
+            filters: Sequence[ExpressionElementRole] | None = None
+    ) -> bool:
+        stmt = select(func.count(self.model.id)).filter(*filters)
+        model = await self.session.scalars(stmt)
+        return model.one() > 0
 
     async def get_model_list(
             self,
