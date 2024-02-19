@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-from swapmaster.core.models import RequisiteId, Requisite, PairId
+from swapmaster.core.models import RequisiteId, Requisite, OrderId
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.application.common.protocols.requisite_gateway import (
@@ -36,6 +37,11 @@ class RequisiteGateway(
         )
         return saved_requisite.to_dto()
 
-    async def get_requisites_of_pair(self, pair_id: PairId) -> list[Requisite]:
-        requisites = await self.get_model_list([models.Requisite.pair_id == pair_id])
-        return [requisite.to_dto() for requisite in requisites]
+    async def get_requisites_of_order(self, order_id: OrderId) -> list[Requisite]:
+        stmt = (
+            select(models.Requisite)
+            .join(models.Order, models.Requisite.pair_id == models.Order.pair_id)
+            .where(models.Order.id == order_id)
+        )
+        requisites = await self.session.scalars(stmt)
+        return [requisite.to_dto() for requisite in requisites.all()]

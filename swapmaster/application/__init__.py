@@ -6,11 +6,13 @@ from .create_order import AddOrder, NewOrderDTO
 from .finish_order import FinishOrder
 from .create_reserve import AddReserve, NewReserveDTO
 from .create_commission import AddCommission, NewCommissionDTO
+from .get_full_order import GetFullOrder
 
 
 __all__ = [
     "CalculateSendTotal",
     "FinishOrder",
+    "GetFullOrder",
     "AddRequisite", "NewRequisiteDTO",
     "AddMethod", "NewMethodDTO",
     "AddPair", "NewPairDTO",

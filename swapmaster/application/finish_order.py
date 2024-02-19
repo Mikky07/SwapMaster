@@ -2,8 +2,7 @@ from datetime import datetime
 
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.protocols.order_gateway import (
-    OrderUpdater,
-    OrderReader
+    OrderUpdater
 )
 from swapmaster.application.common.uow import UoW
 from swapmaster.core.models import OrderId, Order

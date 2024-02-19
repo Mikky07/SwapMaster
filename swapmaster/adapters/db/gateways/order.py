@@ -15,6 +15,14 @@ class OrderGateway(BaseDBGateway[models.Order], OrderWriter, OrderReader, OrderU
     def __init__(self, session: AsyncSession):
         super().__init__(models.Order, session)
 
+    async def get_order(self, order_id: OrderId) -> Order:
+        filters = [models.Order.id == order_id]
+        is_order_available = await self.is_model_exists(filters=filters)
+        if not is_order_available:
+            raise SMError("Order does not exists")
+        order = await self.read_model(filters=filters)
+        return order.to_dto()
+
     async def finish_order(self, order_id: OrderId, date_finish: datetime) -> Order:
         filters = [models.Order.id == order_id, models.Order.status == OrderStatusEnum.PROCESSING]
         is_order_exists = await self.is_model_exists(filters)

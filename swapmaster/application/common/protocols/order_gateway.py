@@ -11,6 +11,10 @@ class OrderReader(Protocol):
     async def get_orders_list(self, status: OrderStatusEnum) -> list[Order]:
         raise NotImplementedError
 
+    @abstractmethod
+    async def get_order(self, order_id: OrderId) -> Order:
+        raise NotImplementedError
+
 
 class OrderUpdater(Protocol):
     @abstractmethod

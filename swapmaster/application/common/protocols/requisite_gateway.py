@@ -1,7 +1,7 @@
 from typing import Protocol
 from abc import abstractmethod
 
-from swapmaster.core.models import Requisite, RequisiteId, PairId
+from swapmaster.core.models import Requisite, RequisiteId, OrderId
 
 
 class RequisiteReader(Protocol):
@@ -14,7 +14,7 @@ class RequisiteReader(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_requisites_of_pair(self, pair_id: PairId) -> list[Requisite]:
+    async def get_requisites_of_order(self, order_id: OrderId) -> list[Requisite]:
         raise NotImplementedError
 
 

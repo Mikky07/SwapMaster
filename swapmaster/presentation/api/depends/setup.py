@@ -78,5 +78,6 @@ def setup_dependencies(
     set_depends_as_defaults(AuthProvider)
     set_depends_as_defaults(FinishOrder)
     set_depends_as_defaults(AddRequisite)
+    set_depends_as_defaults(GetFullOrder)
 
     logger.info("dependencies set up!")
