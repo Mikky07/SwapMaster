@@ -5,14 +5,12 @@ from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.protocols.reserve_gateway import ReserveWriter
 from swapmaster.application.common.uow import UoW
 from swapmaster.core.constants import ReserveUpdateMethodEnum
-from swapmaster.core.models import MethodId
 from swapmaster.core.models.reserve import Reserve
 from swapmaster.core.services.reserve import ReserveService
 
 
 @dataclass
 class NewReserveDTO:
-    method_id: MethodId
     size: Optional[float]
     update_method: ReserveUpdateMethodEnum
 
@@ -30,7 +28,6 @@ class AddReserve(Interactor):
 
     async def __call__(self, data: NewReserveDTO) -> Reserve:
         new_reserve = self.reserve_service.create_reserve(
-            method_id=data.method_id,
             initial_size=data.size,
             update_method=data.update_method
         )

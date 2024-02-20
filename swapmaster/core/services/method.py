@@ -9,7 +9,7 @@ class MethodService:
         currency_id: CurrencyId
     ) -> Method:
         return Method(
-            method_id=None,
+            id=None,
             name=name,
             currency_id=currency_id,
             reserve=None

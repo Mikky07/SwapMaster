@@ -6,4 +6,4 @@ class CommissionService:
             self,
             value: float
     ) -> Commission:
-        return Commission(commission_id=None, value=value)
+        return Commission(id=None, value=value)

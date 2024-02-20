@@ -10,6 +10,6 @@ OrderRequisiteId: TypeAlias = int
 @dataclass
 class OrderRequisite:
     id: Optional[OrderRequisiteId]
-    order_id: OrderId
-    requisite_id: RequisiteId
+    order_id: 'OrderId'
+    requisite_id: 'RequisiteId'
     data: str

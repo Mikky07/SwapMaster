@@ -55,7 +55,7 @@ async def finish_order(
 
 def setup_order() -> APIRouter:
     order_router = APIRouter(prefix="/orders")
-    order_router.add_api_route(path="", endpoint=add_order, methods=["POST"])
+    order_router.add_api_route("", endpoint=add_order, methods=["POST"])
     order_router.add_api_route("", endpoint=get_all_orders, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=get_full_order_information, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=finish_order, methods=["PATCH"])

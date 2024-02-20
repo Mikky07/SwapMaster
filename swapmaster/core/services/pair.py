@@ -9,7 +9,7 @@ class PairService:
         commission: CommissionId
     ) -> Pair:
         return Pair(
-            pair_id=None,
+            id=None,
             method_from=method_from,
             method_to=method_to,
             commission=commission

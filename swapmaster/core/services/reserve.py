@@ -9,14 +9,12 @@ from swapmaster.core.constants import ReserveUpdateMethodEnum
 class ReserveService:
     def create_reserve(
             self,
-            method_id: MethodId,
             initial_size: float,
             update_method: ReserveUpdateMethodEnum,
             wallet: Optional[WalletId] = None
     ) -> Reserve:
         return Reserve(
-            reserve_id=None,
-            method_id=method_id,
+            id=None,
             size=initial_size,
             update_method=update_method,
             wallet_id=wallet

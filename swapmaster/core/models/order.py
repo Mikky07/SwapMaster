@@ -3,7 +3,6 @@ from typing import Optional, TypeAlias
 from datetime import datetime
 
 from swapmaster.core.constants import OrderStatusEnum
-from .requisite import Requisite
 from .user import UserId
 from .pair import PairId
 
@@ -23,6 +22,4 @@ class Order:
     status: OrderStatusEnum
 
 
-@dataclass
-class OrderWithRequisites(Order):
-    requisites: list[Optional[Requisite]]
+
