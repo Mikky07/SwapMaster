@@ -1,14 +1,15 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.exc import NoResultFound
 
 from swapmaster.adapters.db.gateways.base import BaseDBGateway
 from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
-from swapmaster.core.models import Pair, PairId
+from swapmaster.core.models import Pair, PairId, MethodId
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
+from swapmaster.core.utils.exceptions import SMError
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +19,19 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Pair, session)
 
-    async def get_pair(self, pair_id: PairId) -> Pair:
-        pair = await self.read_model(filters=[models.Pair.id == pair_id])
+    async def get_pair(self, method_from_id: MethodId, method_to_id: MethodId) -> Pair:
+        filters = [
+            and_(
+                 models.Pair.method_to_id == method_to_id,
+                 models.Pair.method_from_id == method_from_id
+            )
+        ]
+        is_pair_available = await self.is_model_exists(filters=filters)
+        if not is_pair_available:
+            raise SMError("That pair does not exists")
+        pair = await self.read_model(
+            filters=filters
+        )
         return pair.to_dto()
 
     async def get_pair_currencies(self, pair_id: PairId) -> PairCurrencies:
@@ -38,9 +50,9 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         if not currency_to and currency_from:
             raise NoResultFound
         return PairCurrencies(
+            id=pair_id,
             currency_from=currency_from.to_dto(),
             currency_to=currency_to.to_dto(),
-            pair_id=pair_id
         )
 
     async def add_pair(self, pair: Pair) -> Pair:

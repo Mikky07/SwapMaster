@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from starlette import status
 
 from swapmaster.application.common.protocols.pair_gateway import PairReader
 from swapmaster.application.create_pair import AddPair, NewPairDTO
-from swapmaster.core.models import Pair, PairId
+from swapmaster.core.models import Pair, MethodId
+from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.api.depends.stub import Stub
 
 
@@ -16,10 +18,20 @@ async def add_pair(
 
 
 async def get_pair(
-        pair_id: PairId,
+        method_from_id: MethodId,
+        method_to_id: MethodId,
         pair_gateway: PairReader = Depends(Stub(PairReader))
 ) -> Pair:
-    pair = await pair_gateway.get_pair(pair_id=pair_id)
+    try:
+        pair = await pair_gateway.get_pair(
+            method_from_id=method_from_id,
+            method_to_id=method_to_id
+        )
+    except SMError as e:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail=str(e)
+        )
     return pair
 
 

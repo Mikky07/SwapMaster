@@ -10,7 +10,7 @@ from swapmaster.core.models import (
 
 
 @dataclass
-class OrderRequisiteDTO:
+class NewOrderRequisiteDTO:
     requisite_id: RequisiteId
     data: str
 
@@ -23,5 +23,5 @@ class OrderRequisiteReader(Protocol):
 
 class OrderRequisiteWriter(Protocol):
     @abstractmethod
-    async def add_order_requisite(self, order_requisite: OrderRequisiteDTO, order_id: OrderId) -> None:
+    async def add_order_requisite(self, order_requisite: NewOrderRequisiteDTO, order_id: OrderId) -> None:
         raise NotImplementedError

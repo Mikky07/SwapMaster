@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from swapmaster.application.common.protocols import (
     RequisiteReader,
     OrderRequisiteWriter,
-    OrderRequisiteDTO
+    NewOrderRequisiteDTO
 )
 from swapmaster.core.models import Order, PairId, UserId
 from swapmaster.core.services.order import OrderService
@@ -19,7 +19,7 @@ class NewOrderDTO:
     user_id: UserId
     to_receive: float
     to_send: float
-    requisites: list[OrderRequisiteDTO]
+    requisites: list[NewOrderRequisiteDTO]
 
 
 class AddOrder(Interactor[NewOrderDTO, Order]):
