@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Sequence
+from typing import TypeVar, Sequence
 
 from sqlalchemy import select, insert, update
 from sqlalchemy.exc import NoResultFound
@@ -12,7 +12,7 @@ from swapmaster.core.utils.exceptions import SMError
 Model = TypeVar("Model", bound=Base)
 
 
-class BaseDBGateway(Generic[Model]):
+class BaseDBGateway[Model, ModelDTO]:
     def __init__(self, model: type[Model], session: AsyncSession):
         self.model = model
         self.session = session

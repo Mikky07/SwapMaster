@@ -8,6 +8,6 @@ UserId: TypeAlias = int
 
 @dataclass
 class User:
-    user_id: Optional[UserId]
+    id: Optional[UserId]
     username: str
     hashed_password: str

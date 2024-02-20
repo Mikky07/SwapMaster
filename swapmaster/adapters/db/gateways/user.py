@@ -6,7 +6,7 @@ from swapmaster.core.models.user import User, UserId
 from swapmaster.application.common.protocols.user_gateway import UserReader, UserSaver
 
 
-class UserGateway(BaseDBGateway[models.User], UserReader, UserSaver):
+class UserGateway(BaseDBGateway, UserReader, UserSaver):
     def __init__(self, session: AsyncSession):
         super().__init__(models.User, session)
 

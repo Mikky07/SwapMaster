@@ -43,7 +43,7 @@ class Order(Base):
 
     def to_dto(self) -> dto.Order:
         return dto.Order(
-            order_id=self.id,
+            id=self.id,
             pair_id=self.pair_id,
             user_id=self.user_id,
             to_receive=self.to_receive,

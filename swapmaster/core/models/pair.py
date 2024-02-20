@@ -10,7 +10,7 @@ PairId: TypeAlias = int
 
 @dataclass
 class Pair:
-    pair_id: Optional[PairId]
+    id: Optional[PairId]
     method_from: MethodId
     method_to: MethodId
     commission: CommissionId
@@ -18,6 +18,6 @@ class Pair:
 
 @dataclass
 class PairCurrencies:
-    pair_id: PairId
+    id: PairId
     currency_from: Currency
     currency_to: Currency

@@ -28,7 +28,7 @@ class Requisite(Base):
 
     def to_dto(self) -> dto.Requisite:
         return dto.Requisite(
-            requisite_id=self.id,
+            id=self.id,
             name=self.name,
             regular_expression=self.regular_expression,
             pair_id=self.pair_id

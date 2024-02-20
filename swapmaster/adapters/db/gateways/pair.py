@@ -13,7 +13,7 @@ from swapmaster.core.models.pair import PairCurrencies
 logger = logging.getLogger(__name__)
 
 
-class PairGateway(BaseDBGateway[models.Pair], PairReader, PairWriter):
+class PairGateway(BaseDBGateway, PairReader, PairWriter):
 
     def __init__(self, session: AsyncSession):
         super().__init__(models.Pair, session)

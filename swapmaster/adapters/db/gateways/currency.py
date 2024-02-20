@@ -11,7 +11,7 @@ from swapmaster.application.common.protocols.currency_gateway import CurrencyLis
 logger = logging.getLogger(__name__)
 
 
-class CurrencyGateway(BaseDBGateway[models.Currency], CurrencyListReader):
+class CurrencyGateway(BaseDBGateway, CurrencyListReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Currency, session)
 

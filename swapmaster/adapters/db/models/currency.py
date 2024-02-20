@@ -21,6 +21,6 @@ class Currency(Base):
 
     def to_dto(self) -> dto.Currency:
         return dto.Currency(
-            currency_id=self.id,
+            id=self.id,
             name=self.name
         )

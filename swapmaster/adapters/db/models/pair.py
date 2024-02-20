@@ -39,7 +39,7 @@ class Pair(Base):
 
     def to_dto(self) -> dto.Pair:
         return dto.Pair(
-            pair_id=self.id,
+            id=self.id,
             method_from=self.method_from_id,
             method_to=self.method_to_id,
             commission=self.commission_id

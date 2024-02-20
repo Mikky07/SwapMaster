@@ -16,6 +16,6 @@ class Commission(Base):
 
     def to_dto(self) -> dto.Commission:
         return dto.Commission(
-            commission_id=self.id,
+            id=self.id,
             value=self.value
         )

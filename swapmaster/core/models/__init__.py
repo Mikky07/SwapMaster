@@ -7,3 +7,4 @@ from .order import Order, OrderId, OrderWithRequisites
 from .wallet import Wallet, WalletId
 from .reserve import Reserve, ReserveId
 from .requisite import Requisite, RequisiteId
+from .order_requisite import OrderRequisite, OrderRequisiteId

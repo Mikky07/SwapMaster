@@ -18,7 +18,7 @@ from swapmaster.core.models.wallet import WalletId
 logger = logging.getLogger(__name__)
 
 
-class ReserveGateway(BaseDBGateway[models.Reserve], ReserveWriter, ReserveUpdater, ReserveReader):
+class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Reserve, session)
 

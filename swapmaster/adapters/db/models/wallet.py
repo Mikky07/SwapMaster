@@ -26,7 +26,7 @@ class Wallet(Base):
 
     def to_dto(self) -> dto.Wallet:
         return dto.Wallet(
-            wallet_id=self.id,
+            id=self.id,
             name=self.name,
             blockchain=self.blockchain,
             address=self.address,

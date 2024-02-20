@@ -22,7 +22,7 @@ class User(Base):
 
     def to_dto(self) -> dto.User:
         return dto.User(
-            user_id=self.id,
+            id=self.id,
             username=self.username,
             hashed_password=self.hashed_password
         )

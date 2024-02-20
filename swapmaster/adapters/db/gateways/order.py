@@ -11,7 +11,7 @@ from swapmaster.core.models import Order, OrderId
 from swapmaster.adapters.db import models
 
 
-class OrderGateway(BaseDBGateway[models.Order], OrderWriter, OrderReader, OrderUpdater):
+class OrderGateway(BaseDBGateway, OrderWriter, OrderReader, OrderUpdater):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Order, session)
 

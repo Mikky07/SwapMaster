@@ -9,3 +9,4 @@ from .course import Course
 from .reserve import Reserve
 from .wallet import Wallet
 from .requisite import Requisite
+from .order_requisite import OrderRequisite

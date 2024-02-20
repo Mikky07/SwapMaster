@@ -13,7 +13,7 @@ OrderId: TypeAlias = int
 
 @dataclass
 class Order:
-    order_id: Optional[OrderId]
+    id: Optional[OrderId]
     pair_id: PairId
     user_id: UserId
     to_receive: float

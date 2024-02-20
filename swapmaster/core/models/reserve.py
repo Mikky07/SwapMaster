@@ -10,7 +10,7 @@ ReserveId: TypeAlias = int
 
 @dataclass
 class Reserve:
-    reserve_id: Optional[ReserveId]
+    id: Optional[ReserveId]
     size: float
     update_method: ReserveUpdateMethodEnum
     wallet_id: Optional[WalletId]

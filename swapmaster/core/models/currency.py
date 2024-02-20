@@ -6,5 +6,5 @@ CurrencyId: TypeAlias = int
 
 @dataclass(frozen=True)
 class Currency:
-    currency_id: Optional[CurrencyId]
+    id: Optional[CurrencyId]
     name: str

@@ -6,5 +6,5 @@ CommissionId: TypeAlias = int
 
 @dataclass
 class Commission:
-    commission_id: Optional[CommissionId]
+    id: Optional[CommissionId]
     value: float

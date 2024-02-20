@@ -13,7 +13,7 @@ from swapmaster.adapters.db import models
 logger = logging.getLogger(__name__)
 
 
-class CommissionGateway(BaseDBGateway[models.Commission], CommissionWriter, CommissionReader):
+class CommissionGateway(BaseDBGateway, CommissionWriter, CommissionReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Commission, session)
 

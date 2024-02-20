@@ -8,6 +8,7 @@ from .requisite_gateway import RequisiteWriter, RequisiteReader, RequisiteUpdate
 from .reserve_gateway import ReserveReader, ReserveUpdater, ReserveWriter
 from .reserve_size_obtainer import ReserveSizeObtainer, RemoteReserve, ReserveSize
 from .user_gateway import UserReader, UserSaver
+from .order_requisite_gateway import OrderRequisiteReader, OrderRequisiteWriter
 
 __all__ = [
     "CommissionWriter", "CommissionReader",
@@ -18,5 +19,6 @@ __all__ = [
     "RequisiteWriter", "RequisiteReader", "RequisiteUpdater",
     "ReserveReader", "ReserveUpdater", "ReserveWriter",
     "ReserveSizeObtainer", "RemoteReserve", "ReserveSize",
-    "UserReader", "UserSaver"
+    "UserReader", "UserSaver",
+    "OrderRequisiteReader", "OrderRequisiteWriter"
 ]

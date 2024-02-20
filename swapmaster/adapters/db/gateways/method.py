@@ -11,7 +11,7 @@ from swapmaster.core.models.method import Method
 logger = logging.getLogger(__name__)
 
 
-class MethodGateway(BaseDBGateway[models.Method], MethodWriter, MethodListReader):
+class MethodGateway(BaseDBGateway, MethodWriter, MethodListReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Method, session)
 

@@ -7,7 +7,7 @@ WalletId: TypeAlias = int
 
 @dataclass
 class Wallet:
-    wallet_id: WalletId
+    id: WalletId
     name: str
     blockchain: str
     address: str
