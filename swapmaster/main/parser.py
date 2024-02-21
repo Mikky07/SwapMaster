@@ -44,6 +44,10 @@ async def refresh(pool: async_sessionmaker[AsyncSession]):
         await reserve_refresh()
 
 
+async def parse(pool: async_sessionmaker[AsyncSession]):
+    ...
+
+
 async def main():
     paths = get_paths_common()
     config_dct = read_config(paths)

@@ -62,3 +62,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
             commission_id=pair.commission
         )
         return saved_pair.to_dto()
+
+    async def get_pair_by_id(self, pair_id: PairId) -> Pair:
+        pair = await self.read_model([models.Pair.id == pair_id])
+        return pair.to_dto()

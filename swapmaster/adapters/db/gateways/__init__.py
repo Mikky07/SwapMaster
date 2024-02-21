@@ -6,6 +6,7 @@ from .pair import PairGateway
 from .requisite import RequisiteGateway
 from .reserve import ReserveGateway
 from .order_requisite import OrderRequisiteGateway
+from .course import CourseGateway
 
 __all__ = [
     "CommissionGateway",
@@ -15,5 +16,6 @@ __all__ = [
     "PairGateway",
     "RequisiteGateway",
     "ReserveGateway",
-    "OrderRequisiteGateway"
+    "OrderRequisiteGateway",
+    "CourseGateway"
 ]

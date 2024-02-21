@@ -40,12 +40,12 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
         self,
         data: CalculateTotalDTO
     ) -> CalculatedTotalDTO:
-        pair: Pair = await self.pair_gateway.get_pair(
+        pair: Pair = await self.pair_gateway.get_pair_by_id(
             pair_id=data.pair_id
         )
 
         if not pair:
-            raise SMError("pair did not get")
+            raise SMError("Some troubles with fetching pair by id")
 
         pair_currencies = await self.pair_gateway.get_pair_currencies(
             pair_id=data.pair_id
@@ -54,7 +54,8 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
             pair_currencies=pair_currencies
         )
         commission = await self.commission_gateway.get_commission(commission_id=pair.commission)
-        result_course = course + course * commission.value / 100
+        send_amount = course * data.to_receive_quantity
+        result_course = send_amount + send_amount * commission.value / 100
         result_course = round(result_course, 2)
 
         return CalculatedTotalDTO(

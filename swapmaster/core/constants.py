@@ -6,6 +6,11 @@ class OrderStatusEnum(Enum):
     FINISHED = "FINISHED"
 
 
+class CourseUpdateMethodEnum(Enum):
+    LOCAL = "LOCAL"
+    REMOTE = "REMOTE"
+
+
 class ReserveUpdateMethodEnum(Enum):
     LOCAL = "LOCAL"
     REMOTE = "REMOTE"

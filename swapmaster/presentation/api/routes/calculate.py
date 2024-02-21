@@ -27,7 +27,7 @@ async def calculate_send_total(
 
 
 def setup_calculator() -> APIRouter:
-    calculator_router = APIRouter(prefix="/calculator")
+    calculator_router = APIRouter(prefix="/calculate")
     calculator_router.add_api_route(path="", endpoint=calculate_send_total, methods=["GET"])
 
     return calculator_router
