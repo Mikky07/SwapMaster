@@ -3,6 +3,7 @@ import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
+from swapmaster.core.models import MethodId
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.application.common.protocols.reserve_gateway import (
@@ -59,3 +60,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
             filters=[models.Reserve.id == reserve_id]
         )
         return updated_reserve
+
+    async def get_reserve_of_method(self, method_id: MethodId) -> Reserve:
+        reserve = await self.read_model([models.Reserve.method_id == method_id])
+        return reserve.to_dto()

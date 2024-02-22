@@ -19,7 +19,8 @@ class Reserve(Base):
         ENUM(ReserveUpdateMethodEnum)
     )
 
-    method: Mapped['Method'] = relationship(back_populates="reserve")
+    method_id = mapped_column(ForeignKey("methods.id"))
+    method: Mapped['Method'] = relationship(back_populates="reserve", foreign_keys=method_id)
 
     wallet_id: Mapped[Optional[int]] = mapped_column(ForeignKey("wallets.id"))
     wallet: Mapped[Optional['Wallet']] = relationship(back_populates="reserve", foreign_keys=wallet_id)

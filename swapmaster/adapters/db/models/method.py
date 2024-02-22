@@ -27,7 +27,7 @@ class Method(Base):
     )
 
     reserve_id = mapped_column(ForeignKey("reserves.id"))
-    reserve: Mapped[Optional['Reserve']] = relationship(back_populates="method")
+    reserve: Mapped['Reserve'] = relationship(back_populates="method", foreign_keys=reserve_id)
 
     def __repr__(self):
         return (
