@@ -3,7 +3,7 @@ import logging
 import aiohttp
 
 from swapmaster.application.common.protocols.course_obtainer import CourseObtainer
-from swapmaster.core.models.pair import PairCurrencies
+from swapmaster.core.models import PairCurrencies
 
 logger = logging.getLogger(__name__)
 

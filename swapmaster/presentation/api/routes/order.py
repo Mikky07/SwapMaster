@@ -4,6 +4,8 @@ from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
 from starlette import status
 
+from swapmaster.application import CalculateSendTotal
+from swapmaster.application.calculate_send_total import CalculateTotalDTO
 from swapmaster.application.common.protocols.order_gateway import OrderReader
 from swapmaster.application.create_order import NewOrderDTO, AddOrder
 from swapmaster.application.finish_order import FinishOrder
@@ -12,16 +14,32 @@ from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId, OrderWithRequisites
 from swapmaster.core.utils import exceptions
 from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.api.models.order import NewOrderRequestDTO
 
 logger = logging.getLogger(__name__)
 
 
 async def add_order(
-    data: NewOrderDTO,
-    interactor: AddOrder = Depends(),
+    data: NewOrderRequestDTO,
+    order_creator: AddOrder = Depends(),
+    calculator: CalculateSendTotal = Depends()
 ) -> Order:
+    calculated_to_send = await calculator.calculate(
+        data=CalculateTotalDTO(
+            pair_id=data.pair_id,
+            to_receive_quantity=data.to_receive
+        )
+    )
     try:
-        new_order = await interactor(data=data)
+        new_order = await order_creator(
+            data=NewOrderDTO(
+                pair_id=data.pair_id,
+                to_receive=data.to_receive,
+                user_id=data.user_id,
+                requisites=data.requisites,
+                to_send=calculated_to_send.to_send_quantity
+            )
+        )
     except exceptions.AlreadyExists as e:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,

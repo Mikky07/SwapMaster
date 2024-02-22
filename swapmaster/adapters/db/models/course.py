@@ -1,6 +1,5 @@
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey
 
 from .base import Base
 from swapmaster.core.constants import CourseUpdateMethodEnum
@@ -16,13 +15,11 @@ class Course(Base):
         ENUM(CourseUpdateMethodEnum)
     )
 
-    pair_id: Mapped[int] = mapped_column(ForeignKey("pairs.id", ondelete="CASCADE"))
-    pair: Mapped["Pair"] = relationship(foreign_keys=pair_id)
+    pair: Mapped["Pair"] = relationship(back_populates="course")
 
     def __repr__(self):
         return (
             f"<Course id={self.id}"
             f" value={self.value}"
-            f" pair_id={self.pair_id}"
             f" update_method={self.update_method}>"
         )

@@ -2,7 +2,7 @@ from .currency import CurrencyId, Currency
 from .method import Method, MethodId
 from .user import User, UserId
 from .commission import CommissionId, Commission
-from .pair import Pair, PairId
+from .pair import Pair, PairId, PairCurrencies
 from .order import Order, OrderId
 from .order_with_requisites import OrderWithRequisites
 from .wallet import Wallet, WalletId

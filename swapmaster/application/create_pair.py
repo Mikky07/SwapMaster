@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from swapmaster.application.common.uow import UoW
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.protocols.pair_gateway import PairWriter
-from swapmaster.core.models import Pair, MethodId, CommissionId
+from swapmaster.core.models import Pair, MethodId, CommissionId, CourseId
 from swapmaster.core.services.pair import PairService
 
 
@@ -12,6 +12,7 @@ class NewPairDTO:
     method_from: MethodId
     method_to: MethodId
     commission: CommissionId
+    course_id: CourseId
 
 
 class AddPair(Interactor[NewPairDTO, Pair]):
@@ -24,7 +25,8 @@ class AddPair(Interactor[NewPairDTO, Pair]):
         new_pair = self.pair_service.create_pair(
             method_from=data.method_from,
             method_to=data.method_to,
-            commission=data.commission
+            commission=data.commission,
+            course_id=data.course_id
         )
         saved_pair = await self.pair_gateway.add_pair(pair=new_pair)
         await self.uow.commit()

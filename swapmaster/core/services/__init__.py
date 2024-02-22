@@ -4,6 +4,7 @@ from .order import OrderService
 from .pair import PairService
 from .reserve import ReserveService
 from .requisite import RequisiteService
+from .course import CourseService
 
 __all__ = [
     "CommissionService",
@@ -11,5 +12,6 @@ __all__ = [
     "OrderService",
     "PairService",
     "RequisiteService",
-    "ReserveService"
+    "ReserveService",
+    "CourseService"
 ]

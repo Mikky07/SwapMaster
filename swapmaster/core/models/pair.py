@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, TypeAlias
 
+from .course import CourseId
 from .method import MethodId
 from .currency import Currency
 from .commission import CommissionId
@@ -14,6 +15,7 @@ class Pair:
     method_from: MethodId
     method_to: MethodId
     commission: CommissionId
+    course_id: CourseId
 
 
 @dataclass

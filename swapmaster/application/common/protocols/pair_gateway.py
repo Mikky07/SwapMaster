@@ -1,8 +1,7 @@
 from typing import Protocol
 from abc import abstractmethod
 
-from swapmaster.core.models import PairId, Pair, MethodId
-from swapmaster.core.models.pair import PairCurrencies
+from swapmaster.core.models import PairId, Pair, MethodId, Course, CourseId
 
 
 class PairReader(Protocol):
@@ -11,11 +10,11 @@ class PairReader(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_pair_currencies(self, pair_id: PairId) -> PairCurrencies:
+    async def get_pair_by_id(self, pair_id: PairId) -> Pair:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_pair_by_id(self, pair_id: PairId) -> Pair:
+    async def obtain_course(self, course_id: CourseId) -> Course:
         raise NotImplementedError
 
 

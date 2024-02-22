@@ -6,7 +6,7 @@ from sqlalchemy.exc import NoResultFound
 
 from swapmaster.adapters.db.gateways.base import BaseDBGateway
 from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
-from swapmaster.core.models import Pair, PairId, MethodId
+from swapmaster.core.models import Pair, PairId, MethodId, CourseId, Course
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
 from swapmaster.core.utils.exceptions import SMError
@@ -66,3 +66,10 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
     async def get_pair_by_id(self, pair_id: PairId) -> Pair:
         pair = await self.read_model([models.Pair.id == pair_id])
         return pair.to_dto()
+
+    async def obtain_course(self, course_id: CourseId) -> Course:
+        stmt = select(models.Course).filter(models.Course.id == course_id)
+        result = await self.session.scalars(stmt)
+        if not (course := result.first()):
+            raise SMError("Course not found")
+        return course

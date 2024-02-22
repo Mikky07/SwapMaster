@@ -1,7 +1,6 @@
 import logging
 from dataclasses import dataclass
 
-from swapmaster.application.common.protocols.course_obtainer import CourseObtainer
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.protocols.commission_gateway import CommissionReader
 from swapmaster.core.models import PairId
@@ -29,11 +28,9 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
     def __init__(
         self,
         commission_gateway: CommissionReader,
-        pair_gateway: PairReader,
-        course_obtainer: CourseObtainer
+        pair_gateway: PairReader
     ):
         self.pair_gateway = pair_gateway
-        self.course_obtainer = course_obtainer
         self.commission_gateway = commission_gateway
 
     async def calculate(
@@ -47,14 +44,10 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
         if not pair:
             raise SMError("Some troubles with fetching pair by id")
 
-        pair_currencies = await self.pair_gateway.get_pair_currencies(
-            pair_id=data.pair_id
-        )
-        course = await self.course_obtainer.obtain(
-            pair_currencies=pair_currencies
-        )
+        course = await self.pair_gateway.obtain_course(course_id=pair.course_id)
+
         commission = await self.commission_gateway.get_commission(commission_id=pair.commission)
-        send_amount = course * data.to_receive_quantity
+        send_amount = course.value * data.to_receive_quantity
         result_course = send_amount + send_amount * commission.value / 100
         result_course = round(result_course, 2)
 

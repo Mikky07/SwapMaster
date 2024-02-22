@@ -16,8 +16,7 @@ from swapmaster.presentation.api.depends.auth import AuthProvider
 from swapmaster.presentation.api.depends.providers import (
     new_uow,
     new_db_session,
-    DBGatewayProvider,
-    new_course_obtainer_gateway
+    DBGatewayProvider
 )
 
 logger = logging.getLogger(__name__)
@@ -60,7 +59,6 @@ def setup_dependencies(
             PairReader: DBGatewayProvider(PairGateway),
             PairWriter: DBGatewayProvider(PairGateway),
             UserReader: DBGatewayProvider(UserGateway),
-            CourseObtainer: new_course_obtainer_gateway,
             AsyncSession: partial(new_db_session, pool),
             AuthConfig: lambda: config.auth,
             PairService: lambda: pair_service,
