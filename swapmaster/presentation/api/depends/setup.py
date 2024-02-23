@@ -52,6 +52,8 @@ def setup_dependencies(
             OrderUpdater: DBGatewayProvider(OrderGateway),
             RequisiteWriter: DBGatewayProvider(RequisiteGateway),
             RequisiteReader: DBGatewayProvider(RequisiteGateway),
+            ReserveUpdater: DBGatewayProvider(ReserveGateway),
+            ReserveReader: DBGatewayProvider(ReserveGateway),
             OrderRequisiteReader: DBGatewayProvider(OrderRequisiteGateway),
             OrderRequisiteWriter: DBGatewayProvider(OrderRequisiteGateway),
             CurrencyGateway: DBGatewayProvider(CurrencyGateway),

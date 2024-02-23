@@ -13,6 +13,7 @@ from swapmaster.application.get_full_order import GetFullOrder
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId, OrderWithRequisites
 from swapmaster.core.utils import exceptions
+from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.presentation.api.models.order import NewOrderRequestDTO
 
@@ -40,7 +41,7 @@ async def add_order(
                 to_send=calculated_to_send.to_send_quantity
             )
         )
-    except exceptions.AlreadyExists as e:
+    except SMError as e:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail=str(e)
