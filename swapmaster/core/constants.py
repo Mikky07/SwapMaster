@@ -3,7 +3,7 @@ from enum import Enum
 
 class OrderStatusEnum(Enum):
     PROCESSING = "PROCESSING"
-    UNFULFILLED = "UNFULFILLED"
+    CANCELED = "CANCELED"
     FINISHED = "FINISHED"
 
 

@@ -4,7 +4,7 @@ from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from swapmaster.application import CalculateSendTotal
+from swapmaster.application import CalculateSendTotal, CancelOrder
 from swapmaster.application.calculate_send_total import CalculateTotalDTO
 from swapmaster.application.common.protocols.order_gateway import OrderReader
 from swapmaster.application.create_order import NewOrderDTO, AddOrder
@@ -12,7 +12,6 @@ from swapmaster.application.finish_order import FinishOrder
 from swapmaster.application.get_full_order import GetFullOrder
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId, OrderWithRequisites
-from swapmaster.core.utils import exceptions
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.presentation.api.models.order import NewOrderRequestDTO
@@ -72,11 +71,20 @@ async def finish_order(
     return order_finished
 
 
+async def cancel_order(
+        order_id: OrderId,
+        interactor: CancelOrder = Depends()
+) -> Order:
+    canceled_order = await interactor(data=order_id)
+    return canceled_order
+
+
 def setup_order() -> APIRouter:
     order_router = APIRouter(prefix="/orders")
     order_router.add_api_route("", endpoint=add_order, methods=["POST"])
     order_router.add_api_route("", endpoint=get_all_orders, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=get_full_order_information, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=finish_order, methods=["PATCH"])
+    order_router.add_api_route("/{order_id}", endpoint=cancel_order, methods=["DELETE"])
 
     return order_router

@@ -53,3 +53,11 @@ class OrderGateway(BaseDBGateway, OrderWriter, OrderReader, OrderUpdater):
             date_start=order.date_start
         )
         return result.to_dto()
+
+    async def cancel_order(self, order_id: OrderId, date_cancel: datetime) -> Order:
+        canceled_order = await self.update_model(
+            [models.Order.id == order_id],
+            date_finish=date_cancel,
+            status=OrderStatusEnum.CANCELED
+        )
+        return canceled_order.to_dto()

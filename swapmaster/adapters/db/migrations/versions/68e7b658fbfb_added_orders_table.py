@@ -30,7 +30,7 @@ def upgrade() -> None:
     sa.Column('date_finish', sa.DateTime(), nullable=True),
     sa.Column(
         'status',
-        postgresql.ENUM('PROCESSING', 'FINISHED', name='orderstatusenum'),
+        postgresql.ENUM('PROCESSING', 'FINISHED', 'CANCELED', name='orderstatusenum'),
         nullable=False,
         server_default='PROCESSING'
     ),

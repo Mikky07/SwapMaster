@@ -21,6 +21,10 @@ class OrderUpdater(Protocol):
     async def finish_order(self, order_id: OrderId, date_finish: datetime) -> Order:
         raise NotImplementedError
 
+    @abstractmethod
+    async def cancel_order(self, order_id: OrderId, date_cancel: datetime) -> Order:
+        raise NotImplementedError
+
 
 class OrderWriter(Protocol):
     @abstractmethod
