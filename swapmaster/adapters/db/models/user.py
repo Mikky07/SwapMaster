@@ -10,12 +10,14 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
 
     def __repr__(self):
         return (
             f"<User"
             f" id={self.id}"
+            f" email={self.email}"
             f" username={self.username}"
             f" hashed_password={self.hashed_password}>"
         )
@@ -24,5 +26,6 @@ class User(Base):
         return dto.User(
             id=self.id,
             username=self.username,
-            hashed_password=self.hashed_password
+            hashed_password=self.hashed_password,
+            email=self.email
         )

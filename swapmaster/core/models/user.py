@@ -10,4 +10,5 @@ UserId: TypeAlias = int
 class User:
     id: Optional[UserId]
     username: str
+    email: str
     hashed_password: str

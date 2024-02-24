@@ -5,6 +5,7 @@ from .pair import PairService
 from .reserve import ReserveService
 from .requisite import RequisiteService
 from .course import CourseService
+from .user import UserService
 
 __all__ = [
     "CommissionService",
@@ -13,5 +14,6 @@ __all__ = [
     "PairService",
     "RequisiteService",
     "ReserveService",
-    "CourseService"
+    "CourseService",
+    "UserService"
 ]

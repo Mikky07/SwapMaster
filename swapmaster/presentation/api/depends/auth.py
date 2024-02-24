@@ -44,7 +44,7 @@ class AuthProvider:
         token_payload = {
             "sub": "auth",
             "exp": expires_datetime,
-            "user_id": user.user_id,
+            "user_id": user.id,
             "user_password_hash": user.hashed_password
         }
         access_token = jwt.encode(

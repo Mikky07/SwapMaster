@@ -8,6 +8,7 @@ from .create_reserve import AddReserve, NewReserveDTO
 from .create_commission import AddCommission, NewCommissionDTO
 from .get_full_order import GetFullOrder
 from .cancel_order import CancelOrder
+from .authenticate import Authenticate
 
 
 __all__ = [
@@ -21,4 +22,5 @@ __all__ = [
     "AddOrder", "NewOrderDTO",
     "AddReserve", "NewReserveDTO",
     "AddCommission", "NewCommissionDTO",
+    "Authenticate"
 ]
