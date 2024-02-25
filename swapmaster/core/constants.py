@@ -15,3 +15,8 @@ class CourseUpdateMethodEnum(Enum):
 class ReserveUpdateMethodEnum(Enum):
     LOCAL = "LOCAL"
     REMOTE = "REMOTE"
+
+
+class VerificationStatusEnum(Enum):
+    UNVERIFIED = "UNVERIFIED"
+    VERIFIED = "VERIFIED"

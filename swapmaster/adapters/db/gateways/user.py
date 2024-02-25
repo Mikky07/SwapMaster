@@ -13,7 +13,7 @@ class UserGateway(BaseDBGateway, UserReader, UserSaver):
         super().__init__(models.User, session)
 
     async def create_user(self, user: User) -> User:
-        is_user_exists = self.is_model_exists([
+        is_user_exists = await self.is_model_exists([
             or_(
                 models.User.username == user.username,
                 models.User.email == user.email
@@ -22,12 +22,11 @@ class UserGateway(BaseDBGateway, UserReader, UserSaver):
         if is_user_exists:
             raise AlreadyExists("An email or username is not unique for this user!")
         user_saved = await self.create_model(
-            id=user.id,
             hashed_password=user.hashed_password,
             email=user.email,
             username=user.username
         )
-        return user_saved
+        return user_saved.to_dto()
 
     async def get_user(self, user_id: UserId) -> User:
         user = await self.read_model([models.User.id == user_id])

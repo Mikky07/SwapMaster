@@ -1,10 +1,23 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
+from starlette import status
+
+from swapmaster.application import Authenticate
+from swapmaster.application.authenticate import NewUserDTO
+from swapmaster.core.utils.exceptions import SMError
 
 
 async def register(
-    interactor
+    data: NewUserDTO,
+    authenticator: Authenticate = Depends()
 ):
-    ...
+    try:
+        registered_user = await authenticator(data=data)
+    except SMError as e:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail=str(e)
+        )
+    return registered_user
 
 
 def setup_user() -> APIRouter:

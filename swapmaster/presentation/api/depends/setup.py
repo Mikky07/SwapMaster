@@ -40,6 +40,7 @@ def setup_dependencies(
     order_service = OrderService()
     pair_service = PairService()
     requisite_service = RequisiteService()
+    user_service = UserService()
 
     app.dependency_overrides.update(
         {
@@ -47,6 +48,7 @@ def setup_dependencies(
             MethodListReader: DBGatewayProvider(MethodGateway),
             CommissionWriter: DBGatewayProvider(CommissionGateway),
             CommissionReader: DBGatewayProvider(CommissionGateway),
+            UserSaver: DBGatewayProvider(UserGateway),
             OrderWriter: DBGatewayProvider(OrderGateway),
             OrderReader: DBGatewayProvider(OrderGateway),
             OrderUpdater: DBGatewayProvider(OrderGateway),
@@ -68,6 +70,7 @@ def setup_dependencies(
             CommissionService: lambda: commission_service,
             OrderService: lambda: order_service,
             RequisiteService: lambda: requisite_service,
+            UserService: lambda: user_service,
             UoW: new_uow,
         }
     )
@@ -82,5 +85,6 @@ def setup_dependencies(
     set_depends_as_defaults(AddRequisite)
     set_depends_as_defaults(GetFullOrder)
     set_depends_as_defaults(CancelOrder)
+    set_depends_as_defaults(Authenticate)
 
     logger.info("dependencies set up!")

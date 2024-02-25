@@ -1,3 +1,4 @@
+from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.models import User
 
 
@@ -12,5 +13,6 @@ class UserService:
             id=None,
             email=email,
             hashed_password=hashed_password,
-            username=username
+            username=username,
+            verification_status=VerificationStatusEnum.UNVERIFIED
         )

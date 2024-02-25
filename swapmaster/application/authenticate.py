@@ -26,6 +26,7 @@ class Authenticate(Interactor[NewUserDTO, User]):
         self.user_gateway = user_saver
 
     async def __call__(self, data: NewUserDTO) -> User:
+        # some logic to start user verification
         new_user = self.user_service.create_user(
             email=data.email,
             hashed_password=data.hashed_password,
