@@ -5,7 +5,7 @@ from swapmaster.core.utils.exceptions import AlreadyExists
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.core.models.user import User, UserId
-from swapmaster.application.common.protocols.user_gateway import UserReader, UserSaver
+from swapmaster.application.common.db.user_gateway import UserReader, UserSaver
 
 
 class UserGateway(BaseDBGateway, UserReader, UserSaver):

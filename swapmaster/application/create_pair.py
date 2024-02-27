@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from swapmaster.application.common.uow import UoW
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols.pair_gateway import PairWriter
+from swapmaster.application.common.db.pair_gateway import PairWriter
 from swapmaster.core.models import Pair, MethodId, CommissionId, CourseId
 from swapmaster.core.services.pair import PairService
 

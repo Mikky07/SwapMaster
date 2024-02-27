@@ -4,7 +4,7 @@ from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from swapmaster.application.common.protocols.method_gateway import MethodListReader
+from swapmaster.application.common.db.method_gateway import MethodListReader
 from swapmaster.application.create_method import NewMethodDTO, AddMethod
 from swapmaster.core.models import Method
 from swapmaster.core.utils import exceptions

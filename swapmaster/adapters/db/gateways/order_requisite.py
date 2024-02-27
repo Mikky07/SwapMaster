@@ -1,9 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from swapmaster.adapters.db import models
-from swapmaster.application.create_order import NewOrderRequisiteDTO
+from swapmaster.application.order.create import NewOrderRequisiteDTO
 from swapmaster.core.models import OrderId, OrderRequisite
-from swapmaster.application.common.protocols import OrderRequisiteReader, OrderRequisiteWriter
+from swapmaster.application.common.db import (
+    OrderRequisiteReader,
+    OrderRequisiteWriter
+)
 from .base import BaseDBGateway
 
 

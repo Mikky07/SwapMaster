@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols import (
+from swapmaster.application.common.db import (
     OrderUpdater,
     OrderReader,
     ReserveUpdater,

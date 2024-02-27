@@ -1,7 +1,9 @@
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols import OrderRequisiteReader
-from swapmaster.application.common.protocols.order_gateway import OrderReader
-from swapmaster.application.common.protocols.requisite_gateway import RequisiteReader
+from swapmaster.application.common.db import (
+    OrderReader,
+    RequisiteReader,
+    OrderRequisiteReader
+)
 from swapmaster.core.models.order import OrderId
 from swapmaster.core.models.order_with_requisites import OrderWithRequisites
 from swapmaster.core.services.order import OrderService

@@ -4,7 +4,7 @@ from sqlalchemy import select
 from swapmaster.core.models import RequisiteId, Requisite, OrderId, PairId
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
-from swapmaster.application.common.protocols.requisite_gateway import (
+from swapmaster.application.common.db.requisite_gateway import (
     RequisiteReader,
     RequisiteUpdater,
     RequisiteWriter

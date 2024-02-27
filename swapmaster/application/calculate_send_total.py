@@ -2,9 +2,9 @@ import logging
 from dataclasses import dataclass
 
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols.commission_gateway import CommissionReader
+from swapmaster.application.common.db.commission_gateway import CommissionReader
 from swapmaster.core.models import PairId
-from swapmaster.application.common.protocols.pair_gateway import PairReader
+from swapmaster.application.common.db.pair_gateway import PairReader
 from swapmaster.core.models.pair import Pair
 from swapmaster.core.utils.exceptions import SMError
 

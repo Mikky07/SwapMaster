@@ -5,7 +5,7 @@ from sqlalchemy import select, and_
 from sqlalchemy.exc import NoResultFound
 
 from swapmaster.adapters.db.gateways.base import BaseDBGateway
-from swapmaster.application.common.protocols.pair_gateway import PairReader, PairWriter
+from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import Pair, PairId, MethodId, CourseId, Course
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies

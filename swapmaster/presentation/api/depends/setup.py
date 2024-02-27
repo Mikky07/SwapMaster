@@ -5,9 +5,11 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.order import OrderGateway
-from swapmaster.application.common.protocols import *
+from swapmaster.adapters.verification import EmailNotifier
+from swapmaster.application.common.db import *
 from swapmaster.application import *
 from swapmaster.application.common import *
+from swapmaster.application.verifier import Verifier
 from swapmaster.core.services import *
 from swapmaster.adapters.db.gateways import *
 from swapmaster.presentation.api.config.models.auth import AuthConfig
@@ -41,6 +43,7 @@ def setup_dependencies(
     pair_service = PairService()
     requisite_service = RequisiteService()
     user_service = UserService()
+    email_notifier = EmailNotifier()
 
     app.dependency_overrides.update(
         {
@@ -71,6 +74,7 @@ def setup_dependencies(
             OrderService: lambda: order_service,
             RequisiteService: lambda: requisite_service,
             UserService: lambda: user_service,
+            Notifier: lambda: email_notifier,
             UoW: new_uow,
         }
     )
@@ -86,5 +90,6 @@ def setup_dependencies(
     set_depends_as_defaults(GetFullOrder)
     set_depends_as_defaults(CancelOrder)
     set_depends_as_defaults(Authenticate)
+    set_depends_as_defaults(Verifier)
 
     logger.info("dependencies set up!")

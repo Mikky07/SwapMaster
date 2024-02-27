@@ -3,7 +3,7 @@ import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import BaseDBGateway
-from swapmaster.application.common.protocols.commission_gateway import (
+from swapmaster.application.common.db import (
     CommissionWriter,
     CommissionReader
 )

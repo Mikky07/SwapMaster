@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-from swapmaster.application.common.protocols.pair_gateway import PairReader
+from swapmaster.application.common.db.pair_gateway import PairReader
 from swapmaster.application.create_pair import AddPair, NewPairDTO
 from swapmaster.core.models import Pair, MethodId
 from swapmaster.core.utils.exceptions import SMError

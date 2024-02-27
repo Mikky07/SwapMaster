@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from swapmaster.application.common.protocols.method_gateway import MethodWriter
+from swapmaster.application.common.db.method_gateway import MethodWriter
 from swapmaster.core.services.method import MethodService
 from swapmaster.core.models import Method, CurrencyId
 from swapmaster.core.utils.exceptions import AlreadyExists
-from .common.interactor import Interactor
-from .common.uow import UoW
+from swapmaster.application.common.interactor import Interactor
+from swapmaster.application.common.uow import UoW
 
 
 @dataclass

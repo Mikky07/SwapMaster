@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols.requisite_gateway import RequisiteWriter
+from swapmaster.application.common.db.requisite_gateway import RequisiteWriter
 from swapmaster.application.common.uow import UoW
 from swapmaster.core.models import Requisite, PairId
 from swapmaster.core.services.requisite import RequisiteService

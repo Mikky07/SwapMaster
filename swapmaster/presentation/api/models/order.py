@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from swapmaster.core.models import PairId, UserId
-from swapmaster.application.common.protocols import NewOrderRequisiteDTO
+from swapmaster.application.common.db import NewOrderRequisiteDTO
 
 
 @dataclass

@@ -4,7 +4,7 @@ from typing import Protocol
 from swapmaster.core.models import MethodId
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
-from swapmaster.application.common.protocols.reserve_size_obtainer import RemoteReserve
+from swapmaster.application.common.reserve_obtainer.reserve_size_obtainer import RemoteReserve
 
 
 class ReserveWriter(Protocol):

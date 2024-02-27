@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
-from swapmaster.application.common.protocols.method_gateway import MethodListReader, MethodWriter
+from swapmaster.application.common.db.method_gateway import MethodListReader, MethodWriter
 from swapmaster.core.models import CurrencyId
 from swapmaster.core.models.method import Method
 

@@ -5,7 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import BaseDBGateway
 from swapmaster.core.utils.exceptions import SMError
-from swapmaster.application.common.protocols.order_gateway import OrderWriter, OrderReader, OrderUpdater
+from swapmaster.application.common.db.order_gateway import (
+    OrderWriter,
+    OrderReader,
+    OrderUpdater
+)
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId
 from swapmaster.adapters.db import models

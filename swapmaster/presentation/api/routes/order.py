@@ -6,10 +6,10 @@ from starlette import status
 
 from swapmaster.application import CalculateSendTotal, CancelOrder
 from swapmaster.application.calculate_send_total import CalculateTotalDTO
-from swapmaster.application.common.protocols.order_gateway import OrderReader
-from swapmaster.application.create_order import NewOrderDTO, AddOrder
-from swapmaster.application.finish_order import FinishOrder
-from swapmaster.application.get_full_order import GetFullOrder
+from swapmaster.application.common.db.order_gateway import OrderReader
+from swapmaster.application.order.create import NewOrderDTO, AddOrder
+from swapmaster.application.order.finish import FinishOrder
+from swapmaster.application.order.get_full_order import GetFullOrder
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId, OrderWithRequisites
 from swapmaster.core.utils.exceptions import SMError

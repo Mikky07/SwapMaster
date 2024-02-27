@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.core.models import Currency
-from swapmaster.application.common.protocols.currency_gateway import CurrencyListReader
+from swapmaster.application.common.db.currency_gateway import CurrencyListReader
 
 
 logger = logging.getLogger(__name__)

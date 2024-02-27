@@ -1,8 +1,6 @@
 import logging
 
-import aiohttp
-
-from swapmaster.application.common.protocols.reserve_size_obtainer import (
+from swapmaster.application.common.reserve_obtainer.reserve_size_obtainer import (
     ReserveSizeObtainer,
     ReserveSize,
     RemoteReserve

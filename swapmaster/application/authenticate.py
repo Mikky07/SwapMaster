@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 from swapmaster.application.common import UoW
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols import UserSaver
+from swapmaster.application.common.db.user_gateway import UserSaver
+from swapmaster.application.verifier import Verifier
 from swapmaster.core.models import User
 from swapmaster.core.services import UserService
 
@@ -19,14 +20,15 @@ class Authenticate(Interactor[NewUserDTO, User]):
             self,
             uow: UoW,
             user_saver: UserSaver,
-            user_service: UserService
+            user_service: UserService,
+            verifier: Verifier
     ):
         self.user_service = user_service
         self.uow = uow
         self.user_gateway = user_saver
+        self.verifier = verifier
 
     async def __call__(self, data: NewUserDTO) -> User:
-        # some logic to start user verification
         new_user = self.user_service.create_user(
             email=data.email,
             hashed_password=data.hashed_password,
@@ -34,4 +36,5 @@ class Authenticate(Interactor[NewUserDTO, User]):
         )
         user = await self.user_gateway.create_user(user=new_user)
         await self.uow.commit()
+        await self.verifier.notify_user(user=user)
         return user

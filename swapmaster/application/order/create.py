@@ -1,17 +1,19 @@
 import asyncio
 from dataclasses import dataclass
 
-from swapmaster.application.common.protocols import (
+from swapmaster.application.common.db import (
     RequisiteReader,
     OrderRequisiteWriter,
-    NewOrderRequisiteDTO, PairReader
+    NewOrderRequisiteDTO,
+    PairReader,
+    OrderWriter,
+    ReserveReader
 )
 from swapmaster.core.models import Order, PairId, UserId
 from swapmaster.core.services.order import OrderService
-from .common.protocols import OrderWriter, ReserveReader
-from .common.uow import UoW
-from .common.interactor import Interactor
-from ..core.utils.exceptions import SMError
+from swapmaster.application.common.uow import UoW
+from swapmaster.application.common.interactor import Interactor
+from swapmaster.core.utils.exceptions import SMError
 
 
 @dataclass

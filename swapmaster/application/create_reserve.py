@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.protocols.reserve_gateway import ReserveWriter
+from swapmaster.application.common.db.reserve_gateway import ReserveWriter
 from swapmaster.application.common.uow import UoW
 from swapmaster.core.constants import ReserveUpdateMethodEnum
 from swapmaster.core.models.reserve import Reserve

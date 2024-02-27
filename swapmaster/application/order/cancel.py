@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from .common import UoW
-from .common.interactor import Interactor
-from swapmaster.application.common.protocols import OrderUpdater
+from swapmaster.application.common import UoW
+from swapmaster.application.common.interactor import Interactor
+from swapmaster.application.common.db import OrderUpdater
 from swapmaster.core.models import OrderId, Order
 
 

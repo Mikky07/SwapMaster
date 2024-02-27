@@ -6,7 +6,7 @@ import jwt
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import NoResultFound
 
-from swapmaster.application.common.protocols.user_gateway import UserReader
+from swapmaster.application.common.db.user_gateway import UserReader
 from swapmaster.core.models import User
 from swapmaster.core.models.token import Token
 from swapmaster.core.utils.exceptions import SMError
