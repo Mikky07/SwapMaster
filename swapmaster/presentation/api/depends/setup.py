@@ -1,14 +1,19 @@
 import logging
 from functools import partial
 
+from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.order import OrderGateway
-from swapmaster.adapters.verification import EmailNotifier
+from swapmaster.adapters.mq.scheduler import TaskSolverImp
+from swapmaster.adapters.mq.verification import EmailNotifier
+
+from swapmaster.adapters.mq.verification.config import EmailConfig
 from swapmaster.application.common.db import *
 from swapmaster.application import *
 from swapmaster.application.common import *
+from swapmaster.application.common.task_solver import TaskSolver
 from swapmaster.application.verifier import Verifier
 from swapmaster.core.services import *
 from swapmaster.adapters.db.gateways import *
@@ -35,7 +40,8 @@ def set_depends_as_defaults(cls: type) -> None:
 def setup_dependencies(
     app: FastAPI,
     pool: async_sessionmaker[AsyncSession],
-    config: APIConfig
+    config: APIConfig,
+    scheduler: BackgroundScheduler
 ):
     method_service = MethodService()
     commission_service = CommissionService()
@@ -43,7 +49,7 @@ def setup_dependencies(
     pair_service = PairService()
     requisite_service = RequisiteService()
     user_service = UserService()
-    email_notifier = EmailNotifier()
+    task_solver = TaskSolverImp(scheduler)
 
     app.dependency_overrides.update(
         {
@@ -74,11 +80,14 @@ def setup_dependencies(
             OrderService: lambda: order_service,
             RequisiteService: lambda: requisite_service,
             UserService: lambda: user_service,
-            Notifier: lambda: email_notifier,
-            UoW: new_uow,
+            TaskSolver: lambda: task_solver,
+            EmailConfig: lambda: config.email,
+            Notifier: EmailNotifier,
+            UoW: new_uow
         }
     )
 
+    set_depends_as_defaults(EmailNotifier)
     set_depends_as_defaults(AddMethod)
     set_depends_as_defaults(AddCommission)
     set_depends_as_defaults(AddOrder)

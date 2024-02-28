@@ -54,7 +54,6 @@ async def main():
     db_config = load_db_config(config_dct.get("db"))
     pool = create_pool(db_config)
     scheduler = AsyncIOScheduler()
-    await refresh(pool)
     scheduler.add_job(refresh, args=[pool], trigger="interval", seconds=10)
     scheduler.start()
 

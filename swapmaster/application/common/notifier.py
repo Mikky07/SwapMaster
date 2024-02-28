@@ -6,5 +6,5 @@ from swapmaster.core.models import User
 
 class Notifier(Protocol):
     @abstractmethod
-    async def notify(self, user: User, notification: str) -> None:
+    def notify(self, user: User, notification: str) -> None:
         raise NotImplementedError

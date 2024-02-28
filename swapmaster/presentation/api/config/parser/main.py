@@ -1,3 +1,4 @@
+from swapmaster.adapters.mq.verification.config import load_email_config
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import read_config
 from swapmaster.presentation.api.config.models.main import APIConfig
@@ -9,5 +10,6 @@ def load_api_config(paths: Paths) -> APIConfig:
     config_dct = read_config(paths)
     return APIConfig(
         auth=load_auth_config(config_dct.get("auth")),
-        db=load_db_config(config_dct.get("db"))
+        db=load_db_config(config_dct.get("db")),
+        email=load_email_config(dct=config_dct.get("email"))
     )

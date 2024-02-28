@@ -8,10 +8,10 @@ class Verifier:
     def __init__(self, notifier: Notifier):
         self.notifier = notifier
 
-    async def notify_user(self, user: User):
+    def notify_user(self, user: User):
         verification_link = self.__create_verification_link()
         verification_text = self.__create_notification(user=user, link=verification_link)
-        await self.notifier.notify(user=user, notification=verification_text)
+        self.notifier.notify(user=user, notification=verification_text)
 
     def __create_notification(self, user: User, link: str):
         verification_text = (
@@ -20,5 +20,6 @@ class Verifier:
         ).format(username=user.username) + link
         return verification_text
 
+    #stub
     def __create_verification_link(self) -> str:
         return "https://www.google.com/"

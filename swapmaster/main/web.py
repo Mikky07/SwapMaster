@@ -1,10 +1,22 @@
 import uvicorn
 from fastapi import FastAPI
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import get_paths
 from swapmaster.common.config.parser import logging_setup
 from swapmaster.presentation.api import *
+
+
+def singleton(class_):
+    instances = {}
+
+    def instance_of_class(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_()
+        return instances[class_]
+
+    return instance_of_class
 
 
 def setup() -> FastAPI:
@@ -13,7 +25,13 @@ def setup() -> FastAPI:
     api_config = load_api_config(paths=paths)
     logging_setup(paths=paths)
 
-    app = create_app(api_config)
+    scheduler = singleton(BackgroundScheduler)()
+    scheduler.start()
+
+    app = create_app(
+        api_config=api_config,
+        scheduler=scheduler
+    )
 
     return app
 
