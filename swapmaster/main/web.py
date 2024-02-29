@@ -13,7 +13,7 @@ def singleton(class_):
 
     def instance_of_class(*args, **kwargs):
         if class_ not in instances:
-            instances[class_] = class_()
+            instances[class_] = class_(*args, **kwargs)
         return instances[class_]
 
     return instance_of_class

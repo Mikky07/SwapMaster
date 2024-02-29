@@ -7,9 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.order import OrderGateway
 from swapmaster.adapters.mq.scheduler import TaskSolverImp
-from swapmaster.adapters.mq.verification import EmailNotifier
-
-from swapmaster.adapters.mq.verification.config import EmailConfig
+from swapmaster.adapters.mq.notification import EmailNotifier
+from swapmaster.adapters.mq.notification.config import EmailConfig
 from swapmaster.application.common.db import *
 from swapmaster.application import *
 from swapmaster.application.common import *

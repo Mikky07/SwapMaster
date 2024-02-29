@@ -1,4 +1,4 @@
-from swapmaster.adapters.mq.verification.config import load_email_config
+from swapmaster.adapters.mq.notification.config import load_email_config
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import read_config
 from swapmaster.presentation.api.config.models.main import APIConfig
