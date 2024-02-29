@@ -4,7 +4,7 @@ from typing import Optional, TypeAlias
 CommissionId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Commission:
     id: Optional[CommissionId]
     value: float

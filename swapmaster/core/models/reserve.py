@@ -8,7 +8,7 @@ from swapmaster.core.constants import ReserveUpdateMethodEnum
 ReserveId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Reserve:
     id: Optional[ReserveId]
     size: float

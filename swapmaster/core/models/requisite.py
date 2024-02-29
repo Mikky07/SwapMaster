@@ -6,7 +6,7 @@ from swapmaster.core.models.pair import PairId
 RequisiteId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Requisite:
     id: Optional[RequisiteId]
     pair_id: PairId

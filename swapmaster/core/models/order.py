@@ -10,7 +10,7 @@ from .pair import PairId
 OrderId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Order:
     id: Optional[OrderId]
     pair_id: PairId

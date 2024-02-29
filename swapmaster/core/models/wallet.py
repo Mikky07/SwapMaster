@@ -5,7 +5,7 @@ from typing import TypeAlias
 WalletId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Wallet:
     id: WalletId
     name: str

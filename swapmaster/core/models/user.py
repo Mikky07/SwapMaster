@@ -8,7 +8,7 @@ from swapmaster.core.constants import VerificationStatusEnum
 UserId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class User:
     id: Optional[UserId]
     username: str

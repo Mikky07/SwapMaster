@@ -7,7 +7,7 @@ from swapmaster.core.models.reserve import ReserveId
 MethodId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Method:
     id: Optional[MethodId]
     reserve: Optional[ReserveId]

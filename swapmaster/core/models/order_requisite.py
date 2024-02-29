@@ -7,7 +7,7 @@ from .requisite import RequisiteId
 OrderRequisiteId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class OrderRequisite:
     id: Optional[OrderRequisiteId]
     order_id: 'OrderId'

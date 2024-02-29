@@ -7,7 +7,7 @@ from swapmaster.core.constants import CourseUpdateMethodEnum
 CourseId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Course:
     id: Optional[CourseId]
     value: float

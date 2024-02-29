@@ -4,7 +4,7 @@ from dataclasses import dataclass
 CurrencyId: TypeAlias = int
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Currency:
     id: Optional[CurrencyId]
     name: str

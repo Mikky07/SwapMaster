@@ -9,7 +9,7 @@ from .commission import CommissionId
 PairId: TypeAlias = int
 
 
-@dataclass
+@dataclass(slots=True)
 class Pair:
     id: Optional[PairId]
     method_from: MethodId
