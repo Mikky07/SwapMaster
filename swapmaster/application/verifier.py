@@ -12,7 +12,7 @@ class Verifier:
         self.notifier.notify(
             user=user,
             notification=verification_text,
-            subject="Swapmaster account confirmation"
+            subject="Account confirmation"
         )
 
     def __create_notification(self, user: User, link: str):

@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from swapmaster.application.common import Notifier
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.db import (
     OrderUpdater,
     OrderReader,
     ReserveUpdater,
     ReserveReader,
-    PairReader
+    PairReader, UserReader
 )
 from swapmaster.application.common.uow import UoW
 from swapmaster.core.models import OrderId, Order
@@ -20,7 +21,9 @@ class FinishOrder(Interactor[OrderId, Order]):
             order_reader: OrderReader,
             reserve_updater: ReserveUpdater,
             reserve_reader: ReserveReader,
-            pair_reader: PairReader
+            pair_reader: PairReader,
+            user_reader: UserReader,
+            notifier: Notifier
     ):
         self.uow = uow
         self.order_updater = order_updater
@@ -28,6 +31,8 @@ class FinishOrder(Interactor[OrderId, Order]):
         self.reserve_reader = reserve_reader
         self.reserve_updater = reserve_updater
         self.pair_reader = pair_reader
+        self.user_reader = user_reader
+        self.notifier = notifier
 
     async def __call__(self, data: OrderId) -> Order:
         order = await self.order_reader.get_order(order_id=data)
@@ -46,6 +51,11 @@ class FinishOrder(Interactor[OrderId, Order]):
             order_id=data,
             date_finish=datetime.now()
         )
-        # some logic to notify user
         await self.uow.commit()
+        customer = await self.user_reader.get_user(user_id=order_finished.user_id)
+        self.notifier.notify(
+            user=customer,
+            notification="Order successfully finished.",
+            subject="Order finished"
+        )
         return order_finished

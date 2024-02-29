@@ -12,6 +12,6 @@ auth:
 email:
   mail_server: smtp.yandex.ru
   port: 465
-  login: test
-  password: yourpassword
+  login: login
+  password: password
   email: test@yandex.ru
