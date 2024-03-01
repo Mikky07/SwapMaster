@@ -14,12 +14,19 @@ class UserVerificationCashImp(UserVerificationCash):
         self.prefix = prefix
         self.redis = redis
 
+    def get_key(self, user_id: UserId):
+        return self.prefix + str(user_id)
+
     async def save_user_code(self, code: str, user_id: UserId):
-        key = self.prefix + str(user_id)
-        result = await self.redis.set(key, code)
-        logger.info(result)
+        await self.redis.set(self.get_key(user_id), code)
 
     async def get_user_code(self, user_id: UserId) -> str:
-        key = self.prefix + str(user_id)
-        code = await self.redis.get(key)
+        code = await self.redis.get(self.get_key(user_id))
         return code
+
+    async def is_user_code_exists(self, user_id: UserId) -> bool:
+        is_key_exists = await self.redis.exists(self.get_key(user_id))
+        return is_key_exists
+
+    async def delete_user_code(self, user_id: UserId):
+        await self.redis.delete(self.get_key(user_id))

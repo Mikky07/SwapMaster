@@ -1,11 +1,15 @@
 import re
 
+from passlib.context import CryptContext
+
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.models import User
 from swapmaster.core.utils.exceptions import SMError
 
 
 class UserService:
+    def __init__(self):
+        self.crypt_context = CryptContext(schemes=["bcrypt"])
 
     def is_email_correct(self, email_address: str):
         if not re.match(
@@ -14,17 +18,21 @@ class UserService:
         ):
             raise SMError("Email {email} is not correct!".format(email=email_address))
 
+    def get_password_hash(self, password: str) -> str:
+        return self.crypt_context.hash(password)
+
     def create_user(
             self,
-            email,
-            hashed_password,
-            username
+            email: str,
+            password: str,
+            username: str,
     ) -> User:
         self.is_email_correct(email_address=email)
+        password_hash = self.get_password_hash(password=password)
         return User(
             id=None,
             email=email,
-            hashed_password=hashed_password,
+            hashed_password=password_hash,
             username=username,
             verification_status=VerificationStatusEnum.UNVERIFIED
         )

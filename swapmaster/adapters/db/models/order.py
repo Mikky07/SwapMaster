@@ -15,8 +15,8 @@ class Order(Base):
     __mapper_args__ = {"eager_defaults": True}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    pair_id: Mapped[int] = mapped_column(ForeignKey("pairs.id"))
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    pair_id: Mapped[int] = mapped_column(ForeignKey("pairs.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     to_receive: Mapped[float]
     to_send: Mapped[float]
     date_start: Mapped[datetime]

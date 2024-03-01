@@ -26,3 +26,7 @@ class AlreadyExists(SMError):
 
 class UserNotFound(SMError):
     pass
+
+
+class VerificationFailed(SMError):
+    pass

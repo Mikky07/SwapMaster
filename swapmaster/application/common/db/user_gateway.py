@@ -14,6 +14,12 @@ class UserReader(Protocol):
         raise NotImplementedError
 
 
+class UserUpdater(Protocol):
+    @abstractmethod
+    async def update_verification_status(self, user_id: UserId) -> User:
+        raise NotImplementedError
+
+
 class UserSaver(Protocol):
     @abstractmethod
     async def create_user(self, user: User) -> User:

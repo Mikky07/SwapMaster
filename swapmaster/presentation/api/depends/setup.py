@@ -76,6 +76,7 @@ def setup_dependencies(
             PairReader: DBGatewayProvider(PairGateway),
             PairWriter: DBGatewayProvider(PairGateway),
             UserReader: DBGatewayProvider(UserGateway),
+            UserUpdater: DBGatewayProvider(UserGateway),
             AsyncSession: partial(new_db_session, pool),
             PairService: lambda: pair_service,
             MethodService: lambda: method_service,
