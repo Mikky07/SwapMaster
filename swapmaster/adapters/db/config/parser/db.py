@@ -1,4 +1,5 @@
 from swapmaster.adapters.db.config.models import DBConfig
+from swapmaster.adapters.db.config.models.db import RedisConfig
 
 
 def load_db_config(db_dict: dict):
@@ -10,4 +11,11 @@ def load_db_config(db_dict: dict):
         host=db_dict.get("host", "localhost"),
         port=db_dict.get("port", 5432),
         database=db_dict.get("database", "postgres")
+    )
+
+
+def load_redis_config(dct: dict):
+    return RedisConfig(
+        host=dct.get("host", "localhost"),
+        port=dct.get("port", 6379)
     )

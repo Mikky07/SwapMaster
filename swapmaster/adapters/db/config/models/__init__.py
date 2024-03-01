@@ -1,1 +1,1 @@
-from .db import DBConfig
+from .db import DBConfig, RedisConfig

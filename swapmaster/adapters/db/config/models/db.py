@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 
 @dataclass
+class RedisConfig:
+    host: str
+    port: int
+
+
+@dataclass
 class DBConfig:
     driver: str
     database: str

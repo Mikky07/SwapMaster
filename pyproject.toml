@@ -17,6 +17,7 @@ pyjwt = "^2.8.0"
 bcrypt = "4.0.1"
 apscheduler = "^3.10.4"
 adaptix = "3.0.0b2"
+redis = "^5.0.2"
 
 
 [build-system]

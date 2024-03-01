@@ -9,3 +9,12 @@ from swapmaster.presentation.api.config.models.auth import AuthConfig
 class APIConfig(Config):
     auth: AuthConfig
     email: EmailConfig
+
+    @classmethod
+    def from_base(cls, auth: AuthConfig, base: Config, email: EmailConfig):
+        return cls(
+            db=base.db,
+            redis=base.redis,
+            auth=auth,
+            email=email
+        )

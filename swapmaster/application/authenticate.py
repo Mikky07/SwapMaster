@@ -36,5 +36,5 @@ class Authenticate(Interactor[NewUserDTO, User]):
         )
         user = await self.user_gateway.create_user(user=new_user)
         await self.uow.commit()
-        self.verifier.notify_user(user=user)
+        await self.verifier.start_verification(user=user)
         return user

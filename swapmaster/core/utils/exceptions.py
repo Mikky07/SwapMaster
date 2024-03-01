@@ -22,3 +22,7 @@ class SMError(Exception):
 
 class AlreadyExists(SMError):
     pass
+
+
+class UserNotFound(SMError):
+    pass

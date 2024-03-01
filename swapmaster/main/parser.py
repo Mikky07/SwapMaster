@@ -5,7 +5,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from swapmaster.adapters.db.config import load_db_config
 from swapmaster.adapters.db.factory import create_pool
-from swapmaster.adapters.db.gateways.reserve import ReserveGateway
+from swapmaster.adapters.db.gateways.sqlalchemy import ReserveGateway
 from swapmaster.application.reserve_refresh import ReserveRefresh
 from swapmaster.adapters.remote_wallets.reserve_obtaining import ReserveObtainer
 from swapmaster.application.common.uow import UoW
