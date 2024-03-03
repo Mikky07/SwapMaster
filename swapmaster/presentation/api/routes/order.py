@@ -4,47 +4,46 @@ from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from swapmaster.application import CalculateSendTotal, CancelOrder
+from swapmaster.application import NewOrderDTO
 from swapmaster.application.calculate_send_total import CalculateTotalDTO
-from swapmaster.application.common.db.order_gateway import OrderReader
-from swapmaster.application.order.create import NewOrderDTO, AddOrder
-from swapmaster.application.order.finish import FinishOrder
-from swapmaster.application.order.get_full_order import GetFullOrder
+from swapmaster.application.common.db import OrderReader
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId, OrderWithRequisites
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.presentation.api.models.order import NewOrderRequestDTO
+from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)
 
 
 async def add_order(
     data: NewOrderRequestDTO,
-    order_creator: AddOrder = Depends(),
-    calculator: CalculateSendTotal = Depends()
+    ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
 ) -> Order:
-    calculated_to_send = await calculator.calculate(
-        data=CalculateTotalDTO(
-            pair_id=data.pair_id,
-            to_receive_quantity=data.to_receive
-        )
-    )
-    try:
-        new_order = await order_creator(
-            data=NewOrderDTO(
+    async with ioc.send_total_calculator() as calculate_send_total:
+        calculated_to_send = await calculate_send_total(
+            data=CalculateTotalDTO(
                 pair_id=data.pair_id,
-                to_receive=data.to_receive,
-                user_id=data.user_id,
-                requisites=data.requisites,
-                to_send=calculated_to_send.to_send_quantity
+                to_receive_quantity=data.to_receive
             )
         )
-    except SMError as e:
-        raise HTTPException(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail=str(e)
-        )
+    async with ioc.order_creator() as order_creator:
+        try:
+            new_order = await order_creator(
+                data=NewOrderDTO(
+                    pair_id=data.pair_id,
+                    to_receive=data.to_receive,
+                    user_id=data.user_id,
+                    requisites=data.requisites,
+                    to_send=calculated_to_send.to_send_quantity
+                )
+            )
+        except SMError as e:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail=str(e)
+            )
     return new_order
 
 
@@ -57,25 +56,28 @@ async def get_all_orders(
 
 async def get_full_order_information(
         order_id: OrderId,
-        interactor: GetFullOrder = Depends()
+        ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
 ) -> OrderWithRequisites:
-    order_with_requisites = await interactor(data=order_id)
+    async with ioc.full_order_fetcher() as get_full_order:
+        order_with_requisites = await get_full_order(data=order_id)
     return order_with_requisites
 
 
 async def finish_order(
         order_id: OrderId,
-        interactor: FinishOrder = Depends()
+        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
 ) -> Order:
-    order_finished = await interactor(data=order_id)
+    async with ioc.order_finisher() as finish_order_:
+        order_finished = await finish_order_(data=order_id)
     return order_finished
 
 
 async def cancel_order(
         order_id: OrderId,
-        interactor: CancelOrder = Depends()
+        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
 ) -> Order:
-    canceled_order = await interactor(data=order_id)
+    async with ioc.order_canceler() as cancel_order_:
+        canceled_order = await cancel_order_(data=order_id)
     return canceled_order
 
 

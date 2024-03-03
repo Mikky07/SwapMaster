@@ -6,17 +6,8 @@ from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import get_paths
 from swapmaster.common.config.parser import logging_setup
 from swapmaster.presentation.api import *
-
-
-def singleton(class_):
-    instances = {}
-
-    def instance_of_class(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-
-    return instance_of_class
+from swapmaster.presentation.api.routes import setup_routers
+from swapmaster.main.di import setup_dependencies
 
 
 def setup() -> FastAPI:
@@ -25,10 +16,16 @@ def setup() -> FastAPI:
     api_config = load_api_config(paths=paths)
     logging_setup(paths=paths)
 
-    scheduler = singleton(BackgroundScheduler)()
+    # this instance will be used by all app
+    scheduler = BackgroundScheduler()
     scheduler.start()
 
-    app = create_app(
+    app = FastAPI()
+
+    setup_routers(app)
+
+    setup_dependencies(
+        app=app,
         api_config=api_config,
         scheduler=scheduler
     )

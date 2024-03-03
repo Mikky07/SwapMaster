@@ -1,18 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-from swapmaster.application.common.db.pair_gateway import PairReader
-from swapmaster.application.create_pair import AddPair, NewPairDTO
+from swapmaster.application.common.db import PairReader
+from swapmaster.application.create_pair import NewPairDTO
 from swapmaster.core.models import Pair, MethodId
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.interactor_factory import InteractorFactory
 
 
 async def add_pair(
         data: NewPairDTO,
-        interactor: AddPair = Depends()
+        ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
 ) -> Pair:
-    new_pair = await interactor(data=data)
+    async with ioc.pair_creator() as create_pair:
+        new_pair = await create_pair(data=data)
 
     return new_pair
 

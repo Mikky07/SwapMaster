@@ -1,16 +1,18 @@
 from fastapi import APIRouter, Depends
 
-from swapmaster.application.common.db import OrderRequisiteReader, RequisiteReader
-from swapmaster.application.create_requisite import NewRequisiteDTO, AddRequisite
+from swapmaster.application.common.db import RequisiteReader, OrderRequisiteReader
+from swapmaster.application.create_requisite import NewRequisiteDTO
 from swapmaster.core.models import OrderId, OrderRequisite, PairId, Requisite
 from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.interactor_factory import InteractorFactory
 
 
 async def add_requisite(
         data: NewRequisiteDTO,
-        interactor: AddRequisite = Depends()
+        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
 ):
-    await interactor(data=data)
+    async with ioc.requisite_creator() as create_requisite:
+        await create_requisite(data)
 
 
 async def get_order_requisites(

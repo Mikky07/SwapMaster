@@ -4,26 +4,29 @@ from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from swapmaster.application.create_commission import NewCommissionDTO, AddCommission
+from swapmaster.application.create_commission import NewCommissionDTO
 from swapmaster.core.models import Commission
 from swapmaster.core.utils import exceptions
 from swapmaster.presentation.api import models
+from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)
 
 
 async def add_commission(
     commission: models.Commission,
-    interactor: AddCommission = Depends(),
+    ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
 ) -> Commission:
     commission_dto: NewCommissionDTO = commission.to_dto()
-    try:
-        new_commission = await interactor(data=commission_dto)
-    except exceptions.AlreadyExists as e:
-        raise HTTPException(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail=str(e)
-        )
+    async with ioc.commission_creator() as create_commission:
+        try:
+            new_commission = await create_commission(data=commission_dto)
+        except exceptions.AlreadyExists as e:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail=str(e)
+            )
     return new_commission
 
 

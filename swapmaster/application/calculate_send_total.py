@@ -33,7 +33,7 @@ class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculatedTotalDTO]):
         self.pair_gateway = pair_gateway
         self.commission_gateway = commission_gateway
 
-    async def calculate(
+    async def __call__(
         self,
         data: CalculateTotalDTO
     ) -> CalculatedTotalDTO:

@@ -8,7 +8,7 @@ from swapmaster.adapters.db.factory import create_pool
 from swapmaster.adapters.db.gateways.sqlalchemy import ReserveGateway
 from swapmaster.application.reserve_refresh import ReserveRefresh
 from swapmaster.adapters.remote_wallets.reserve_obtaining import ReserveObtainer
-from swapmaster.application.common.uow import UoW
+from swapmaster.main.db_uow import UowAsyncSession
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import read_config, get_paths
 
@@ -18,23 +18,11 @@ def get_paths_common() -> Paths:
 
 
 # stub
-class DBUoW(UoW):
-    def __init__(self, session: AsyncSession):
-        self.session = session
-
-    async def commit(self) -> None:
-        await self.session.commit()
-
-    async def rollback(self) -> None:
-        await self.session.rollback()
-
-
-# stub
 async def refresh(pool: async_sessionmaker[AsyncSession]):
     async with pool() as session:
         reserve_gateway = ReserveGateway(session=session)
         reserve_size_obtainer = ReserveObtainer()
-        uow = DBUoW(session=session)
+        uow = UowAsyncSession(session=session)
         reserve_refresh = ReserveRefresh(
             uow=uow,
             reserve_reader=reserve_gateway,
