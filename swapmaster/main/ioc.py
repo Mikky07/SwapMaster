@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import AsyncContextManager
 
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.sqlalchemy import (
@@ -28,6 +28,7 @@ from swapmaster.application import (
     AddCommission
 )
 from swapmaster.application.verifier import Verifier, UserVerificationCash
+from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.services import (
     UserService,
     RequisiteService,
@@ -44,13 +45,16 @@ from swapmaster.main.db_uow import UowAsyncSession
 class IoC(InteractorFactory):
     def __init__(
             self,
-            scheduler: BackgroundScheduler,
+            scheduler: AsyncIOScheduler,
             api_config: APIConfig,
             db_connection_pool: async_sessionmaker[AsyncSession],
-            user_verification_cash: UserVerificationCash
+            user_verification_cash: UserVerificationCash,
+            central_config: CentralConfig
     ):
         task_solver = TaskSolverImp(scheduler=scheduler)
 
+        self.task_solver = task_solver
+        self.central_config = central_config
         self.api_config = api_config
         self.db_connection_pool = db_connection_pool
         self.user_verification_cash = user_verification_cash
@@ -102,14 +106,16 @@ class IoC(InteractorFactory):
         async with self.db_connection_pool() as session:
             yield AddOrder(
                 uow=UowAsyncSession(session),
-                order_writer=OrderGateway(session),
+                order_gateway=OrderGateway(session),
                 user_reader=UserGateway(session),
                 order_service=self.order_service,
                 pair_gateway=PairGateway(session),
                 requisites_gateway=RequisiteGateway(session),
                 order_requisite_gateway=OrderRequisiteGateway(session),
                 reserve_gateway=ReserveGateway(session),
-                notifier=self.email_notifier
+                notifier=self.email_notifier,
+                task_solver=self.task_solver,
+                central_config=self.central_config
             )
 
     @asynccontextmanager

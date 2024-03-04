@@ -1,6 +1,6 @@
 import uvicorn
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
-from apscheduler.schedulers.background import BackgroundScheduler
 
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import get_paths
@@ -17,7 +17,7 @@ def setup() -> FastAPI:
     logging_setup(paths=paths)
 
     # this instance will be used by all app
-    scheduler = BackgroundScheduler()
+    scheduler = AsyncIOScheduler()
     scheduler.start()
 
     app = FastAPI()

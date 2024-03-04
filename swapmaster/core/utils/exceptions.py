@@ -30,3 +30,11 @@ class UserNotFound(SMError):
 
 class VerificationFailed(SMError):
     pass
+
+
+class NoReceptionWallet(SMError):
+    pass
+
+
+class PairNotUsable(SMError):
+    pass

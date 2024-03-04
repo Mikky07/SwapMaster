@@ -25,11 +25,15 @@ class Pair(Base):
     course_id = mapped_column(
         ForeignKey("courses.id")
     )
+    reception_wallet_id = mapped_column(
+        ForeignKey("wallets.id")
+    )
 
     method_from: Mapped["Method"] = relationship(foreign_keys=method_from_id)
     method_to: Mapped["Method"] = relationship(foreign_keys=method_to_id)
-    commission: Mapped["Commission"] = relationship()
+    commission: Mapped["Commission"] = relationship(foreign_keys=commission_id)
     course: Mapped["Course"] = relationship(foreign_keys=course_id)
+    reception_wallet: Mapped["Wallet"] = relationship(foreign_keys=reception_wallet_id)
 
     requisites: Mapped[Optional[list["Requisite"]]] = relationship(back_populates="pair")
 
@@ -38,7 +42,9 @@ class Pair(Base):
             f"<Pair id={self.id}"
             f" method_from_id={self.method_from_id}"
             f" method_to_id={self.method_to_id}"
-            f" commission_id={self.commission_id}>"
+            f" commission_id={self.commission_id}"
+            f" course_id={self.course_id}"
+            f" reception_wallet_id={self.reception_wallet_id}>"
         )
 
     def to_dto(self) -> dto.Pair:
@@ -47,5 +53,6 @@ class Pair(Base):
             method_from=self.method_from_id,
             method_to=self.method_to_id,
             commission=self.commission_id,
-            course_id=self.course_id
+            course_id=self.course_id,
+            reception_wallet=self.reception_wallet_id
         )

@@ -1,7 +1,7 @@
 import logging
 from typing import TypeVar
 
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,7 +32,7 @@ def singleton(value: T):
 def setup_dependencies(
         app: FastAPI,
         api_config: APIConfig,
-        scheduler: BackgroundScheduler
+        scheduler: AsyncIOScheduler
 ):
     pool = create_pool(api_config.db)
 

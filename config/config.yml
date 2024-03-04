@@ -18,3 +18,5 @@ email:
 redis:
   host: localhost
   port: 6379
+central:
+  expire-minutes: 1

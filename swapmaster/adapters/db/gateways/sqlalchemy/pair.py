@@ -6,10 +6,10 @@ from sqlalchemy.exc import NoResultFound
 
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
 from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
-from swapmaster.core.models import Pair, PairId, MethodId, CourseId, Course
+from swapmaster.core.models import Pair, PairId, MethodId, CourseId, Course, Wallet, WalletId
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
-from swapmaster.core.utils.exceptions import SMError
+from swapmaster.core.utils.exceptions import SMError, NoReceptionWallet
 
 logger = logging.getLogger(__name__)
 
@@ -73,3 +73,10 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         if not (course := result.first()):
             raise SMError("Course not found")
         return course
+
+    async def get_reception_wallet(self, reception_wallet_id: WalletId) -> Wallet:
+        stmt = select(models.Wallet).filter(models.Wallet.id == reception_wallet_id)
+        result = await self.session.scalars(stmt)
+        if not (reception_wallet := result.first()):
+            raise NoReceptionWallet("Reception wallet not found!")
+        return reception_wallet
