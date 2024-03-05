@@ -16,5 +16,6 @@ class APIConfig(Config):
             db=base.db,
             redis=base.redis,
             auth=auth,
-            email=email
+            email=email,
+            central=base.central
         )

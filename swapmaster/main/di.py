@@ -43,7 +43,8 @@ def setup_dependencies(
         scheduler=scheduler,
         api_config=api_config,
         db_connection_pool=pool,
-        user_verification_cash=user_verification_cash
+        user_verification_cash=user_verification_cash,
+        central_config=api_config.central
     )
 
     auth_provider = AuthProvider(config=api_config.auth)
@@ -57,7 +58,7 @@ def setup_dependencies(
             RequisiteReader: DBGatewayProvider(RequisiteGateway),
             OrderRequisiteGateway: DBGatewayProvider(OrderRequisiteGateway),
             MethodListReader: DBGatewayProvider(MethodGateway),
-            OrderReader: DBGatewayProvider(OrderGateway),
+            OrderReader | OrderUpdater: DBGatewayProvider(OrderGateway),
             PairReader: DBGatewayProvider(PairGateway),
             OrderRequisiteReader: DBGatewayProvider(OrderRequisiteGateway),
             UserReader: DBGatewayProvider(UserReader),

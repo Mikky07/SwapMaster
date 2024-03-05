@@ -19,4 +19,4 @@ redis:
   host: localhost
   port: 6379
 central:
-  expire-minutes: 1
+  order-payment-expire-minutes: 1

@@ -3,10 +3,11 @@ from abc import abstractmethod
 
 from swapmaster.application import Authenticate, AddRequisite, AddOrder, FinishOrder, CancelOrder, CalculateSendTotal, \
     AddPair, AddMethod, GetFullOrder, AddCommission
+from swapmaster.application.order.cancel import OrderCancelerFactory
 from swapmaster.application.verifier import Verifier
 
 
-class InteractorFactory:
+class InteractorFactory(OrderCancelerFactory):
     @abstractmethod
     async def get_verifier(self) -> AsyncContextManager[Verifier]:
         raise NotImplementedError

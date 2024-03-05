@@ -49,6 +49,7 @@ class EmailNotifier(Notifier):
     def notify(self, user: User, notification: str, subject: str) -> None:
         self.task_solver.solve_task(
             self.send_email,
+            id_=f"email_notification:{subject}:{user.id}",
             username=user.username,
             email_address=user.email,
             text=notification,

@@ -12,6 +12,10 @@ from swapmaster.application.common.db import (
     ReserveReader, UserReader, OrderUpdater
 )
 from swapmaster.application.common.task_solver import TaskSolver
+from swapmaster.application.order.cancel import (
+    CancelOrderDTO,
+    OrderCancelerFactory
+)
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.models import Order, PairId, UserId
 from swapmaster.core.services.order import OrderService
@@ -32,7 +36,7 @@ class NewOrderDTO:
 @dataclass
 class CreatedOrderDTO:
     order: Order
-    time_to_pay: int
+    payment_expires_at: datetime
 
 
 class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
@@ -48,7 +52,8 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         reserve_gateway: ReserveReader,
         notifier: Notifier,
         task_solver: TaskSolver,
-        central_config: CentralConfig
+        central_config: CentralConfig,
+        order_canceler: OrderCancelerFactory
     ):
         self.reserve_gateway = reserve_gateway
         self.pair_gateway = pair_gateway
@@ -61,8 +66,15 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         self.notifier = notifier
         self.task_solver = task_solver
         self.central_config = central_config
+        self.order_canceler = order_canceler
 
-    async def __call__(self, data: NewOrderDTO) -> Order:
+    @staticmethod
+    async def cancel_expired_order(data: CancelOrderDTO, factory: OrderCancelerFactory):
+        async with factory.order_canceler() as cancel_order:
+            await cancel_order(data)
+            await cancel_order.uow.commit()
+
+    async def __call__(self, data: NewOrderDTO) -> CreatedOrderDTO:
         pair = await self.pair_gateway.get_pair_by_id(pair_id=data.pair_id)
         reserve = await self.reserve_gateway.get_reserve_of_method(method_id=pair.method_to)
         if reserve.size < data.to_receive:
@@ -87,13 +99,8 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         await self.uow.commit()
 
         order_expiration_date = (
-                datetime.now() + timedelta(minutes=self.central_config.expire_minutes)
+                datetime.now() + timedelta(minutes=self.central_config.order_payment_expire_minutes)
         )
-        cancel_order_task = self.order_gateway.cancel_order(
-            order_id=order_saved.id,
-            date_cancel=order_expiration_date
-        )
-        await self.task_solver.solve_task(cancel_order_task, id_=order_saved.id, run_date=order_expiration_date)
 
         customer = await self.user_reader.get_user(user_id=order_saved.user_id)
         self.notifier.notify(
@@ -101,4 +108,18 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
             notification=f"Order {order_saved.id} successfully created.",
             subject="Order created"
         )
-        return order_saved
+
+        self.task_solver.solve_task(
+            self.cancel_expired_order,
+            data=CancelOrderDTO(
+                order_id=order_saved.id,
+                notification="test"
+            ),
+            factory=self.order_canceler,
+            id_=str(order_saved.id)
+        )
+
+        return CreatedOrderDTO(
+            order=order_saved,
+            payment_expires_at=order_expiration_date
+        )

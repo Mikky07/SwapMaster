@@ -7,6 +7,8 @@ from starlette import status
 from swapmaster.application import NewOrderDTO
 from swapmaster.application.calculate_send_total import CalculateTotalDTO
 from swapmaster.application.common.db import OrderReader
+from swapmaster.application.order.cancel import CancelOrderDTO
+from swapmaster.application.order.create import CreatedOrderDTO
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId, OrderWithRequisites
 from swapmaster.core.utils.exceptions import SMError
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 async def add_order(
     data: NewOrderRequestDTO,
     ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
-) -> Order:
+) -> CreatedOrderDTO:
     async with ioc.send_total_calculator() as calculate_send_total:
         calculated_to_send = await calculate_send_total(
             data=CalculateTotalDTO(
@@ -77,7 +79,12 @@ async def cancel_order(
         ioc: InteractorFactory = Depends(Stub(InteractorFactory))
 ) -> Order:
     async with ioc.order_canceler() as cancel_order_:
-        canceled_order = await cancel_order_(data=order_id)
+        canceled_order = await cancel_order_(
+            data=CancelOrderDTO(
+                order_id=order_id,
+                notification=f"Your order {order_id} was canceled."
+            )
+        )
     return canceled_order
 
 

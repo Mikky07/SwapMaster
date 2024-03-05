@@ -105,9 +105,6 @@ class IoC(InteractorFactory):
     async def order_creator(self) -> AddOrder:
         async with self.db_connection_pool() as session:
             yield AddOrder(
-                uow=UowAsyncSession(session),
-                order_gateway=OrderGateway(session),
-                user_reader=UserGateway(session),
                 order_service=self.order_service,
                 pair_gateway=PairGateway(session),
                 requisites_gateway=RequisiteGateway(session),
@@ -115,7 +112,11 @@ class IoC(InteractorFactory):
                 reserve_gateway=ReserveGateway(session),
                 notifier=self.email_notifier,
                 task_solver=self.task_solver,
-                central_config=self.central_config
+                central_config=self.central_config,
+                order_gateway=OrderGateway(session),
+                user_reader=UserGateway(session),
+                uow=UowAsyncSession(session),
+                order_canceler=self
             )
 
     @asynccontextmanager
