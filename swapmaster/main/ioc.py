@@ -1,7 +1,8 @@
+import asyncio
 from contextlib import asynccontextmanager
-from typing import AsyncContextManager
+from typing import AsyncContextManager, AsyncIterator, Coroutine, AsyncGenerator
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler import Scheduler, AsyncScheduler
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.sqlalchemy import (
@@ -25,7 +26,7 @@ from swapmaster.application import (
     CalculateSendTotal,
     AddPair,
     AddMethod,
-    AddCommission
+    AddCommission, GetFullOrder
 )
 from swapmaster.application.verifier import Verifier, UserVerificationCash
 from swapmaster.common.config.models.central import CentralConfig
@@ -40,20 +41,25 @@ from swapmaster.core.services import (
 from swapmaster.presentation.api.config.models.main import APIConfig
 from swapmaster.presentation.interactor_factory import InteractorFactory
 from swapmaster.main.db_uow import UowAsyncSession
+from swapmaster.main.providers import new_order_gateway
 
 
 class IoC(InteractorFactory):
     def __init__(
             self,
-            scheduler: AsyncIOScheduler,
+            scheduler_async: AsyncScheduler,
+            scheduler_sync: Scheduler,
             api_config: APIConfig,
             db_connection_pool: async_sessionmaker[AsyncSession],
             user_verification_cash: UserVerificationCash,
             central_config: CentralConfig
     ):
-        task_solver = TaskSolverImp(scheduler=scheduler)
-
-        self.task_solver = task_solver
+        asyncio.run(
+            anext(self._create_task_solver(
+                scheduler_async=scheduler_async,
+                scheduler_sync=scheduler_sync
+            ))
+        )
         self.central_config = central_config
         self.api_config = api_config
         self.db_connection_pool = db_connection_pool
@@ -64,7 +70,16 @@ class IoC(InteractorFactory):
         self.pair_service = PairService()
         self.method_service = MethodService()
         self.commission_service = CommissionService()
-        self.email_notifier = EmailNotifier(self.api_config.email, task_solver=task_solver)
+        self.email_notifier = EmailNotifier(self.api_config.email, self.task_solver)
+
+    async def _create_task_solver(
+            self,
+            scheduler_async: AsyncScheduler,
+            scheduler_sync: Scheduler
+    ) -> AsyncGenerator[None, None]:
+        async with scheduler_async as scheduler:
+            self.task_solver = TaskSolverImp(scheduler_async=scheduler, scheduler_sync=scheduler_sync)
+            yield
 
     @asynccontextmanager
     async def get_verifier(self) -> Verifier:
@@ -116,7 +131,7 @@ class IoC(InteractorFactory):
                 order_gateway=OrderGateway(session),
                 user_reader=UserGateway(session),
                 uow=UowAsyncSession(session),
-                order_canceler=self
+                order_gateway_factory=new_order_gateway(self.db_connection_pool)
             )
 
     @asynccontextmanager
@@ -128,7 +143,7 @@ class IoC(InteractorFactory):
                 pair_reader=PairGateway(session),
                 user_reader=UserGateway(session),
                 notifier=self.email_notifier,
-                order_gateway=OrderGateway(session)
+                order_gateway=OrderGateway(session),
             )
 
     @asynccontextmanager
@@ -175,3 +190,7 @@ class IoC(InteractorFactory):
                 commission_service=self.commission_service,
                 uow=UowAsyncSession(session)
             )
+
+    @asynccontextmanager
+    async def full_order_fetcher(self) -> GetFullOrder:
+        ...

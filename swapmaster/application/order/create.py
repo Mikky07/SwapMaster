@@ -12,10 +12,7 @@ from swapmaster.application.common.db import (
     ReserveReader, UserReader, OrderUpdater
 )
 from swapmaster.application.common.task_solver import TaskSolver
-from swapmaster.application.order.cancel import (
-    CancelOrderDTO,
-    OrderCancelerFactory
-)
+from swapmaster.application.order.cancel import cancel_expired_order
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.models import Order, PairId, UserId
 from swapmaster.core.services.order import OrderService
@@ -53,7 +50,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         notifier: Notifier,
         task_solver: TaskSolver,
         central_config: CentralConfig,
-        order_canceler: OrderCancelerFactory
+        order_gateway_factory
     ):
         self.reserve_gateway = reserve_gateway
         self.pair_gateway = pair_gateway
@@ -66,13 +63,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         self.notifier = notifier
         self.task_solver = task_solver
         self.central_config = central_config
-        self.order_canceler = order_canceler
-
-    @staticmethod
-    async def cancel_expired_order(data: CancelOrderDTO, factory: OrderCancelerFactory):
-        async with factory.order_canceler() as cancel_order:
-            await cancel_order(data)
-            await cancel_order.uow.commit()
+        self.order_gateway_factory=order_gateway_factory
 
     async def __call__(self, data: NewOrderDTO) -> CreatedOrderDTO:
         pair = await self.pair_gateway.get_pair_by_id(pair_id=data.pair_id)
@@ -109,14 +100,13 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
             subject="Order created"
         )
 
-        self.task_solver.solve_task(
-            self.cancel_expired_order,
-            data=CancelOrderDTO(
-                order_id=order_saved.id,
-                notification="test"
-            ),
-            factory=self.order_canceler,
-            id_=str(order_saved.id)
+        await self.task_solver.solve_async_task(
+            cancel_expired_order,
+            id_=str(order_saved.id),
+            order_id=order_saved.id,
+            date_cancel=order_expiration_date,
+            order_gateway_factory=self.order_gateway_factory,
+            run_date=order_expiration_date
         )
 
         return CreatedOrderDTO(

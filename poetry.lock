@@ -158,13 +158,13 @@ files = [
 
 [[package]]
 name = "anyio"
-version = "4.2.0"
+version = "4.3.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "anyio-4.2.0-py3-none-any.whl", hash = "sha256:745843b39e829e108e518c489b31dc757de7d2131d53fac32bd8df268227bfee"},
-    {file = "anyio-4.2.0.tar.gz", hash = "sha256:e1875bb4b4e2de1669f4bc7869b6d3f54231cdced71605e6e64c9be77e3be50f"},
+    {file = "anyio-4.3.0-py3-none-any.whl", hash = "sha256:048e05d0f6caeed70d731f3db756d35dcc1f35747c8c403364a8332c630441b8"},
+    {file = "anyio-4.3.0.tar.gz", hash = "sha256:f75253795a87df48568485fd18cdd2a3fa5c4f7c5be8e5e36637733fce06fed6"},
 ]
 
 [package.dependencies]
@@ -178,31 +178,30 @@ trio = ["trio (>=0.23)"]
 
 [[package]]
 name = "apscheduler"
-version = "3.10.4"
+version = "4.0.0a4"
 description = "In-process task scheduler with Cron-like capabilities"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "APScheduler-3.10.4-py3-none-any.whl", hash = "sha256:fb91e8a768632a4756a585f79ec834e0e27aad5860bac7eaa523d9ccefd87661"},
-    {file = "APScheduler-3.10.4.tar.gz", hash = "sha256:e6df071b27d9be898e486bc7940a7be50b4af2e9da7c08f0744a96d4bd4cef4a"},
+    {file = "APScheduler-4.0.0a4-py3-none-any.whl", hash = "sha256:29576119a82a4e91fbd20971d9225c88b073b8e23a7e6bda5f9d555fa8bcccfc"},
+    {file = "APScheduler-4.0.0a4.tar.gz", hash = "sha256:c349f281ec505235e1a748b0954d1ab868acefab69815559d62e025686945e65"},
 ]
 
 [package.dependencies]
-pytz = "*"
-six = ">=1.4.0"
-tzlocal = ">=2.0,<3.dev0 || >=4.dev0"
+anyio = ">=4.0,<5.0"
+attrs = ">=21.3"
+tenacity = ">=8.0,<9.0"
+tzlocal = ">=3.0"
 
 [package.extras]
-doc = ["sphinx", "sphinx-rtd-theme"]
-gevent = ["gevent"]
-mongodb = ["pymongo (>=3.0)"]
-redis = ["redis (>=3.0)"]
-rethinkdb = ["rethinkdb (>=2.4.0)"]
-sqlalchemy = ["sqlalchemy (>=1.4)"]
-testing = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-tornado5"]
-tornado = ["tornado (>=4.3)"]
-twisted = ["twisted"]
-zookeeper = ["kazoo"]
+asyncpg = ["asyncpg (>=0.20)"]
+cbor = ["cbor2 (>=5.0)"]
+doc = ["sphinx", "sphinx-autodoc-typehints", "sphinx-rtd-theme (>=1.3.0)", "sphinx-tabs (>=3.3.1)"]
+mongodb = ["pymongo (>=4)"]
+mqtt = ["paho-mqtt (>=1.5)"]
+redis = ["redis (>=4.4.0)"]
+sqlalchemy = ["sqlalchemy (>=2.0.19)"]
+test = ["APScheduler[cbor,mongodb,mqtt,redis,sqlalchemy]", "PySide6 (>=6.6)", "aiosqlite (>=0.19)", "anyio[trio]", "asyncmy (>=0.2.5)", "asyncpg (>=0.20)", "coverage (>=7)", "freezegun", "paho-mqtt (>=1.5)", "psycopg", "pymongo (>=4)", "pymysql[rsa]", "pytest (>=7.4.0)", "pytest-freezer", "pytest-lazy-fixture", "pytest-mock", "uwsgi"]
 
 [[package]]
 name = "async-timeout"
@@ -1248,17 +1247,6 @@ files = [
 dev = ["atomicwrites (==1.2.1)", "attrs (==19.2.0)", "coverage (==6.5.0)", "hatch", "invoke (==1.7.3)", "more-itertools (==4.3.0)", "pbr (==4.3.0)", "pluggy (==1.0.0)", "py (==1.11.0)", "pytest (==7.2.0)", "pytest-cov (==4.0.0)", "pytest-timeout (==2.1.0)", "pyyaml (==5.1)"]
 
 [[package]]
-name = "pytz"
-version = "2024.1"
-description = "World timezone definitions, modern and historical"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319"},
-    {file = "pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812"},
-]
-
-[[package]]
 name = "pyyaml"
 version = "6.0.1"
 description = "YAML parser and emitter for Python"
@@ -1334,17 +1322,6 @@ async-timeout = ">=4.0.3"
 [package.extras]
 hiredis = ["hiredis (>=1.0.0)"]
 ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
-
-[[package]]
-name = "six"
-version = "1.16.0"
-description = "Python 2 and 3 compatibility utilities"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
-    {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
-]
 
 [[package]]
 name = "sniffio"
@@ -1460,6 +1437,20 @@ anyio = ">=3.4.0,<5"
 
 [package.extras]
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
+
+[[package]]
+name = "tenacity"
+version = "8.2.3"
+description = "Retry code until it succeeds"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tenacity-8.2.3-py3-none-any.whl", hash = "sha256:ce510e327a630c9e1beaf17d42e6ffacc88185044ad85cf74c0a8887c6a0f88c"},
+    {file = "tenacity-8.2.3.tar.gz", hash = "sha256:5398ef0d78e63f40007c1fb4c0bff96e1911394d2fa8d194f77619c05ff6cc8a"},
+]
+
+[package.extras]
+doc = ["reno", "sphinx", "tornado (>=4.5)"]
 
 [[package]]
 name = "typing-extensions"
@@ -1917,4 +1908,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "39632c7b3a0423e1181a539bee3b324a658f2dc66c2cc692d8811eb72476d410"
+content-hash = "ec41545fad1a2e7cac3c04c11e060ac3dc202a5f41db227b40d49734a924ee74"

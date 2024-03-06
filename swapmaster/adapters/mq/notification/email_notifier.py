@@ -47,7 +47,7 @@ class EmailNotifier(Notifier):
         server.quit()
 
     def notify(self, user: User, notification: str, subject: str) -> None:
-        self.task_solver.solve_task(
+        self.task_solver.solve_sync_task(
             self.send_email,
             id_=f"email_notification:{subject}:{user.id}",
             username=user.username,

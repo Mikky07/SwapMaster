@@ -1,6 +1,10 @@
+from contextlib import asynccontextmanager
+from typing import Callable
+
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from swapmaster.adapters.db.gateways.sqlalchemy import OrderGateway
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
 from swapmaster.presentation.api.depends.stub import Stub
 
@@ -11,6 +15,18 @@ def async_session_provider(pool: async_sessionmaker[AsyncSession]):
             yield session
 
     return new_async_session
+
+
+def new_order_gateway(
+        db_pool: async_sessionmaker[AsyncSession]
+) -> Callable[[], OrderGateway]:
+
+    @asynccontextmanager
+    async def factory() -> OrderGateway:
+        async with db_pool() as session:
+            yield OrderGateway(session)
+
+    return factory
 
 
 class DBGatewayProvider[TDBGateway: BaseDBGateway]:

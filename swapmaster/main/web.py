@@ -1,5 +1,6 @@
+import asyncio
 import uvicorn
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from fastapi import FastAPI
 
 from swapmaster.common.config.models import Paths
@@ -8,6 +9,7 @@ from swapmaster.common.config.parser import logging_setup
 from swapmaster.presentation.api import *
 from swapmaster.presentation.api.routes import setup_routers
 from swapmaster.main.di import setup_dependencies
+from swapmaster.adapters.mq import create_async_scheduler, create_sync_scheduler
 
 
 def setup() -> FastAPI:
@@ -16,18 +18,17 @@ def setup() -> FastAPI:
     api_config = load_api_config(paths=paths)
     logging_setup(paths=paths)
 
-    # this instance will be used by all app
-    scheduler = AsyncIOScheduler()
-    scheduler.start()
-
     app = FastAPI()
-
     setup_routers(app)
+
+    scheduler_async = asyncio.run(create_async_scheduler())
+    scheduler_sync = create_sync_scheduler()
 
     setup_dependencies(
         app=app,
         api_config=api_config,
-        scheduler=scheduler
+        scheduler_async=scheduler_async,
+        scheduler_sync=scheduler_sync
     )
 
     return app

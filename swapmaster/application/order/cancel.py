@@ -1,8 +1,5 @@
-from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
-
-import aiohttp
 
 from swapmaster.application.common import UoW, Notifier
 from swapmaster.application.common.interactor import Interactor
@@ -45,8 +42,11 @@ class CancelOrder(Interactor[CancelOrderDTO, Order]):
         return order_canceled
 
 
-class OrderCancelerFactory:
-    @asynccontextmanager
-    async def order_canceler(self) -> CancelOrder:
-        raise NotImplementedError
-
+async def cancel_expired_order(
+        order_id: OrderId,
+        date_cancel: datetime,
+        order_gateway_factory
+):
+    async with order_gateway_factory() as order_gateway:
+        await order_gateway.cancel_order(order_id=order_id, date_cancel=date_cancel)
+        await order_gateway.session.commit()

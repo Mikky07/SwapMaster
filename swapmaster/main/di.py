@@ -1,7 +1,7 @@
 import logging
 from typing import TypeVar
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler import Scheduler, AsyncScheduler
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,7 +32,8 @@ def singleton(value: T):
 def setup_dependencies(
         app: FastAPI,
         api_config: APIConfig,
-        scheduler: AsyncIOScheduler
+        scheduler_sync: Scheduler,
+        scheduler_async: AsyncScheduler
 ):
     pool = create_pool(api_config.db)
 
@@ -40,7 +41,8 @@ def setup_dependencies(
     user_verification_cash = UserVerificationCashImp(redis=redis)
 
     ioc = IoC(
-        scheduler=scheduler,
+        scheduler_async=scheduler_async,
+        scheduler_sync=scheduler_sync,
         api_config=api_config,
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
