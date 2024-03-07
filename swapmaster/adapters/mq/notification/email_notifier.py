@@ -5,7 +5,7 @@ from dns.resolver import resolve, NXDOMAIN
 
 from swapmaster.adapters.mq.notification.config import EmailConfig
 from swapmaster.application.common import Notifier
-from swapmaster.application.common.task_solver import TaskSolver
+from swapmaster.application.common.task_manager import TaskManager
 from swapmaster.core.models import User
 from swapmaster.core.utils.exceptions import SMError
 
@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class EmailNotifier(Notifier):
-    def __init__(self, config: EmailConfig, task_solver: TaskSolver):
+    def __init__(self, config: EmailConfig, task_manager: TaskManager):
         self.config = config
-        self.task_solver = task_solver
+        self.task_manager = task_manager
 
     def is_mx_available(self, mx: str):
         try:
@@ -47,7 +47,7 @@ class EmailNotifier(Notifier):
         server.quit()
 
     def notify(self, user: User, notification: str, subject: str) -> None:
-        self.task_solver.solve_sync_task(
+        self.task_manager.solve_sync_task(
             self.send_email,
             id_=f"email_notification:{subject}:{user.id}",
             username=user.username,

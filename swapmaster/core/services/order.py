@@ -1,6 +1,9 @@
 from datetime import datetime
 
-from swapmaster.core.constants import OrderStatusEnum
+from swapmaster.core.constants import (
+    OrderStatusEnum,
+    OrderPaymentStatusEnum
+)
 from swapmaster.core.models import Order, PairId, UserId
 
 
@@ -20,5 +23,6 @@ class OrderService:
             to_send=to_send,
             date_start=datetime.now(),
             date_finish=None,
-            status=OrderStatusEnum.PROCESSING
+            status=OrderStatusEnum.PROCESSING,
+            payment_status=OrderPaymentStatusEnum.UNPAID
         )

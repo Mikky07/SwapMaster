@@ -74,6 +74,15 @@ async def finish_order(
     return order_finished
 
 
+async def set_order_as_paid(
+        order_id: OrderId,
+        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+):
+    async with ioc.set_order_as_paid() as set_order_as_paid_:
+        order_paid = await set_order_as_paid_(order_id=order_id)
+    return order_paid
+
+
 async def cancel_order(
         order_id: OrderId,
         ioc: InteractorFactory = Depends(Stub(InteractorFactory))
@@ -94,6 +103,7 @@ def setup_order() -> APIRouter:
     order_router.add_api_route("", endpoint=get_all_orders, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=get_full_order_information, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=finish_order, methods=["PATCH"])
+    order_router.add_api_route("/pay-up/{order_id}", endpoint=set_order_as_paid, methods=["PATCH"])
     order_router.add_api_route("/{order_id}", endpoint=cancel_order, methods=["DELETE"])
 
     return order_router

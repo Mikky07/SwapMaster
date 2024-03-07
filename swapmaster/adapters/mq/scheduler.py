@@ -4,10 +4,10 @@ from typing import Callable, Any
 from apscheduler import AsyncScheduler, Scheduler, RunState
 from apscheduler.triggers.date import DateTrigger
 
-from swapmaster.application.common.task_solver import TaskSolver
+from swapmaster.application.common.task_manager import TaskManager
 
 
-class TaskSolverImp(TaskSolver):
+class TaskManagerImp(TaskManager):
     def __init__(
             self,
             scheduler_async: AsyncScheduler,
@@ -67,3 +67,9 @@ class TaskSolverImp(TaskSolver):
             )
         if self.scheduler_sync.state == RunState.stopped:
             self.scheduler_sync.start_in_background()
+
+    def remove_sync_task(self, task_id: str):
+        self.scheduler_sync.remove_schedule(id=task_id)
+
+    async def remove_async_task(self, task_id: str):
+        await self.scheduler_async.remove_schedule(id=task_id)

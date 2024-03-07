@@ -15,7 +15,7 @@ from swapmaster.adapters.db.gateways.sqlalchemy import (
     MethodGateway
 )
 from swapmaster.adapters.mq.notification import EmailNotifier
-from swapmaster.adapters.mq.scheduler import TaskSolverImp
+from swapmaster.adapters.mq.scheduler import TaskManagerImp
 from swapmaster.application import (
     Authenticate,
     AddRequisite,
@@ -27,6 +27,7 @@ from swapmaster.application import (
     AddMethod,
     AddCommission, GetFullOrder
 )
+from swapmaster.application.order import SetOrderPaidUp
 from swapmaster.application.verifier import Verifier, UserVerificationCash
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.services import (
@@ -53,7 +54,7 @@ class IoC(InteractorFactory):
             user_verification_cash: UserVerificationCash,
             central_config: CentralConfig
     ):
-        self.task_solver = TaskSolverImp(
+        self.task_manager = TaskManagerImp(
             scheduler_async=scheduler_async,
             scheduler_sync=scheduler_sync
         )
@@ -68,7 +69,7 @@ class IoC(InteractorFactory):
         self.pair_service = PairService()
         self.method_service = MethodService()
         self.commission_service = CommissionService()
-        self.email_notifier = EmailNotifier(self.api_config.email, self.task_solver)
+        self.email_notifier = EmailNotifier(self.api_config.email, self.task_manager)
 
     @asynccontextmanager
     async def get_verifier(self) -> Verifier:
@@ -115,7 +116,7 @@ class IoC(InteractorFactory):
                 order_requisite_gateway=OrderRequisiteGateway(session),
                 reserve_gateway=ReserveGateway(session),
                 notifier=self.email_notifier,
-                task_solver=self.task_solver,
+                task_manager=self.task_manager,
                 central_config=self.central_config,
                 order_gateway=OrderGateway(session),
                 user_reader=UserGateway(session),
@@ -183,3 +184,12 @@ class IoC(InteractorFactory):
     @asynccontextmanager
     async def full_order_fetcher(self) -> GetFullOrder:
         ...
+
+    @asynccontextmanager
+    async def set_order_as_paid(self) -> AsyncContextManager[SetOrderPaidUp]:
+        async with self.db_connection_pool() as session:
+            yield SetOrderPaidUp(
+                uow=UowAsyncSession(session=session),
+                order_gateway=OrderGateway(session=session),
+                task_manager=self.task_manager
+            )

@@ -50,3 +50,7 @@ class InteractorFactory:
     @abstractmethod
     async def commission_creator(self) -> AsyncContextManager[AddCommission]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def set_order_as_paid(self) -> AsyncContextManager:
+        raise NotImplementedError

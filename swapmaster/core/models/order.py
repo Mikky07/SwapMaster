@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, TypeAlias
 from datetime import datetime
 
-from swapmaster.core.constants import OrderStatusEnum
+from swapmaster.core.constants import OrderStatusEnum, OrderPaymentStatusEnum
 from .user import UserId
 from .pair import PairId
 
@@ -20,6 +20,4 @@ class Order:
     date_start: Optional[datetime]
     date_finish: Optional[datetime]
     status: OrderStatusEnum
-
-
-
+    payment_status: OrderPaymentStatusEnum

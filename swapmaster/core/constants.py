@@ -20,3 +20,8 @@ class ReserveUpdateMethodEnum(Enum):
 class VerificationStatusEnum(Enum):
     UNVERIFIED = "UNVERIFIED"
     VERIFIED = "VERIFIED"
+
+
+class OrderPaymentStatusEnum(Enum):
+    PAID = "PAID"
+    UNPAID = "UNPAID"

@@ -10,7 +10,7 @@ from swapmaster.application.common.db.order_gateway import (
     OrderReader,
     OrderUpdater
 )
-from swapmaster.core.constants import OrderStatusEnum
+from swapmaster.core.constants import OrderStatusEnum, OrderPaymentStatusEnum
 from swapmaster.core.models import Order, OrderId
 from swapmaster.adapters.db import models
 
@@ -57,6 +57,13 @@ class OrderGateway(BaseDBGateway, OrderWriter, OrderReader, OrderUpdater):
             date_start=order.date_start
         )
         return result.to_dto()
+
+    async def set_as_paid(self, order_id: OrderId) -> Order:
+        order_paid = await self.update_model(
+            filters=[models.Order.id == order_id],
+            payment_status=OrderPaymentStatusEnum.PAID
+        )
+        return order_paid.to_dto()
 
     async def cancel_order(self, order_id: OrderId, date_cancel: datetime) -> Order:
         canceled_order = await self.update_model(

@@ -11,7 +11,7 @@ from swapmaster.application.common.db import (
     OrderWriter,
     ReserveReader, UserReader, OrderUpdater
 )
-from swapmaster.application.common.task_solver import TaskSolver
+from swapmaster.application.common.task_manager import TaskManager
 from swapmaster.application.order.cancel import cancel_expired_order
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.models import Order, PairId, UserId
@@ -48,7 +48,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         order_requisite_gateway: OrderRequisiteWriter,
         reserve_gateway: ReserveReader,
         notifier: Notifier,
-        task_solver: TaskSolver,
+        task_manager: TaskManager,
         central_config: CentralConfig,
         order_gateway_factory
     ):
@@ -61,9 +61,9 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         self.requisites_gateway = requisites_gateway
         self.order_requisite_gateway = order_requisite_gateway
         self.notifier = notifier
-        self.task_solver = task_solver
+        self.task_manager = task_manager
         self.central_config = central_config
-        self.order_gateway_factory=order_gateway_factory
+        self.order_gateway_factory = order_gateway_factory
 
     async def __call__(self, data: NewOrderDTO) -> CreatedOrderDTO:
         pair = await self.pair_gateway.get_pair_by_id(pair_id=data.pair_id)
@@ -100,7 +100,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
             subject="Order created"
         )
 
-        await self.task_solver.solve_async_task(
+        await self.task_manager.solve_async_task(
             cancel_expired_order,
             id_=str(order_saved.id),
             order_id=order_saved.id,

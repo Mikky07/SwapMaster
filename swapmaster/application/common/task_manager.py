@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Protocol, Callable, Any, Coroutine
+from typing import Protocol, Callable, Any
 from abc import abstractmethod
 
 
-class TaskSolver(Protocol):
+class TaskManager(Protocol):
     @abstractmethod
     async def solve_async_task(
             self,
@@ -24,4 +24,12 @@ class TaskSolver(Protocol):
             *args,
             **kwargs
     ):
+        raise NotImplementedError
+
+    @abstractmethod
+    def remove_sync_task(self, task_id: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def remove_async_task(self, task_id: str):
         raise NotImplementedError

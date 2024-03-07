@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import ENUM
 
 from swapmaster.core import models as dto
 from .base import Base
-from swapmaster.core.constants import OrderStatusEnum
+from swapmaster.core.constants import OrderStatusEnum, OrderPaymentStatusEnum
 
 
 class Order(Base):
@@ -25,6 +25,10 @@ class Order(Base):
         ENUM(OrderStatusEnum),
         default=OrderStatusEnum.PROCESSING
     )
+    payment_status: Mapped[OrderPaymentStatusEnum] = mapped_column(
+        ENUM(OrderPaymentStatusEnum),
+        default=OrderPaymentStatusEnum.UNPAID
+    )
 
     pair: Mapped["Pair"] = relationship(foreign_keys=pair_id)
     user: Mapped["User"] = relationship(foreign_keys=user_id)
@@ -39,6 +43,7 @@ class Order(Base):
             f" date_start={self.date_start}"
             f" date_finish={self.date_finish}"
             f" status={self.status}"
+            f" payment_status={self.payment_status}>"
         )
 
     def to_dto(self) -> dto.Order:
@@ -50,5 +55,6 @@ class Order(Base):
             to_send=self.to_send,
             date_start=self.date_start,
             date_finish=self.date_finish,
-            status=self.status
+            status=self.status,
+            payment_status=self.payment_status
         )
