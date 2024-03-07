@@ -1,6 +1,5 @@
-import asyncio
 from contextlib import asynccontextmanager
-from typing import AsyncContextManager, AsyncIterator, Coroutine, AsyncGenerator
+from typing import AsyncContextManager
 
 from apscheduler import Scheduler, AsyncScheduler
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -54,12 +53,11 @@ class IoC(InteractorFactory):
             user_verification_cash: UserVerificationCash,
             central_config: CentralConfig
     ):
-        asyncio.run(
-            anext(self._create_task_solver(
-                scheduler_async=scheduler_async,
-                scheduler_sync=scheduler_sync
-            ))
+        self.task_solver = TaskSolverImp(
+            scheduler_async=scheduler_async,
+            scheduler_sync=scheduler_sync
         )
+
         self.central_config = central_config
         self.api_config = api_config
         self.db_connection_pool = db_connection_pool
@@ -71,15 +69,6 @@ class IoC(InteractorFactory):
         self.method_service = MethodService()
         self.commission_service = CommissionService()
         self.email_notifier = EmailNotifier(self.api_config.email, self.task_solver)
-
-    async def _create_task_solver(
-            self,
-            scheduler_async: AsyncScheduler,
-            scheduler_sync: Scheduler
-    ) -> AsyncGenerator[None, None]:
-        async with scheduler_async as scheduler:
-            self.task_solver = TaskSolverImp(scheduler_async=scheduler, scheduler_sync=scheduler_sync)
-            yield
 
     @asynccontextmanager
     async def get_verifier(self) -> Verifier:
