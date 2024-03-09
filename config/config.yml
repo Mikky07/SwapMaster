@@ -20,3 +20,5 @@ redis:
   port: 6379
 central:
   order-payment-expire-minutes: 1
+tgbot:
+  token: test

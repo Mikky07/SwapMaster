@@ -18,6 +18,7 @@ bcrypt = "4.0.1"
 apscheduler = "4.0.0a4"
 adaptix = "3.0.0b2"
 redis = "^5.0.2"
+aiogram = "^3.4.1"
 
 
 [build-system]
