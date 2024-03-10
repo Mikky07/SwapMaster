@@ -1,10 +1,8 @@
-from typing import Optional
-
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 from swapmaster.core import models as dto
-from .base import Base
+from swapmaster.adapters.db.models import Base
 
 
 class Method(Base):
@@ -21,13 +19,14 @@ class Method(Base):
         ),
         nullable=False
     )
-    currency: Mapped["Currency"] = relationship(
+    currency = relationship(
+        "Currency",
         back_populates="method",
         foreign_keys=currency_id,
     )
 
     reserve_id = mapped_column(ForeignKey("reserves.id"))
-    reserve: Mapped['Reserve'] = relationship(back_populates="method", foreign_keys=reserve_id)
+    reserve = relationship("Reserve", back_populates="method", foreign_keys=reserve_id)
 
     def __repr__(self):
         return (

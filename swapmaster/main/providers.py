@@ -18,9 +18,8 @@ def async_session_provider(pool: async_sessionmaker[AsyncSession]):
 
 
 def new_order_gateway(
-        db_pool: async_sessionmaker[AsyncSession]
+    db_pool: async_sessionmaker[AsyncSession],
 ) -> Callable[[], OrderGateway]:
-
     @asynccontextmanager
     async def factory() -> OrderGateway:
         async with db_pool() as session:
@@ -33,8 +32,5 @@ class DBGatewayProvider[TDBGateway: BaseDBGateway]:
     def __init__(self, gateway: type[TDBGateway]):
         self.gateway = gateway
 
-    async def __call__(
-            self,
-            async_session=Depends(Stub(AsyncSession))
-    ) -> TDBGateway:
+    async def __call__(self, async_session=Depends(Stub(AsyncSession))) -> TDBGateway:
         yield self.gateway(async_session)

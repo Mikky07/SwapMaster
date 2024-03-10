@@ -1,10 +1,14 @@
+import typing
 from typing import Optional
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 from swapmaster.core import models as dto
-from .base import Base
+from swapmaster.adapters.db.models import Base
+
+if typing.TYPE_CHECKING:
+    from swapmaster.adapters.db import models
 
 
 class Pair(Base):
@@ -29,13 +33,13 @@ class Pair(Base):
         ForeignKey("wallets.id")
     )
 
-    method_from: Mapped["Method"] = relationship(foreign_keys=method_from_id)
-    method_to: Mapped["Method"] = relationship(foreign_keys=method_to_id)
-    commission: Mapped["Commission"] = relationship(foreign_keys=commission_id)
-    course: Mapped["Course"] = relationship(foreign_keys=course_id)
-    reception_wallet: Mapped["Wallet"] = relationship(foreign_keys=reception_wallet_id)
+    method_from = relationship("Method", foreign_keys=method_from_id)
+    method_to = relationship("Method", foreign_keys=method_to_id)
+    commission = relationship("Commission", foreign_keys=commission_id)
+    course = relationship("Course", foreign_keys=course_id)
+    reception_wallet = relationship("Wallet", foreign_keys=reception_wallet_id)
 
-    requisites: Mapped[Optional[list["Requisite"]]] = relationship(back_populates="pair")
+    requisites: Mapped[Optional[list[models.Requisite]]] = relationship(back_populates="pair")
 
     def __repr__(self):
         return (

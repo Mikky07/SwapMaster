@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM
 
 from swapmaster.core import models as dto
-from .base import Base
+from swapmaster.adapters.db.models import Base
 from swapmaster.core.constants import OrderStatusEnum, OrderPaymentStatusEnum
 
 
@@ -30,8 +30,8 @@ class Order(Base):
         default=OrderPaymentStatusEnum.UNPAID
     )
 
-    pair: Mapped["Pair"] = relationship(foreign_keys=pair_id)
-    user: Mapped["User"] = relationship(foreign_keys=user_id)
+    pair = relationship("Pair", foreign_keys=pair_id)
+    user = relationship("User", foreign_keys=user_id)
 
     def __repr__(self):
         return (

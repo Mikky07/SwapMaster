@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
-from .base import Base
+from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
 
 
@@ -13,10 +13,10 @@ class OrderRequisite(Base):
     data: Mapped[str]
 
     order_id = mapped_column(ForeignKey("orders.id"))
-    order: Mapped['Order'] = relationship()
+    order = relationship("Order")
 
     requisite_id = mapped_column(ForeignKey("requisites.id"))
-    requisite: Mapped['Requisite'] = relationship()
+    requisite = relationship("Requisite")
 
     def __repr__(self):
         return (

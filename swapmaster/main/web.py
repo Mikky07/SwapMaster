@@ -14,7 +14,7 @@ from swapmaster.main.di import setup_dependencies
 from swapmaster.adapters.mq import (
     create_async_scheduler,
     create_sync_scheduler,
-    async_scheduler_startup_handler
+    async_scheduler_startup_handler,
 )
 
 
@@ -42,7 +42,7 @@ def setup() -> FastAPI:
         app=app,
         api_config=api_config,
         scheduler_async=scheduler_async,
-        scheduler_sync=scheduler_sync
+        scheduler_sync=scheduler_sync,
     )
 
     return app

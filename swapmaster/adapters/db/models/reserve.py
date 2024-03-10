@@ -1,3 +1,4 @@
+import typing
 from typing import Optional
 
 from sqlalchemy import ForeignKey
@@ -6,7 +7,10 @@ from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 from swapmaster.core.constants import ReserveUpdateMethodEnum
 from swapmaster.core import models as dto
-from .base import Base
+from swapmaster.adapters.db.models import Base
+
+if typing.TYPE_CHECKING:
+    from swapmaster.adapters.db import models
 
 
 class Reserve(Base):
@@ -20,10 +24,10 @@ class Reserve(Base):
     )
 
     method_id: Mapped[int]
-    method: Mapped['Method'] = relationship(back_populates="reserve", foreign_keys='Method.reserve_id')
+    method = relationship("Method", back_populates="reserve", foreign_keys='Method.reserve_id')
 
     wallet_id: Mapped[Optional[int]] = mapped_column(ForeignKey("wallets.id"))
-    wallet: Mapped[Optional['Wallet']] = relationship(back_populates="reserve", foreign_keys=wallet_id)
+    wallet: Mapped[Optional[models.Wallet]] = relationship(back_populates="reserve", foreign_keys=wallet_id)
 
     def __repr__(self):
         return (

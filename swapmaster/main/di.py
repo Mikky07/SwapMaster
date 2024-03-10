@@ -26,14 +26,15 @@ T = TypeVar("T")
 def singleton(value: T):
     def get_value() -> T:
         return value
+
     return get_value
 
 
 def setup_dependencies(
-        app: FastAPI,
-        api_config: APIConfig,
-        scheduler_sync: Scheduler,
-        scheduler_async: AsyncScheduler
+    app: FastAPI,
+    api_config: APIConfig,
+    scheduler_sync: Scheduler,
+    scheduler_async: AsyncScheduler,
 ):
     pool = create_pool(api_config.db)
 
@@ -46,7 +47,7 @@ def setup_dependencies(
         api_config=api_config,
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
-        central_config=api_config.central
+        central_config=api_config.central,
     )
 
     auth_provider = AuthProvider(config=api_config.auth)
@@ -64,7 +65,7 @@ def setup_dependencies(
             PairReader: DBGatewayProvider(PairGateway),
             OrderRequisiteReader: DBGatewayProvider(OrderRequisiteGateway),
             UserReader: DBGatewayProvider(UserReader),
-            User: auth_provider.get_current_user
+            User: auth_provider.get_current_user,
         }
     )
 

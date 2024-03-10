@@ -1,8 +1,8 @@
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base
 from swapmaster.core.constants import CourseUpdateMethodEnum
+from swapmaster.adapters.db.models import Base
 
 
 class Course(Base):
@@ -15,7 +15,7 @@ class Course(Base):
         ENUM(CourseUpdateMethodEnum)
     )
 
-    pair: Mapped["Pair"] = relationship(back_populates="course")
+    pair = relationship("Pair", back_populates="course")
 
     def __repr__(self):
         return (

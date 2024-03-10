@@ -1,6 +1,6 @@
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 
-from .base import Base
+from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
 
 
@@ -13,7 +13,7 @@ class Wallet(Base):
     blockchain: Mapped[str]
     address: Mapped[str]
 
-    reserve: Mapped['Reserve'] = relationship(back_populates="wallet", foreign_keys="Reserve.wallet_id")
+    reserve = relationship("Reserve", back_populates="wallet", foreign_keys="Reserve.wallet_id")
 
     def __repr__(self):
         return (

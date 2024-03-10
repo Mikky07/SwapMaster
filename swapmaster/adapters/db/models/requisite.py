@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
-from .base import Base
+from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
 
 
@@ -16,7 +16,7 @@ class Requisite(Base):
     regular_expression: Mapped[Optional[str]]
 
     pair_id = mapped_column(ForeignKey("pairs.id"))
-    pair: Mapped["Pair"] = relationship(back_populates="requisites")
+    pair = relationship("Pair", back_populates="requisites")
 
     def __repr__(self):
         return (
@@ -33,4 +33,3 @@ class Requisite(Base):
             regular_expression=self.regular_expression,
             pair_id=self.pair_id
         )
-

@@ -12,7 +12,7 @@ from swapmaster.adapters.db.gateways.sqlalchemy import (
     OrderRequisiteGateway,
     ReserveGateway,
     CommissionGateway,
-    MethodGateway
+    MethodGateway,
 )
 from swapmaster.adapters.mq.notification import EmailNotifier
 from swapmaster.adapters.mq.scheduler import TaskManagerImp
@@ -25,7 +25,8 @@ from swapmaster.application import (
     CalculateSendTotal,
     AddPair,
     AddMethod,
-    AddCommission, GetFullOrder
+    AddCommission,
+    GetFullOrder,
 )
 from swapmaster.application.order import SetOrderPaidUp
 from swapmaster.application.verifier import Verifier, UserVerificationCash
@@ -36,7 +37,7 @@ from swapmaster.core.services import (
     OrderService,
     PairService,
     MethodService,
-    CommissionService
+    CommissionService,
 )
 from swapmaster.presentation.api.config.models.main import APIConfig
 from swapmaster.presentation.interactor_factory import InteractorFactory
@@ -46,17 +47,16 @@ from swapmaster.main.providers import new_order_gateway
 
 class IoC(InteractorFactory):
     def __init__(
-            self,
-            scheduler_async: AsyncScheduler,
-            scheduler_sync: Scheduler,
-            api_config: APIConfig,
-            db_connection_pool: async_sessionmaker[AsyncSession],
-            user_verification_cash: UserVerificationCash,
-            central_config: CentralConfig
+        self,
+        scheduler_async: AsyncScheduler,
+        scheduler_sync: Scheduler,
+        api_config: APIConfig,
+        db_connection_pool: async_sessionmaker[AsyncSession],
+        user_verification_cash: UserVerificationCash,
+        central_config: CentralConfig,
     ):
         self.task_manager = TaskManagerImp(
-            scheduler_async=scheduler_async,
-            scheduler_sync=scheduler_sync
+            scheduler_async=scheduler_async, scheduler_sync=scheduler_sync
         )
 
         self.central_config = central_config
@@ -77,7 +77,7 @@ class IoC(InteractorFactory):
             yield Verifier(
                 uow=UowAsyncSession(session=session),
                 notifier=self.email_notifier,
-                cash=self.user_verification_cash
+                cash=self.user_verification_cash,
             )
 
     @asynccontextmanager
@@ -87,14 +87,14 @@ class IoC(InteractorFactory):
             verifier = Verifier(
                 uow=uow_async_session,
                 notifier=self.email_notifier,
-                cash=self.user_verification_cash
+                cash=self.user_verification_cash,
             )
             user_saver = UserGateway(session)
             yield Authenticate(
                 user_saver=user_saver,
                 uow=uow_async_session,
                 user_service=self.user_service,
-                verifier=verifier
+                verifier=verifier,
             )
 
     @asynccontextmanager
@@ -103,7 +103,7 @@ class IoC(InteractorFactory):
             yield AddRequisite(
                 requisite_gateway=RequisiteGateway(session),
                 uow=UowAsyncSession(session),
-                requisite_service=self.requisite_service
+                requisite_service=self.requisite_service,
             )
 
     @asynccontextmanager
@@ -121,7 +121,7 @@ class IoC(InteractorFactory):
                 order_gateway=OrderGateway(session),
                 user_reader=UserGateway(session),
                 uow=UowAsyncSession(session),
-                order_gateway_factory=new_order_gateway(self.db_connection_pool)
+                order_gateway_factory=new_order_gateway(self.db_connection_pool),
             )
 
     @asynccontextmanager
@@ -143,7 +143,7 @@ class IoC(InteractorFactory):
                 uow=UowAsyncSession(session),
                 order_updater=OrderGateway(session),
                 user_reader=UserGateway(session),
-                notifier=self.email_notifier
+                notifier=self.email_notifier,
             )
 
     @asynccontextmanager
@@ -151,7 +151,7 @@ class IoC(InteractorFactory):
         async with self.db_connection_pool() as session:
             yield CalculateSendTotal(
                 commission_gateway=CommissionGateway(session),
-                pair_gateway=PairGateway(session)
+                pair_gateway=PairGateway(session),
             )
 
     @asynccontextmanager
@@ -160,7 +160,7 @@ class IoC(InteractorFactory):
             yield AddPair(
                 pair_gateway=PairGateway(session),
                 pair_service=self.pair_service,
-                uow=UowAsyncSession(session)
+                uow=UowAsyncSession(session),
             )
 
     @asynccontextmanager
@@ -169,7 +169,7 @@ class IoC(InteractorFactory):
             yield AddMethod(
                 method_db_gateway=MethodGateway(session),
                 method_service=self.method_service,
-                uow=UowAsyncSession(session)
+                uow=UowAsyncSession(session),
             )
 
     @asynccontextmanager
@@ -178,12 +178,11 @@ class IoC(InteractorFactory):
             yield AddCommission(
                 commission_db_gateway=CommissionGateway(session),
                 commission_service=self.commission_service,
-                uow=UowAsyncSession(session)
+                uow=UowAsyncSession(session),
             )
 
     @asynccontextmanager
-    async def full_order_fetcher(self) -> GetFullOrder:
-        ...
+    async def full_order_fetcher(self) -> GetFullOrder: ...
 
     @asynccontextmanager
     async def set_order_as_paid(self) -> AsyncContextManager[SetOrderPaidUp]:
@@ -191,5 +190,5 @@ class IoC(InteractorFactory):
             yield SetOrderPaidUp(
                 uow=UowAsyncSession(session=session),
                 order_gateway=OrderGateway(session=session),
-                task_manager=self.task_manager
+                task_manager=self.task_manager,
             )

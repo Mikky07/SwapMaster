@@ -2,7 +2,7 @@ from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy.dialects.postgresql import ENUM
 
 from swapmaster.core.constants import VerificationStatusEnum
-from .base import Base
+from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
 
 
