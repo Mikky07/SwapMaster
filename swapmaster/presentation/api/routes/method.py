@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 async def add_method(
     data: NewMethodDTO,
-    ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ) -> Method:
     async with ioc.method_creator() as create_method:
         try:
@@ -30,7 +31,7 @@ async def add_method(
 
 
 async def get_all_methods(
-        method_gateway: MethodListReader = Depends(Stub(MethodListReader))
+        method_gateway: Annotated[MethodListReader, Depends(Stub(MethodListReader))]
 ) -> list[Method]:
     return await method_gateway.get_method_list()
 

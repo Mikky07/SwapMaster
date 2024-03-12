@@ -1,12 +1,20 @@
+from dataclasses import dataclass
+
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.db import (
     OrderReader,
     RequisiteReader,
     OrderRequisiteReader
 )
-from swapmaster.core.models.order import OrderId
-from swapmaster.core.models.order_with_requisites import OrderWithRequisites
+from swapmaster.core.models import OrderRequisite
+from swapmaster.core.models.order import OrderId, Order
 from swapmaster.core.services.order import OrderService
+
+
+@dataclass
+class OrderWithRequisites:
+    order: Order
+    order_requisites: list[OrderRequisite]
 
 
 class GetFullOrder(Interactor[OrderId, OrderWithRequisites]):
@@ -26,6 +34,5 @@ class GetFullOrder(Interactor[OrderId, OrderWithRequisites]):
         order = await self.order_gateway.get_order(order_id=data)
         order_requisites = await self.order_requisite_gateway.get_order_requisites(order_id=order.id)
         return OrderWithRequisites(
-            order=order,
-            requisites=order_requisites
+            order, order_requisites
         )

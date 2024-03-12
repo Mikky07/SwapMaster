@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
@@ -9,11 +10,13 @@ from swapmaster.application.calculate_send_total import CalculateTotalDTO
 from swapmaster.application.common.db import OrderReader
 from swapmaster.application.order.cancel import CancelOrderDTO
 from swapmaster.application.order.create import CreatedOrderDTO
+from swapmaster.application.order.get_full_order import OrderWithRequisites
 from swapmaster.core.constants import OrderStatusEnum
-from swapmaster.core.models import Order, OrderId, OrderWithRequisites
+from swapmaster.core.models import Order, OrderId
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.api.depends.stub import Stub
-from swapmaster.presentation.api.models.order import NewOrderRequestDTO
+from swapmaster.presentation.api.models import NewOrderRequestDTO
+from swapmaster.presentation.api.models.responses import FullOrder
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)
@@ -21,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 async def add_order(
     data: NewOrderRequestDTO,
-    ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
+    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))],
 ) -> CreatedOrderDTO:
     async with ioc.send_total_calculator() as calculate_send_total:
         calculated_to_send = await calculate_send_total(
@@ -50,24 +53,27 @@ async def add_order(
 
 
 async def get_all_orders(
-        order_status: OrderStatusEnum = None,
-        order_gateway: OrderReader = Depends(Stub(OrderReader))
+        order_gateway: Annotated[OrderReader, Depends(Stub(OrderReader))],
+        order_status: OrderStatusEnum | None = None,
 ) -> list[Order]:
     return await order_gateway.get_orders_list(status=order_status)
 
 
 async def get_full_order_information(
         order_id: OrderId,
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
-) -> OrderWithRequisites:
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+) -> FullOrder:
     async with ioc.full_order_fetcher() as get_full_order:
-        order_with_requisites = await get_full_order(data=order_id)
-    return order_with_requisites
+        order_with_requisites: OrderWithRequisites = await get_full_order(data=order_id)
+    return FullOrder(
+        order_requisites=order_with_requisites.order_requisites,
+        order=order_with_requisites.order
+    )
 
 
 async def finish_order(
         order_id: OrderId,
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ) -> Order:
     async with ioc.order_finisher() as finish_order_:
         order_finished = await finish_order_(data=order_id)
@@ -76,7 +82,7 @@ async def finish_order(
 
 async def set_order_as_paid(
         order_id: OrderId,
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ):
     async with ioc.set_order_as_paid() as set_order_as_paid_:
         order_paid = await set_order_as_paid_(order_id=order_id)
@@ -85,7 +91,7 @@ async def set_order_as_paid(
 
 async def cancel_order(
         order_id: OrderId,
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ) -> Order:
     async with ioc.order_canceler() as cancel_order_:
         canceled_order = await cancel_order_(

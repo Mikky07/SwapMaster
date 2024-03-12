@@ -10,7 +10,7 @@ from swapmaster.core import models as dto
 from swapmaster.adapters.db.models import Base
 
 if typing.TYPE_CHECKING:
-    from swapmaster.adapters.db import models
+    from swapmaster.adapters.db.models import Wallet
 
 
 class Reserve(Base):
@@ -27,7 +27,7 @@ class Reserve(Base):
     method = relationship("Method", back_populates="reserve", foreign_keys='Method.reserve_id')
 
     wallet_id: Mapped[Optional[int]] = mapped_column(ForeignKey("wallets.id"))
-    wallet: Mapped[Optional[models.Wallet]] = relationship(back_populates="reserve", foreign_keys=wallet_id)
+    wallet: Mapped[Optional['Wallet']] = relationship(back_populates="reserve", foreign_keys=wallet_id)
 
     def __repr__(self):
         return (

@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from starlette import status
 from fastapi import APIRouter, Depends
@@ -16,9 +17,9 @@ logger = logging.getLogger(__name__)
 
 async def login(
         response: Response,
-        form_data: OAuth2PasswordRequestForm = Depends(),
-        auth_provider: AuthProvider = Depends(Stub(AuthProvider)),
-        user_reader: UserReader = Depends(Stub(UserReader))
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        auth_provider: Annotated[AuthProvider, Depends(Stub(AuthProvider))],
+        user_reader: Annotated[UserReader, Depends(Stub(UserReader))]
 ):
     try:
         token = await auth_provider.auth(form_data=form_data, user_reader=user_reader)

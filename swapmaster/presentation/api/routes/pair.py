@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
@@ -11,7 +13,7 @@ from swapmaster.presentation.interactor_factory import InteractorFactory
 
 async def add_pair(
         data: NewPairDTO,
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))],
 ) -> Pair:
     async with ioc.pair_creator() as create_pair:
         new_pair = await create_pair(data=data)
@@ -22,7 +24,7 @@ async def add_pair(
 async def get_pair(
         method_from_id: MethodId,
         method_to_id: MethodId,
-        pair_gateway: PairReader = Depends(Stub(PairReader))
+        pair_gateway: Annotated[PairReader, Depends(Stub(PairReader))]
 ) -> Pair:
     try:
         pair = await pair_gateway.get_pair(

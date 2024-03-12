@@ -4,7 +4,6 @@ from .user import User, UserId
 from .commission import CommissionId, Commission
 from .pair import Pair, PairId, PairCurrencies
 from .order import Order, OrderId
-from .order_with_requisites import OrderWithRequisites
 from .wallet import Wallet, WalletId
 from .reserve import Reserve, ReserveId
 from .requisite import Requisite, RequisiteId

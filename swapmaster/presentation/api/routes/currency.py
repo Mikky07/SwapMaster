@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi.routing import APIRouter
 from fastapi import Depends
 
@@ -11,9 +13,10 @@ async def add_currency():
 
 
 async def get_all_currencies(
-        currency_db: CurrencyListReader = Depends(Stub(CurrencyListReader))
+        currency_db: Annotated[CurrencyListReader, Depends(Stub(CurrencyListReader))]
 ) -> list[Currency]:
-    return await currency_db.get_currency_list()
+    currencies = await currency_db.get_currency_list()
+    return currencies
 
 
 def setup_currency() -> APIRouter:

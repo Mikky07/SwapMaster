@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from fastapi.routing import APIRouter
 from fastapi import Depends, HTTPException
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 async def add_commission(
     commission: models.Commission,
-    ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
+    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ) -> Commission:
     commission_dto: NewCommissionDTO = commission.to_dto()
     async with ioc.commission_creator() as create_commission:

@@ -8,7 +8,7 @@ from swapmaster.core import models as dto
 from swapmaster.adapters.db.models import Base
 
 if typing.TYPE_CHECKING:
-    from swapmaster.adapters.db import models
+    from swapmaster.adapters.db.models import Requisite
 
 
 class Pair(Base):
@@ -39,7 +39,7 @@ class Pair(Base):
     course = relationship("Course", foreign_keys=course_id)
     reception_wallet = relationship("Wallet", foreign_keys=reception_wallet_id)
 
-    requisites: Mapped[Optional[list[models.Requisite]]] = relationship(back_populates="pair")
+    requisites: Mapped[Optional[list['Requisite']]] = relationship(back_populates="pair")
 
     def __repr__(self):
         return (

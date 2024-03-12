@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from fastapi.routing import APIRouter
 from fastapi import Depends
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 async def calculate_send_total(
     data: CalculateData,
-    ioc: InteractorFactory = Depends(Stub(InteractorFactory)),
+    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ) -> CalculatedTotalDTO:
     async with ioc.send_total_calculator() as calculate_send_total_:
         total = await calculate_send_total_(

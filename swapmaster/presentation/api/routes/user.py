@@ -1,11 +1,12 @@
 import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
 from swapmaster.application.authenticate import NewUserDTO
-from swapmaster.core.models import User
 from swapmaster.core.utils.exceptions import SMError
+from swapmaster.core.models import User
 from swapmaster.presentation.api.depends.stub import Stub
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.presentation.interactor_factory import InteractorFactory
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 async def register(
     data: NewUserDTO,
-    ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ):
     async with ioc.get_authenticator() as authenticator:
         try:
@@ -30,9 +31,9 @@ async def register(
 
 async def verify_account(
         verification_code: str,
-        user: User = Depends(Stub(User)),
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
-) -> User:
+        user: Annotated[User, Depends(Stub(User))],
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+):
     if user.verification_status == VerificationStatusEnum.VERIFIED:
         raise HTTPException(
             status_code=status.HTTP_417_EXPECTATION_FAILED,

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from swapmaster.application.common.db import RequisiteReader, OrderRequisiteReader
@@ -9,7 +11,7 @@ from swapmaster.presentation.interactor_factory import InteractorFactory
 
 async def add_requisite(
         data: NewRequisiteDTO,
-        ioc: InteractorFactory = Depends(Stub(InteractorFactory))
+        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ):
     async with ioc.requisite_creator() as create_requisite:
         await create_requisite(data)
@@ -17,7 +19,7 @@ async def add_requisite(
 
 async def get_order_requisites(
         order_id: OrderId,
-        order_requisite_gateway: OrderRequisiteReader = Depends(Stub(OrderRequisiteReader))
+        order_requisite_gateway: Annotated[OrderRequisiteReader, Depends(Stub(OrderRequisiteReader))]
 ) -> list[OrderRequisite]:
     order_requisites = await order_requisite_gateway.get_order_requisites(order_id)
     return order_requisites
@@ -25,7 +27,7 @@ async def get_order_requisites(
 
 async def get_pair_requisites(
         pair_id: PairId,
-        requisite_gateway: RequisiteReader = Depends(Stub(RequisiteReader))
+        requisite_gateway: Annotated[RequisiteReader, Depends(Stub(RequisiteReader))]
 ) -> list[Requisite]:
     pair_requisites = await requisite_gateway.get_requisites_of_pair(pair_id=pair_id)
     return pair_requisites
