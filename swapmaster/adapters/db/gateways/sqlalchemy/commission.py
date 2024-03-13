@@ -17,7 +17,7 @@ class CommissionGateway(BaseDBGateway, CommissionWriter, CommissionReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Commission, session)
 
-    async def add_commission(self, commission: Commission) -> Commission:
+    async def save_commission(self, commission: Commission) -> Commission:
         saved_commission = await self.create_model(value=commission.value)
         return saved_commission.to_dto()
 
@@ -25,6 +25,6 @@ class CommissionGateway(BaseDBGateway, CommissionWriter, CommissionReader):
         commission = await self.read_model([models.Commission.id == commission_id])
         return commission.to_dto()
 
-    async def is_commission_available(self, value: float) -> bool:
-        commission = await self.read_model([models.Commission.value == value])
-        return commission is None
+    async def is_commission_exists(self, commission: Commission) -> bool:
+        commission = await self.read_model([models.Commission.value == commission.value])
+        return commission is not None

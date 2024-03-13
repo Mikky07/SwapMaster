@@ -3,7 +3,7 @@ import pytest
 from swapmaster.application.create_reserve import CreateReserve, NewReserveDTO
 from swapmaster.core.constants import ReserveUpdateMethodEnum
 from tests.mocks import UoWMock
-from tests.mocks.gateways import ReserveGatewayMock
+from tests.mocks import ReserveGatewayMock
 
 
 NEW_RESERVE_SIZE = 100
@@ -26,7 +26,7 @@ async def test_create_reserve_(
         )
     )
 
-    assert reserve_created.id
+    assert reserve_created.id is not None
     assert reserve_created.size == NEW_RESERVE_SIZE
     assert reserve_created.update_method == NEW_RESERVE_UPDATE_METHOD
     assert reserve_created.wallet_id is None

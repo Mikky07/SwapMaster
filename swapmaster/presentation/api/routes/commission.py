@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 async def add_commission(
-    commission: models.Commission,
+    commission: Commission,
     ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
 ) -> Commission:
     commission_dto: NewCommissionDTO = commission.to_dto()

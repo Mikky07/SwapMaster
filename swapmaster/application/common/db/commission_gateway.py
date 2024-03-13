@@ -6,11 +6,11 @@ from swapmaster.core.models import Commission, CommissionId
 
 class CommissionWriter(Protocol):
     @abstractmethod
-    async def add_commission(self, commission: Commission) -> Commission:
+    async def save_commission(self, commission: Commission) -> Commission:
         raise NotImplementedError
 
     @abstractmethod
-    async def is_commission_available(self, value: float) -> bool:
+    async def is_commission_exists(self, commission: Commission) -> bool:
         raise NotImplementedError
 
 

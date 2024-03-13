@@ -23,9 +23,6 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
     def __init__(self, session: AsyncSession):
         super().__init__(models.Reserve, session)
 
-    async def is_reserve_available(self, reserve_id) -> ReserveId:
-        ...
-
     async def attach_wallet(self, wallet_id: WalletId, reserve_id: ReserveId) -> Reserve:
         updated_reserve = await self.update_model(
             wallet_id=wallet_id,

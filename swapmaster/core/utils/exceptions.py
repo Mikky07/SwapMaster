@@ -38,3 +38,7 @@ class NoReceptionWallet(SMError):
 
 class PairNotUsable(SMError):
     pass
+
+
+class CommissionIsNotValid(SMError):
+    pass
