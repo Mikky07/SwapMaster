@@ -1,8 +1,18 @@
 from typing import AsyncContextManager
 from abc import abstractmethod
 
-from swapmaster.application import Authenticate, AddRequisite, AddOrder, FinishOrder, CancelOrder, CalculateSendTotal, \
-    AddPair, AddMethod, GetFullOrder, AddCommission
+from swapmaster.application import (
+    Authenticate,
+    AddRequisite,
+    AddOrder,
+    FinishOrder,
+    CancelOrder,
+    CalculateSendTotal,
+    AddPair,
+    AddMethod,
+    GetFullOrder,
+    AddCommission
+)
 from swapmaster.application.verifier import Verifier
 
 

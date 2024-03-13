@@ -3,7 +3,7 @@ from .create_requisite import AddRequisite, NewRequisiteDTO
 from .create_method import AddMethod, NewMethodDTO
 from .create_pair import AddPair, NewPairDTO
 from swapmaster.application.order.create import AddOrder, NewOrderDTO
-from .create_reserve import AddReserve, NewReserveDTO
+from .create_reserve import CreateReserve, NewReserveDTO
 from .create_commission import AddCommission, NewCommissionDTO
 from .authenticate import Authenticate
 from .order import (
@@ -13,7 +13,7 @@ from .order import (
 )
 
 
-__all__ = [
+__all__ = (
     "CalculateSendTotal",
     "FinishOrder",
     "CancelOrder",
@@ -22,7 +22,7 @@ __all__ = [
     "AddMethod", "NewMethodDTO",
     "AddPair", "NewPairDTO",
     "AddOrder", "NewOrderDTO",
-    "AddReserve", "NewReserveDTO",
+    "CreateReserve", "NewReserveDTO",
     "AddCommission", "NewCommissionDTO",
     "Authenticate"
-]
+)
