@@ -14,7 +14,7 @@ class NewMethodDTO:
     currency_id: CurrencyId
 
 
-class AddMethod(Interactor[NewMethodDTO, Method]):
+class AddMethod(Interactor):
     def __init__(
         self,
         method_db_gateway: MethodWriter,

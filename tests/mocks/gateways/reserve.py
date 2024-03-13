@@ -11,7 +11,7 @@ class ReserveGatewayMock(ReserveWriter):
     def __init__(self):
         self.reserves: Dict[ReserveId, Reserve] = {}
 
-    async def add_reserve(self, reserve: Reserve) -> Reserve:
+    async def save_reserve(self, reserve: Reserve) -> Reserve:
         reserve.id = NEW_RESERVE_ID
         reserve.wallet_id = NEW_RESERVE_WALLET_ID
         self.reserves[reserve.id] = reserve

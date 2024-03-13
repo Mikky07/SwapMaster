@@ -9,7 +9,7 @@ from swapmaster.application.common.reserve_obtainer.reserve_size_obtainer import
 
 class ReserveWriter(Protocol):
     @abstractmethod
-    async def add_reserve(self, reserve: Reserve) -> Reserve:
+    async def save_reserve(self, reserve: Reserve) -> Reserve:
         raise NotImplementedError
 
 

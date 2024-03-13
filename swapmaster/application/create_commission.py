@@ -13,7 +13,7 @@ class NewCommissionDTO:
     value: float
 
 
-class AddCommission(Interactor[NewCommissionDTO, Commission]):
+class AddCommission(Interactor):
     def __init__(
         self,
         commission_db_gateway: CommissionWriter,

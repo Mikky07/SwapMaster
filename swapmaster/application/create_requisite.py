@@ -14,7 +14,7 @@ class NewRequisiteDTO:
     regular_expression: str
 
 
-class AddRequisite(Interactor[NewRequisiteDTO, Requisite]):
+class AddRequisite(Interactor):
     def __init__(
             self,
             requisite_gateway: RequisiteWriter,

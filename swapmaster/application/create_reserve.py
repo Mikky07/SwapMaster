@@ -30,6 +30,6 @@ class CreateReserve(Interactor):
             update_method=data.update_method,
             wallet_id=None
         )
-        saved_reserve = await self.reserve_gateway.add_reserve(reserve=new_reserve)
+        saved_reserve = await self.reserve_gateway.save_reserve(reserve=new_reserve)
         await self.uow.commit()
         return saved_reserve

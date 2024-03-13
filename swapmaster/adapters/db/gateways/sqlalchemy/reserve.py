@@ -33,7 +33,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
         )
         return updated_reserve.to_dto()
 
-    async def add_reserve(self, reserve: Reserve) -> Reserve:
+    async def save_reserve(self, reserve: Reserve) -> Reserve:
         saved_reserve = await self.update_model(
             size=reserve.size,
             update_method=reserve.update_method

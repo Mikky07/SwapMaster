@@ -15,7 +15,7 @@ class NewUserDTO:
     password: str
 
 
-class Authenticate(Interactor[NewUserDTO, User]):
+class Authenticate(Interactor):
     def __init__(
             self,
             uow: UoW,

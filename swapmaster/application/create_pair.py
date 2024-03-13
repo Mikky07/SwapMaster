@@ -15,7 +15,7 @@ class NewPairDTO:
     course_id: CourseId
 
 
-class AddPair(Interactor[NewPairDTO, Pair]):
+class AddPair(Interactor):
     def __init__(self, pair_gateway: PairWriter, pair_service: PairService, uow: UoW):
         self.pair_gateway = pair_gateway
         self.pair_service = pair_service
