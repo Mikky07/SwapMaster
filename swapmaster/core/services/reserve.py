@@ -10,11 +10,11 @@ class ReserveService:
             self,
             initial_size: float,
             update_method: ReserveUpdateMethodEnum,
-            wallet: Optional[WalletId] = None
+            wallet_id: Optional[WalletId] = None
     ) -> Reserve:
         return Reserve(
             id=None,
             size=initial_size,
             update_method=update_method,
-            wallet_id=wallet
+            wallet_id=wallet_id
         )

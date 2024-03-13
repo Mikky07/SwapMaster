@@ -1,0 +1,24 @@
+db:
+  dialect: postgresql
+  driver: asyncpg
+  host: localhost
+  user: postgres
+  password: postgres
+  database: swapmaster
+  port: 5432
+auth:
+  secret-key: 9ed73747b98ebab067dc5219d5817d0ec5c89f7a4726d537b6f998335a9775f4
+  expire-minutes: 30
+email:
+  mail_server: smtp.yandex.ru
+  port: 465
+  login: test
+  password: test
+  email: test@yandex.ru
+redis:
+  host: localhost
+  port: 6379
+central:
+  order-payment-expire-minutes: 1
+tgbot:
+  token: test
