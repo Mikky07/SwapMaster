@@ -6,7 +6,7 @@ async def handle_start(message: Message):
     await message.answer("Hello!")
 
 
-def setup_user_router() -> Router:
+def setup_user_handlers() -> Router:
     user_router = Router(name="user_router")
     user_router.message.register(
         callback=handle_start,

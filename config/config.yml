@@ -10,7 +10,7 @@ auth:
   secret-key: 9ed73747b98ebab067dc5219d5817d0ec5c89f7a4726d537b6f998335a9775f4
   expire-minutes: 30
 email:
-  mail_server: smtp.yandex.ru
+  mail-server: smtp.yandex.ru
   port: 465
   login: test
   password: test
@@ -20,5 +20,11 @@ redis:
   port: 6379
 central:
   order-payment-expire-minutes: 1
-tgbot:
+bot:
   token: test
+bot-webhook:
+  server-host: 127.0.0.1
+  server-port: 8000
+  domain: swapmaster.ru
+  path: /webhook
+  secret: secret

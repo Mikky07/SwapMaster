@@ -2,7 +2,7 @@ from swapmaster.adapters.db.config.models import DBConfig
 from swapmaster.adapters.db.config.models.db import RedisConfig
 
 
-def load_db_config(db_dict: dict):
+def load_db_config(db_dict: dict) -> DBConfig:
     return DBConfig(
         dialect=db_dict.get("dialect", "postgresql"),
         driver=db_dict.get("driver", "psycopg2"),
@@ -14,7 +14,7 @@ def load_db_config(db_dict: dict):
     )
 
 
-def load_redis_config(dct: dict):
+def load_redis_config(dct: dict) -> RedisConfig:
     return RedisConfig(
         host=dct.get("host", "localhost"),
         port=dct.get("port", 6379)

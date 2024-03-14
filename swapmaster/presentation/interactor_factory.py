@@ -11,7 +11,7 @@ from swapmaster.application import (
     AddPair,
     AddMethod,
     GetFullOrder,
-    AddCommission
+    CreateCommission
 )
 from swapmaster.application.verifier import Verifier
 
@@ -58,7 +58,7 @@ class InteractorFactory:
         raise NotImplementedError
 
     @abstractmethod
-    async def commission_creator(self) -> AsyncContextManager[AddCommission]:
+    async def commission_creator(self) -> AsyncContextManager[CreateCommission]:
         raise NotImplementedError
 
     @abstractmethod

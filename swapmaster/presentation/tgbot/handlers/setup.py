@@ -2,15 +2,15 @@ import logging
 
 from aiogram import Dispatcher
 
-from .user import setup_user_router
+from .user import setup_user_handlers
 
 
 logger = logging.getLogger(__name__)
 
 
-def setup_routers(dp: Dispatcher):
+def setup_handlers(dp: Dispatcher):
     routers = [
-        setup_user_router()
+        setup_user_handlers()
     ]
 
     for router in routers:

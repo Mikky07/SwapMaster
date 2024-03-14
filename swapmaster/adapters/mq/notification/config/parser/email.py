@@ -6,6 +6,6 @@ def load_email_config(dct: dict):
         sender_email=dct.get("email"),
         sender_login=dct.get("login"),
         sender_password=dct.get("password"),
-        mail_server=dct.get("mail_server"),
+        mail_server=dct.get("mail-server"),
         port=dct.get("port")
     )

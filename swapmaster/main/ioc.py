@@ -25,7 +25,7 @@ from swapmaster.application import (
     CalculateSendTotal,
     AddPair,
     AddMethod,
-    AddCommission,
+    CreateCommission,
     GetFullOrder,
 )
 from swapmaster.application.order import SetOrderPaidUp
@@ -173,12 +173,12 @@ class IoC(InteractorFactory):
             )
 
     @asynccontextmanager
-    async def commission_creator(self) -> AsyncContextManager[AddCommission]:
+    async def commission_creator(self) -> AsyncContextManager[CreateCommission]:
         async with self.db_connection_pool() as session:
-            yield AddCommission(
-                commission_db_gateway=CommissionGateway(session),
+            yield CreateCommission(
                 commission_service=self.commission_service,
                 uow=UowAsyncSession(session),
+                commission_gateway=CommissionGateway(session),
             )
 
     @asynccontextmanager
