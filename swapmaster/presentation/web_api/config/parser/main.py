@@ -1,8 +1,8 @@
 from swapmaster.adapters.mq.notification.config import load_email_config
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import read_config, load_config
-from swapmaster.presentation.api.config.models.main import APIConfig
-from swapmaster.presentation.api.config.parser.auth import load_auth_config
+from swapmaster.presentation.web_api.config.models.main import APIConfig
+from swapmaster.presentation.web_api.config.parser.auth import load_auth_config
 
 
 def load_api_config(paths: Paths) -> APIConfig:
@@ -10,5 +10,5 @@ def load_api_config(paths: Paths) -> APIConfig:
     return APIConfig.from_base(
         base=load_config(config_dct),
         auth=load_auth_config(config_dct.get("auth")),
-        email=load_email_config(dct=config_dct.get("email"))
+        email=load_email_config(config_dct.get("email"))
     )

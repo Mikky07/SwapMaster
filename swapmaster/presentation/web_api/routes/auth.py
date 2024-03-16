@@ -9,8 +9,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from swapmaster.application.common.db import UserReader
 from swapmaster.core.utils.exceptions import SMError
-from swapmaster.presentation.api.depends.auth import AuthProvider
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.auth import AuthProvider
+from swapmaster.presentation.web_api.depends.stub import Stub
 
 logger = logging.getLogger(__name__)
 

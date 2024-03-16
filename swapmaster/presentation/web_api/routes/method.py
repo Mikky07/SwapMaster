@@ -9,7 +9,7 @@ from swapmaster.application.common.db import MethodListReader
 from swapmaster.application.create_method import NewMethodDTO
 from swapmaster.core.models import Method
 from swapmaster.core.utils import exceptions
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)

@@ -1,4 +1,3 @@
-import asyncio
 from typing import AsyncContextManager
 
 import uvicorn
@@ -8,9 +7,9 @@ from fastapi import FastAPI
 from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import get_paths
 from swapmaster.common.config.parser import logging_setup
-from swapmaster.presentation.api import *
-from swapmaster.presentation.api.routes import setup_routers
-from swapmaster.main.di import setup_dependencies
+from swapmaster.presentation.web_api import load_api_config
+from swapmaster.presentation.web_api.routes import setup_routers
+from swapmaster.main.di import setup_web_dependencies
 from swapmaster.adapters.mq import (
     create_async_scheduler,
     create_sync_scheduler,
@@ -38,7 +37,7 @@ def setup() -> FastAPI:
     app = FastAPI(lifespan=get_lifespan(scheduler_async=scheduler_async))
     setup_routers(app)
 
-    setup_dependencies(
+    setup_web_dependencies(
         app=app,
         api_config=api_config,
         scheduler_async=scheduler_async,

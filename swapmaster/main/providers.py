@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from swapmaster.adapters.db.gateways.sqlalchemy import OrderGateway
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.stub import Stub
 
 
 def async_session_provider(pool: async_sessionmaker[AsyncSession]):

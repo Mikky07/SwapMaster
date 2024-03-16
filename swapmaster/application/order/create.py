@@ -36,7 +36,7 @@ class CreatedOrderDTO:
     payment_expires_at: datetime
 
 
-class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
+class AddOrder(Interactor):
     def __init__(
         self,
         uow: UoW,
@@ -49,7 +49,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         reserve_gateway: ReserveReader,
         notifier: Notifier,
         task_manager: TaskManager,
-        central_config: CentralConfig,
+        config: CentralConfig,
         order_gateway_factory
     ):
         self.reserve_gateway = reserve_gateway
@@ -62,7 +62,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         self.order_requisite_gateway = order_requisite_gateway
         self.notifier = notifier
         self.task_manager = task_manager
-        self.central_config = central_config
+        self.config = config
         self.order_gateway_factory = order_gateway_factory
 
     async def __call__(self, data: NewOrderDTO) -> CreatedOrderDTO:
@@ -90,7 +90,7 @@ class AddOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
         await self.uow.commit()
 
         order_expiration_date = (
-                datetime.now() + timedelta(minutes=self.central_config.order_payment_expire_minutes)
+                datetime.now() + timedelta(minutes=self.config.order_payment_expire_minutes)
         )
 
         customer = await self.user_reader.get_user(user_id=order_saved.user_id)

@@ -13,8 +13,8 @@ from swapmaster.application.common.db.user_gateway import UserReader
 from swapmaster.core.models import User
 from swapmaster.core.models.token import Token
 from swapmaster.core.utils.exceptions import SMError, UserNotFound
-from swapmaster.presentation.api.config.models.auth import AuthConfig
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.config.models.auth import AuthConfig
+from swapmaster.presentation.web_api.depends.stub import Stub
 
 logger = logging.getLogger(__name__)
 oauth2_scheme = OAuth2PasswordBearer("/auth/token")

@@ -8,8 +8,8 @@ from swapmaster.application.calculate_send_total import (
     CalculateTotalDTO,
     CalculatedTotalDTO
 )
-from swapmaster.presentation.api.depends.stub import Stub
-from swapmaster.presentation.api.models import CalculateData
+from swapmaster.presentation.web_api.depends.stub import Stub
+from swapmaster.presentation.web_api.models import CalculateData
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)

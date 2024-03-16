@@ -1,4 +1,4 @@
-from swapmaster.presentation.api.config.models.auth import AuthConfig
+from swapmaster.presentation.web_api.config.models.auth import AuthConfig
 
 
 def load_auth_config(config_dct: dict):

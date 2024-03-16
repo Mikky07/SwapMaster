@@ -8,8 +8,8 @@ from starlette import status
 from swapmaster.application.create_commission import NewCommissionDTO
 from swapmaster.core.models import Commission
 from swapmaster.core.utils import exceptions
-from swapmaster.presentation.api import models
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api import models
+from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)

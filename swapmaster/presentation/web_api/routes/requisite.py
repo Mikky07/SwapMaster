@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from swapmaster.application.common.db import RequisiteReader, OrderRequisiteReader
 from swapmaster.application.create_requisite import NewRequisiteDTO
 from swapmaster.core.models import OrderId, OrderRequisite, PairId, Requisite
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 

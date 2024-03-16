@@ -7,7 +7,7 @@ from swapmaster.application.common.db import PairReader
 from swapmaster.application.create_pair import NewPairDTO
 from swapmaster.core.models import Pair, MethodId
 from swapmaster.core.utils.exceptions import SMError
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 

@@ -7,7 +7,7 @@ from starlette import status
 from swapmaster.application.authenticate import NewUserDTO
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.core.models import User
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.presentation.interactor_factory import InteractorFactory
 

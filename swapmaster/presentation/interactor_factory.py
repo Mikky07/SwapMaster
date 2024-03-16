@@ -1,8 +1,7 @@
 from typing import AsyncContextManager
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from swapmaster.application import (
-    Authenticate,
     AddRequisite,
     AddOrder,
     FinishOrder,
@@ -11,12 +10,12 @@ from swapmaster.application import (
     AddPair,
     AddMethod,
     GetFullOrder,
-    CreateCommission
+    CreateCommission, Authenticate
 )
 from swapmaster.application.verifier import Verifier
 
 
-class InteractorFactory:
+class InteractorFactory(ABC):
     @abstractmethod
     async def get_verifier(self) -> AsyncContextManager[Verifier]:
         raise NotImplementedError

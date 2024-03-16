@@ -14,9 +14,9 @@ from swapmaster.application.order.get_full_order import OrderWithRequisites
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId
 from swapmaster.core.utils.exceptions import SMError
-from swapmaster.presentation.api.depends.stub import Stub
-from swapmaster.presentation.api.models import NewOrderRequestDTO
-from swapmaster.presentation.api.models.responses import FullOrder
+from swapmaster.presentation.web_api.depends.stub import Stub
+from swapmaster.presentation.web_api.models import NewOrderRequestDTO
+from swapmaster.presentation.web_api.models.responses import FullOrder
 from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)

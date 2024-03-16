@@ -4,7 +4,7 @@ from fastapi.routing import APIRouter
 from fastapi import Depends
 
 from swapmaster.application.common.db.currency_gateway import CurrencyListReader
-from swapmaster.presentation.api.depends.stub import Stub
+from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.core.models import Currency
 
 

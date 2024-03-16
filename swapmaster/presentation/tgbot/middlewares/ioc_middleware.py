@@ -3,11 +3,11 @@ from typing import Callable, Dict, Any, Awaitable
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from swapmaster.main.ioc import IoC
+from swapmaster.presentation.interactor_factory import InteractorFactory
 
 
 class IoCMiddleware(BaseMiddleware):
-    def __init__(self, ioc: IoC):
+    def __init__(self, ioc: InteractorFactory):
         self.ioc = ioc
 
     async def __call__(
