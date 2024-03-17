@@ -1,13 +1,12 @@
 import pytest
 
 from swapmaster.application.create_requisite import CreateRequisite, NewRequisiteDTO
-from swapmaster.core.models import Pair
+from swapmaster.core.models import Pair, PairId
 from swapmaster.core.utils.exceptions import PairNotExists, RequisiteAlreadyExists
 from tests.mocks import UoWMock, RequisiteGatewayMock, PairGatewayMock
-from tests.mocks.pair import NEW_PAIR_ID
 
 TEST_REQUISITE_NAME = "Sberbank RUB"
-TEST_REQUISITE_PAIR_ID = NEW_PAIR_ID
+TEST_REQUISITE_PAIR_ID = PairId(1)
 TEST_REQUISITE_REGULAR_EXPRESSION = "^3(?:0[0-5]|[68][0-9])[0-9]{11}$"
 
 
@@ -43,7 +42,7 @@ async def test_create_requisite(
         await requisite_creator(data=new_requisite)
 
     # adding the pair that associated with requisite
-    await pair_gateway.add_pair(pair=pair)
+    pair_gateway.pairs[TEST_REQUISITE_PAIR_ID] = pair
 
     created_requisite = await requisite_creator(data=new_requisite)
 

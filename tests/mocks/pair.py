@@ -4,9 +4,6 @@ from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import PairId, Pair, MethodId, CourseId, Course
 
 
-NEW_PAIR_ID = PairId(1)
-
-
 class PairGatewayMock(PairReader, PairWriter):
     def __init__(self):
         self.pairs: Dict[PairId, Pair] = {}
@@ -20,9 +17,7 @@ class PairGatewayMock(PairReader, PairWriter):
         return self.pairs[pair_id]
 
     async def add_pair(self, pair: Pair) -> Pair:
-        self.pairs[NEW_PAIR_ID] = pair
-        pair.id = NEW_PAIR_ID
-        return self.pairs[pair.id]
+        ...
 
     async def get_pair_course(self, course_id: CourseId) -> Course:
         ...
