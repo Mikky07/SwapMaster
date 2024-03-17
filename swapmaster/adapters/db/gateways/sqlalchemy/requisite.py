@@ -24,10 +24,10 @@ class RequisiteGateway(
         requisite = await self.read_model(filters=[models.Requisite.id == requisite_id])
         return requisite.to_dto()
 
-    async def is_requisite_available(self, requisite_id: RequisiteId) -> bool:
-        filters = [models.Requisite.id == requisite_id]
-        is_requisite_available = await self.is_model_exists(filters)
-        return is_requisite_available
+    async def is_requisite_exists(self, requisite_name: str) -> bool:
+        filters = [models.Requisite.name == requisite_name]
+        is_requisite_exists = await self.is_model_exists(filters)
+        return is_requisite_exists
 
     async def add_requisite(self, requisite: Requisite) -> Requisite:
         saved_requisite = await self.create_model(
@@ -50,5 +50,3 @@ class RequisiteGateway(
     async def get_requisites_of_pair(self, pair_id: PairId) -> list[Requisite]:
         requisites = await self.get_model_list([models.Requisite.pair_id == pair_id])
         return [requisite.to_dto() for requisite in requisites]
-
-

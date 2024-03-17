@@ -1,5 +1,5 @@
 from .calculate_send_total import CalculateSendTotal
-from .create_requisite import AddRequisite, NewRequisiteDTO
+from .create_requisite import CreateRequisite, NewRequisiteDTO
 from .create_method import AddMethod, NewMethodDTO
 from .create_pair import AddPair, NewPairDTO
 from swapmaster.application.order.create import AddOrder, NewOrderDTO
@@ -18,7 +18,7 @@ __all__ = (
     "FinishOrder",
     "CancelOrder",
     "GetFullOrder",
-    "AddRequisite", "NewRequisiteDTO",
+    "CreateRequisite", "NewRequisiteDTO",
     "AddMethod", "NewMethodDTO",
     "AddPair", "NewPairDTO",
     "AddOrder", "NewOrderDTO",

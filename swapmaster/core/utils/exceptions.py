@@ -42,3 +42,11 @@ class PairNotUsable(SMError):
 
 class CommissionIsNotValid(SMError):
     pass
+
+
+class PairNotExists(SMError):
+    pass
+
+
+class RequisiteAlreadyExists(SMError):
+    pass

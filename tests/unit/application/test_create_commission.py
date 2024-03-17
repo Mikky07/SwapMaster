@@ -4,9 +4,8 @@ from unittest.mock import Mock
 from swapmaster.application.create_commission import CreateCommission, NewCommissionDTO
 from swapmaster.core.services import CommissionService
 from swapmaster.core.utils.exceptions import CommissionIsNotValid, AlreadyExists
-from swapmaster.core.models import CommissionId, Commission
+from swapmaster.core.models import Commission
 from tests.mocks import UoWMock, CommissionGatewayMock
-from tests.unit.conftest import commission_gateway
 
 
 NEW_COMMISSION_VALUE = 1
@@ -60,7 +59,7 @@ async def test_add_commission_(
     with pytest.raises(AlreadyExists):
         await commission_creator(data=duplicate_new_commission)
 
-    assert created_commission.id is not None
+    assert type(created_commission.id) is int
     assert created_commission.value == NEW_COMMISSION_VALUE
 
     assert uow.committed

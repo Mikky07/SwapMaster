@@ -10,11 +10,11 @@ class PairReader(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_pair_by_id(self, pair_id: PairId) -> Pair:
+    async def get_pair_by_id(self, pair_id: PairId) -> Pair | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def obtain_course(self, course_id: CourseId) -> Course:
+    async def get_pair_course(self, course_id: CourseId) -> Course:
         raise NotImplementedError
 
 

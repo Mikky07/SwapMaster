@@ -26,7 +26,7 @@ async def test_create_reserve_(
         )
     )
 
-    assert reserve_created.id is not None
+    assert type(reserve_created.id) is int
     assert reserve_created.size == NEW_RESERVE_SIZE
     assert reserve_created.update_method == NEW_RESERVE_UPDATE_METHOD
     assert reserve_created.wallet_id is None
