@@ -14,7 +14,7 @@ from swapmaster.application.common.db.reserve_gateway import (
 from swapmaster.application.common.reserve_obtainer.reserve_size_obtainer import RemoteReserve
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
-
+from swapmaster.adapters.db.exceptions import exception_mapper
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
     def __init__(self, session: AsyncSession):
         super().__init__(models.Reserve, session)
 
+    @exception_mapper
     async def attach_wallet(self, wallet_id: WalletId, reserve_id: ReserveId) -> Reserve:
         updated_reserve = await self.update_model(
             wallet_id=wallet_id,
@@ -30,6 +31,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
         )
         return updated_reserve.to_dto()
 
+    @exception_mapper
     async def save_reserve(self, reserve: Reserve) -> Reserve:
         saved_reserve = await self.update_model(
             size=reserve.size,
@@ -37,6 +39,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
         )
         return saved_reserve.to_dto()
 
+    @exception_mapper
     async def get_all_remote_reserves(self) -> list[RemoteReserve]:
         stmt = (
             select(models.Reserve.id, models.Wallet.address)
@@ -51,6 +54,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
             for remote_reserve in result.all()
         ]
 
+    @exception_mapper
     async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> Reserve:
         updated_reserve = await self.update_model(
             size=size,
@@ -58,6 +62,7 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
         )
         return updated_reserve
 
+    @exception_mapper
     async def get_reserve_of_method(self, method_id: MethodId) -> Reserve:
         reserve = await self.read_model([models.Reserve.method_id == method_id])
         return reserve.to_dto()

@@ -8,12 +8,14 @@ from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.core.models.user import User, UserId
 from swapmaster.application.common.db.user_gateway import UserReader, UserSaver, UserUpdater
+from swapmaster.adapters.db.exceptions import exception_mapper
 
 
 class UserGateway(BaseDBGateway, UserReader, UserSaver, UserUpdater):
     def __init__(self, session: AsyncSession):
         super().__init__(models.User, session)
 
+    @exception_mapper
     async def create_user(self, user: User) -> User:
         is_user_exists = await self.is_model_exists([
             or_(
@@ -30,6 +32,7 @@ class UserGateway(BaseDBGateway, UserReader, UserSaver, UserUpdater):
         )
         return user_saved.to_dto()
 
+    @exception_mapper
     async def get_user(self, user_id: UserId) -> User:
         try:
             user = await self.read_model([models.User.id == user_id])
@@ -37,10 +40,12 @@ class UserGateway(BaseDBGateway, UserReader, UserSaver, UserUpdater):
             raise UserNotFound("That user does not exists!")
         return user
 
+    @exception_mapper
     async def get_user_by_username(self, username: str) -> User:
         user = await self.read_model(filters=[models.User.username == username])
         return user.to_dto()
 
+    @exception_mapper
     async def update_verification_status(self, user_id: UserId) -> User:
         verified_user = await self.update_model(
             [models.User.id == user_id],

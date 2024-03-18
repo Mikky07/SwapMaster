@@ -7,6 +7,7 @@ from swapmaster.adapters.db import models
 from swapmaster.application.common.db.method_gateway import MethodListReader, MethodWriter
 from swapmaster.core.models import CurrencyId
 from swapmaster.core.models.method import Method
+from swapmaster.adapters.db.exceptions import exception_mapper
 
 logger = logging.getLogger(__name__)
 
@@ -15,14 +16,17 @@ class MethodGateway(BaseDBGateway, MethodWriter, MethodListReader):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Method, session)
 
+    @exception_mapper
     async def get_method_list(self) -> list[Method]:
         methods = await self.get_model_list()
         return [method.to_dto() for method in methods]
 
+    @exception_mapper
     async def add_method(self, method: Method) -> Method:
         saved_method = await self.create_model(name=method.name, currency_id=method.currency_id)
         return saved_method.to_dto()
 
+    @exception_mapper
     async def is_method_available(self, name: str, currency_id: CurrencyId) -> bool:
         result = await self.read_model(
             [

@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from sqlalchemy.exc import NoResultFound
 
+from swapmaster.adapters.db.exceptions import exception_mapper
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
 from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import Pair, PairId, MethodId, CourseId, Course, Wallet, WalletId
@@ -19,6 +20,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Pair, session)
 
+    @exception_mapper
     async def get_pair(self, method_from_id: MethodId, method_to_id: MethodId) -> Pair:
         filters = [
             and_(
@@ -34,6 +36,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         )
         return pair.to_dto()
 
+    @exception_mapper
     async def get_pair_currencies(self, pair_id: PairId) -> PairCurrencies:
         currency_from = await self.session.scalar(
             select(models.Currency)
@@ -55,6 +58,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
             currency_to=currency_to.to_dto(),
         )
 
+    @exception_mapper
     async def add_pair(self, pair: Pair) -> Pair:
         saved_pair = await self.create_model(
             method_to_id=pair.method_to,
@@ -63,10 +67,12 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         )
         return saved_pair.to_dto()
 
+    @exception_mapper
     async def get_pair_by_id(self, pair_id: PairId) -> Pair:
         pair = await self.read_model([models.Pair.id == pair_id])
         return pair.to_dto()
 
+    @exception_mapper
     async def obtain_course(self, course_id: CourseId) -> Course:
         stmt = select(models.Course).filter(models.Course.id == course_id)
         result = await self.session.scalars(stmt)
@@ -74,6 +80,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
             raise SMError("Course not found")
         return course
 
+    @exception_mapper
     async def get_reception_wallet(self, reception_wallet_id: WalletId) -> Wallet:
         stmt = select(models.Wallet).filter(models.Wallet.id == reception_wallet_id)
         result = await self.session.scalars(stmt)

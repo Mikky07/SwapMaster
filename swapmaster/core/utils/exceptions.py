@@ -20,6 +20,11 @@ class SMError(Exception):
         )
 
 
+class GatewayError(SMError):
+    """This is the base error for gateways"""
+    pass
+
+
 class AlreadyExists(SMError):
     pass
 

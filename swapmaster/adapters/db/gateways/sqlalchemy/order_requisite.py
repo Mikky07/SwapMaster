@@ -7,6 +7,7 @@ from swapmaster.application.common.db import (
     OrderRequisiteReader,
     OrderRequisiteWriter
 )
+from swapmaster.adapters.db.exceptions import exception_mapper
 from .base import BaseDBGateway
 
 
@@ -18,6 +19,7 @@ class OrderRequisiteGateway(
     def __init__(self, session: AsyncSession):
         super().__init__(models.OrderRequisite, session)
 
+    @exception_mapper
     async def add_order_requisite(
             self,
             order_requisite: NewOrderRequisiteDTO,
@@ -29,6 +31,7 @@ class OrderRequisiteGateway(
             data=order_requisite.data
         )
 
+    @exception_mapper
     async def get_order_requisites(self, order_id: OrderId) -> list[OrderRequisite]:
         requisites = await self.get_model_list([models.OrderRequisite.order_id == order_id])
         return [requisite.to_dto() for requisite in requisites]
