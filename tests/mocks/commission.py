@@ -4,15 +4,14 @@ from swapmaster.application.common.db.commission_gateway import CommissionWriter
 from swapmaster.core.models import CommissionId, Commission
 
 
-NEW_COMMISSION_ID = CommissionId(1)
-
-
 class CommissionGatewayMock(CommissionWriter):
     def __init__(self):
         self.commissions: Dict[CommissionId, Commission] = {}
 
     async def save_commission(self, commission: Commission) -> Commission:
-        commission.id = NEW_COMMISSION_ID
+        max_of_ids = max(self.commissions) if self.commissions else 0
+        new_commission_id = max_of_ids + 1
+        commission.id = new_commission_id
         self.commissions[commission.id] = commission
         return self.commissions[commission.id]
 

@@ -8,16 +8,15 @@ from swapmaster.application.common.db.requisite_gateway import (
 from swapmaster.core.models import RequisiteId, Requisite, PairId
 
 
-NEW_REQUISITE_ID = RequisiteId(1)
-
-
 class RequisiteGatewayMock(RequisiteReader, RequisiteUpdater, RequisiteWriter):
     def __init__(self):
         self.requisites: Dict[RequisiteId, Requisite] = {}
 
     async def add_requisite(self, requisite: Requisite) -> Requisite:
-        self.requisites[NEW_REQUISITE_ID] = requisite
-        requisite.id = NEW_REQUISITE_ID
+        max_of_ids = max(self.requisites) if self.requisites else 0
+        new_requisite_id = max_of_ids + 1
+        requisite.id = new_requisite_id
+        self.requisites[requisite.id] = requisite
         return self.requisites[requisite.id]
 
     async def is_requisite_exists(self, requisite_name: str) -> bool:
