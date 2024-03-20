@@ -17,7 +17,11 @@ class PairGatewayMock(PairReader, PairWriter):
         return self.pairs[pair_id]
 
     async def add_pair(self, pair: Pair) -> Pair:
-        ...
+        max_of_ids = max(self.pairs) if self.pairs else 0
+        new_pair_id = max_of_ids + 1
+        pair.id = new_pair_id
+        self.pairs[pair.id] = pair
+        return self.pairs.get(pair.id)
 
     async def get_pair_course(self, course_id: CourseId) -> Course:
         ...

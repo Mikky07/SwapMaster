@@ -1,9 +1,9 @@
 import functools
 from typing import Callable, TypeVar, ParamSpec
 
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, NoResultFound
 
-from swapmaster.core.utils.exceptions import GatewayError
+from swapmaster.core.utils.exceptions import GatewayError, AlreadyExists
 
 Params = ParamSpec("Params")
 ReturnValue = TypeVar("ReturnValue")

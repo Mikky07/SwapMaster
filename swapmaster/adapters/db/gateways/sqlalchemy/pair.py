@@ -73,7 +73,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         return pair.to_dto()
 
     @exception_mapper
-    async def obtain_course(self, course_id: CourseId) -> Course:
+    async def get_pair_course(self, course_id: CourseId) -> Course:
         stmt = select(models.Course).filter(models.Course.id == course_id)
         result = await self.session.scalars(stmt)
         if not (course := result.first()):

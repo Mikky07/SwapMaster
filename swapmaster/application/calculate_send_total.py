@@ -44,7 +44,7 @@ class CalculateSendTotal(Interactor):
         if not pair:
             raise SMError("Some troubles with fetching pair by id")
 
-        course = await self.pair_gateway.obtain_course(course_id=pair.course_id)
+        course = await self.pair_gateway.get_pair_course(course_id=pair.course_id)
 
         commission = await self.commission_gateway.get_commission(commission_id=pair.commission)
         send_amount = course.value * data.to_receive_quantity
