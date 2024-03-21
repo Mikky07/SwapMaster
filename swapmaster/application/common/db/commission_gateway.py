@@ -6,7 +6,7 @@ from swapmaster.core.models import Commission, CommissionId
 
 class CommissionWriter(Protocol):
     @abstractmethod
-    async def save_commission(self, commission: Commission) -> Commission:
+    async def add_commission(self, commission: Commission) -> Commission:
         raise NotImplementedError
 
     @abstractmethod

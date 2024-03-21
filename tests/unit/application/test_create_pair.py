@@ -1,13 +1,14 @@
 import pytest
 
 from swapmaster.application.create_pair import NewPairDTO, CreatePair
+from swapmaster.core.models import CommissionId, WalletId, CourseId, MethodId
 from tests.mocks import UoWMock, PairGatewayMock
 
-TEST_METHOD_FROM_ID = 1
-TEST_METHOD_TO_ID = 2
-TEST_COMMISSION_ID = 1
-TEST_COURSE_ID = 1
-TEST_WALLET_ID = 1
+TEST_METHOD_FROM_ID = MethodId(1)
+TEST_METHOD_TO_ID = MethodId(2)
+TEST_COMMISSION_ID = CommissionId(1)
+TEST_COURSE_ID = CourseId(1)
+TEST_WALLET_ID = WalletId(1)
 
 
 @pytest.mark.asyncio

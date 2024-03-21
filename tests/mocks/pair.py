@@ -9,7 +9,9 @@ class PairGatewayMock(PairReader, PairWriter):
         self.pairs: Dict[PairId, Pair] = {}
 
     async def get_pair(self, method_from_id: MethodId, method_to_id: MethodId) -> Pair:
-        ...
+        for pair in self.pairs.values():
+            if pair.method_to == method_to_id and pair.method_from == method_from_id:
+                return pair
 
     async def get_pair_by_id(self, pair_id: PairId) -> Pair | None:
         if pair_id not in self.pairs:

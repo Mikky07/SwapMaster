@@ -19,7 +19,7 @@ class CommissionGateway(BaseDBGateway, CommissionWriter, CommissionReader):
         super().__init__(models.Commission, session)
 
     @exception_mapper
-    async def save_commission(self, commission: Commission) -> Commission:
+    async def add_commission(self, commission: Commission) -> Commission:
         saved_commission = await self.create_model(value=commission.value)
         return saved_commission.to_dto()
 

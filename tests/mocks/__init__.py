@@ -3,6 +3,7 @@ from .commission import CommissionGatewayMock
 from .reserve import ReserveGatewayMock
 from .requisite import RequisiteGatewayMock
 from .pair import PairGatewayMock
+from .course import CourseGatewayMock
 
 
 __all__ = (
@@ -10,5 +11,6 @@ __all__ = (
     "CommissionGatewayMock",
     "ReserveGatewayMock",
     "RequisiteGatewayMock",
-    "PairGatewayMock"
+    "PairGatewayMock",
+    "CourseGatewayMock"
 )

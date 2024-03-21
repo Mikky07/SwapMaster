@@ -7,10 +7,9 @@ from sqlalchemy.exc import NoResultFound
 from swapmaster.adapters.db.exceptions import exception_mapper
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
 from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
-from swapmaster.core.models import Pair, PairId, MethodId, CourseId, Course, Wallet, WalletId
+from swapmaster.core.models import Pair, PairId, MethodId, Wallet, WalletId
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
-from swapmaster.core.utils.exceptions import SMError, NoReceptionWallet
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         ]
         is_pair_available = await self.is_model_exists(filters=filters)
         if not is_pair_available:
-            raise SMError("That pair does not exists")
+            raise NoResultFound("Pair does not exists")
         pair = await self.read_model(
             filters=filters
         )
@@ -73,17 +72,9 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
         return pair.to_dto()
 
     @exception_mapper
-    async def get_pair_course(self, course_id: CourseId) -> Course:
-        stmt = select(models.Course).filter(models.Course.id == course_id)
-        result = await self.session.scalars(stmt)
-        if not (course := result.first()):
-            raise SMError("Course not found")
-        return course
-
-    @exception_mapper
     async def get_reception_wallet(self, reception_wallet_id: WalletId) -> Wallet:
         stmt = select(models.Wallet).filter(models.Wallet.id == reception_wallet_id)
         result = await self.session.scalars(stmt)
         if not (reception_wallet := result.first()):
-            raise NoReceptionWallet("Reception wallet not found!")
+            raise NoResultFound("Reception wallet not found!")
         return reception_wallet

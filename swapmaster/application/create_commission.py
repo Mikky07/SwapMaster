@@ -33,7 +33,7 @@ class CreateCommission(Interactor):
         )
         if is_commission_exists:
             raise AlreadyExists(text="commission with this value already exists")
-        saved_commission: Commission = await self.commission_gateway.save_commission(
+        saved_commission: Commission = await self.commission_gateway.add_commission(
             commission=new_commission
         )
         await self.uow.commit()

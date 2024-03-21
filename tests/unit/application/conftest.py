@@ -5,6 +5,7 @@ from tests.mocks import (
     CommissionGatewayMock,
     RequisiteGatewayMock
 )
+from tests.mocks.course import CourseGatewayMock
 
 
 @fixture
@@ -15,6 +16,11 @@ def reserve_gateway() -> ReserveGatewayMock:
 @fixture
 def commission_gateway() -> CommissionGatewayMock:
     return CommissionGatewayMock()
+
+
+@fixture()
+def course_gateway() -> CourseGatewayMock:
+    return CourseGatewayMock()
 
 
 @fixture

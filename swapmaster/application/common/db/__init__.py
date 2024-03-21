@@ -3,7 +3,7 @@ from .method_gateway import MethodWriter, MethodListReader
 from .pair_gateway import PairReader, PairWriter
 from .reserve_gateway import ReserveReader, ReserveUpdater, ReserveWriter
 from .user_gateway import UserReader, UserSaver, UserUpdater
-from .course_gateway import CourseReader
+from .course_gateway import CourseReader, CourseUpdater
 from .commission_gateway import CommissionReader, CommissionWriter
 from .order_requisite_gateway import (
     OrderRequisiteReader,
@@ -20,7 +20,7 @@ __all__ = [
     "ReserveReader", "ReserveUpdater", "ReserveWriter",
     "UserReader", "UserSaver", "UserUpdater",
     "CommissionReader", "CommissionWriter",
-    "CourseReader",
+    "CourseReader", "CourseUpdater",
     "OrderRequisiteReader", "OrderRequisiteWriter", "NewOrderRequisiteDTO",
     "OrderWriter", "OrderUpdater", "OrderReader",
     "RequisiteUpdater", "RequisiteWriter", "RequisiteReader"
