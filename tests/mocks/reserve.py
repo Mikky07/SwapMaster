@@ -1,6 +1,6 @@
 from typing import Dict
 
-from swapmaster.application.common.db.reserve_gateway import ReserveWriter
+from swapmaster.application.common.gateways.reserve_gateway import ReserveWriter
 from swapmaster.core.models import ReserveId, Reserve
 
 

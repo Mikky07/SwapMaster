@@ -1,5 +1,5 @@
 from .currency_gateway import CurrencyListReader
-from .method_gateway import MethodWriter, MethodListReader
+from .method_gateway import MethodWriter, MethodReader
 from .pair_gateway import PairReader, PairWriter
 from .reserve_gateway import ReserveReader, ReserveUpdater, ReserveWriter
 from .user_gateway import UserReader, UserSaver, UserUpdater
@@ -15,7 +15,7 @@ from .requisite_gateway import RequisiteReader, RequisiteUpdater, RequisiteWrite
 
 __all__ = [
     "CurrencyListReader",
-    "MethodWriter", "MethodListReader",
+    "MethodWriter", "MethodReader",
     "PairReader", "PairWriter",
     "ReserveReader", "ReserveUpdater", "ReserveWriter",
     "UserReader", "UserSaver", "UserUpdater",

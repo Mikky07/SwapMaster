@@ -2,7 +2,7 @@ from datetime import datetime
 
 from swapmaster.application.common import Notifier
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.db import (
+from swapmaster.application.common.gateways import (
     OrderUpdater,
     OrderReader,
     ReserveUpdater,

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass
 
 from swapmaster.application.common import Notifier
-from swapmaster.application.common.db import (
+from swapmaster.application.common.gateways import (
     RequisiteReader,
     OrderRequisiteWriter,
     NewOrderRequisiteDTO,

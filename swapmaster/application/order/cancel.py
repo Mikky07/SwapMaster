@@ -3,7 +3,7 @@ from datetime import datetime
 
 from swapmaster.application.common import UoW, Notifier
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.db import OrderUpdater, UserReader
+from swapmaster.application.common.gateways import OrderUpdater, UserReader
 from swapmaster.core.models import OrderId, Order
 
 

@@ -16,6 +16,4 @@ class VerifierMock(Verifier):
             user: User,
             verification_code: VerificationCode,
     ) -> User:
-        self.verification_finished = True
-        user.verification_status = VerificationStatusEnum.VERIFIED
-
+        ...

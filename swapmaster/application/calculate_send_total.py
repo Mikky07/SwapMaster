@@ -1,11 +1,11 @@
 import logging
 from dataclasses import dataclass
 
-from swapmaster.application.common.db import CourseReader
+from swapmaster.application.common.gateways import CourseReader
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.db.commission_gateway import CommissionReader
+from swapmaster.application.common.gateways.commission_gateway import CommissionReader
 from swapmaster.core.models import PairId
-from swapmaster.application.common.db.pair_gateway import PairReader
+from swapmaster.application.common.gateways.pair_gateway import PairReader
 from swapmaster.core.models.pair import Pair
 
 

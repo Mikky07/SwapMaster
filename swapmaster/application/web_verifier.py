@@ -2,7 +2,7 @@ import logging
 import uuid
 
 from swapmaster.application.common import Notifier, UoW
-from swapmaster.application.common.db import UserUpdater
+from swapmaster.application.common.gateways import UserUpdater
 from swapmaster.application.common.verifier import (
     Verifier,
     VerificationCode,

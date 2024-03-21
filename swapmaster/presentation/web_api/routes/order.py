@@ -7,7 +7,7 @@ from starlette import status
 
 from swapmaster.application import NewOrderDTO
 from swapmaster.application.calculate_send_total import CalculateTotalDTO
-from swapmaster.application.common.db import OrderReader
+from swapmaster.application.common.gateways import OrderReader
 from swapmaster.application.order.cancel import CancelOrderDTO
 from swapmaster.application.order.create import CreatedOrderDTO
 from swapmaster.application.order.get_full_order import OrderWithRequisites

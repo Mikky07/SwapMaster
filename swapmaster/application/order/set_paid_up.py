@@ -1,5 +1,5 @@
 from swapmaster.application.common.uow import UoW
-from swapmaster.application.common.db import OrderUpdater
+from swapmaster.application.common.gateways import OrderUpdater
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.task_manager import TaskManager
 from swapmaster.core.models import OrderId, Order

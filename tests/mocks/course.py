@@ -1,7 +1,7 @@
 from typing import Dict
 
 from swapmaster.core.models import Course, CourseId
-from swapmaster.application.common.db.course_gateway import (
+from swapmaster.application.common.gateways.course_gateway import (
     CourseReader,
     CourseUpdater
 )

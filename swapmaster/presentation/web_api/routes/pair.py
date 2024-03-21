@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-from swapmaster.application.common.db import PairReader
+from swapmaster.application.common.gateways import PairReader
 from swapmaster.application.create_pair import NewPairDTO
 from swapmaster.core.models import Pair, MethodId
 from swapmaster.core.utils.exceptions import SMError

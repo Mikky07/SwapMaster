@@ -8,6 +8,7 @@ from .verifier import VerifierMock
 from .user import UserGatewayMock
 from .notifier import NotifierMock
 from .cash import VerificationCashMock
+from .method import MethodGatewayMock
 
 
 __all__ = (
@@ -20,5 +21,6 @@ __all__ = (
     "VerifierMock",
     "UserGatewayMock",
     "NotifierMock",
-    "VerificationCashMock"
+    "VerificationCashMock",
+    "MethodGatewayMock"
 )

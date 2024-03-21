@@ -2,7 +2,7 @@ from typing import Dict
 
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.models import User, UserId
-from swapmaster.application.common.db.user_gateway import (
+from swapmaster.application.common.gateways.user_gateway import (
     UserSaver,
     UserUpdater
 )

@@ -1,6 +1,6 @@
 from typing import Dict
 
-from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
+from swapmaster.application.common.gateways.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import PairId, Pair, MethodId, CourseId, Course
 
 

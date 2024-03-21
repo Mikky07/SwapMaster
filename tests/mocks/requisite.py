@@ -1,6 +1,6 @@
 from typing import Dict
 
-from swapmaster.application.common.db.requisite_gateway import (
+from swapmaster.application.common.gateways.requisite_gateway import (
     RequisiteReader,
     RequisiteUpdater,
     RequisiteWriter

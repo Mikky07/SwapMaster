@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from swapmaster.application.common.db import PairReader
+from swapmaster.application.common.gateways import PairReader
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.db.requisite_gateway import RequisiteWriter, RequisiteReader
+from swapmaster.application.common.gateways.requisite_gateway import RequisiteWriter, RequisiteReader
 from swapmaster.application.common.uow import UoW
 from swapmaster.core.models import Requisite, PairId
 from swapmaster.core.utils.exceptions import RequisiteAlreadyExists, PairNotExists

@@ -1,6 +1,6 @@
 from typing import Dict
 
-from swapmaster.application.common.db.commission_gateway import (
+from swapmaster.application.common.gateways.commission_gateway import (
     CommissionWriter,
     CommissionReader
 )

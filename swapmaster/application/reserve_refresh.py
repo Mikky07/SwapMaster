@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from swapmaster.application.common.db.reserve_gateway import ReserveReader, ReserveUpdater
+from swapmaster.application.common.gateways.reserve_gateway import ReserveReader, ReserveUpdater
 from swapmaster.application.common.reserve_obtainer.reserve_size_obtainer import ReserveSizeObtainer
 from swapmaster.application.common.uow import UoW
 

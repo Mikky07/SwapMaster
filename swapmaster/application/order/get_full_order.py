@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.db import (
+from swapmaster.application.common.gateways import (
     OrderReader,
     RequisiteReader,
     OrderRequisiteReader

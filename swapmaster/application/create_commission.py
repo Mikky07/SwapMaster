@@ -4,7 +4,7 @@ from swapmaster.application.common.interactor import Interactor
 from swapmaster.core.models.commission import Commission
 from swapmaster.core.services.commission import CommissionService
 from swapmaster.core.utils.exceptions import AlreadyExists
-from swapmaster.application.common.db.commission_gateway import CommissionWriter
+from swapmaster.application.common.gateways.commission_gateway import CommissionWriter
 from swapmaster.application.common import UoW
 
 

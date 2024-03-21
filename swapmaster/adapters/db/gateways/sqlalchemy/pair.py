@@ -6,7 +6,7 @@ from sqlalchemy.exc import NoResultFound
 
 from swapmaster.adapters.db.exceptions import exception_mapper
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
-from swapmaster.application.common.db.pair_gateway import PairReader, PairWriter
+from swapmaster.application.common.gateways.pair_gateway import PairReader, PairWriter
 from swapmaster.core.models import Pair, PairId, MethodId, Wallet, WalletId
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies

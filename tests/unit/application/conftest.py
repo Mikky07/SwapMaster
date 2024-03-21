@@ -1,5 +1,11 @@
 from pytest import fixture
-from tests.mocks import UoWMock, PairGatewayMock, VerifierMock, VerificationCashMock
+from tests.mocks import (
+    UoWMock,
+    PairGatewayMock,
+    VerifierMock,
+    VerificationCashMock,
+    MethodGatewayMock
+)
 from tests.mocks import (
     ReserveGatewayMock,
     CommissionGatewayMock,
@@ -18,6 +24,11 @@ def reserve_gateway() -> ReserveGatewayMock:
 @fixture
 def commission_gateway() -> CommissionGatewayMock:
     return CommissionGatewayMock()
+
+
+@fixture
+def method_gateway() -> MethodGatewayMock:
+    return MethodGatewayMock()
 
 
 @fixture
