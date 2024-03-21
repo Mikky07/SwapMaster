@@ -29,7 +29,7 @@ async def test_web_verifier_start_verification(
         verification_cash: VerificationCashMock,
         uow: UoWMock
 ):
-    cash_verifier = WebVerifier(
+    web_verifier = WebVerifier(
         notifier=notifier,
         cash=verification_cash,
         uow=uow,
@@ -37,16 +37,16 @@ async def test_web_verifier_start_verification(
     )
     user_gateway.users[TEST_USER.id] = TEST_USER
 
-    await cash_verifier.start_verification(user=TEST_USER)
+    await web_verifier.start_verification(user=TEST_USER)
 
     saved_code = await verification_cash.get_code(user_id=TEST_USER.id)
 
     notifier.notified = False
 
     with pytest.raises(VerificationFailed):
-        await cash_verifier.finish_verification(user=TEST_USER, verification_code=FAKE_VERIFICATION_CODE)
+        await web_verifier.finish_verification(user=TEST_USER, verification_code=FAKE_VERIFICATION_CODE)
 
-    verified_user = await cash_verifier.finish_verification(user=TEST_USER, verification_code=saved_code)
+    verified_user = await web_verifier.finish_verification(user=TEST_USER, verification_code=saved_code)
 
     assert verified_user.verification_status == VerificationStatusEnum.VERIFIED
     assert not verification_cash.codes.get(saved_code, False)
