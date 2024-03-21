@@ -28,7 +28,7 @@ from swapmaster.application import (
 from swapmaster.application.common import Notifier
 from swapmaster.application.common.task_manager import TaskManager
 from swapmaster.application.order import SetOrderPaidUp
-from swapmaster.application.cash_verifier import Verifier, UserVerificationCash
+from swapmaster.application.web_verifier import Verifier, UserVerificationCash
 from swapmaster.common.config.models import Config
 from swapmaster.core.services import (
     UserService,

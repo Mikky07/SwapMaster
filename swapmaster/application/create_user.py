@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from swapmaster.application.common import UoW
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.db.user_gateway import UserSaver
-from swapmaster.application.cash_verifier import Verifier
+from swapmaster.application.web_verifier import Verifier
 from swapmaster.core.models import User
 from swapmaster.core.services import UserService
 

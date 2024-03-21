@@ -6,6 +6,8 @@ from .pair import PairGatewayMock
 from .course import CourseGatewayMock
 from .verifier import VerifierMock
 from .user import UserGatewayMock
+from .notifier import NotifierMock
+from .cash import VerificationCashMock
 
 
 __all__ = (
@@ -16,5 +18,7 @@ __all__ = (
     "PairGatewayMock",
     "CourseGatewayMock",
     "VerifierMock",
-    "UserGatewayMock"
+    "UserGatewayMock",
+    "NotifierMock",
+    "VerificationCashMock"
 )

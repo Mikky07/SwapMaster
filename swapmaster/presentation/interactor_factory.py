@@ -12,7 +12,7 @@ from swapmaster.application import (
     GetFullOrder,
     CreateCommission, Authenticate
 )
-from swapmaster.application.cash_verifier import Verifier
+from swapmaster.application.web_verifier import Verifier
 
 
 class InteractorFactory(ABC):
