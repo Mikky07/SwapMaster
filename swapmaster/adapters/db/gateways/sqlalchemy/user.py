@@ -16,7 +16,7 @@ class UserGateway(BaseDBGateway, UserReader, UserSaver, UserUpdater):
         super().__init__(models.User, session)
 
     @exception_mapper
-    async def create_user(self, user: User) -> User:
+    async def add_user(self, user: User) -> User:
         is_user_exists = await self.is_model_exists([
             or_(
                 models.User.username == user.username,

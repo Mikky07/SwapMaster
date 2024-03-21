@@ -22,5 +22,5 @@ class UserUpdater(Protocol):
 
 class UserSaver(Protocol):
     @abstractmethod
-    async def create_user(self, user: User) -> User:
+    async def add_user(self, user: User) -> User:
         raise NotImplementedError

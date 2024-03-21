@@ -5,7 +5,7 @@ from .create_pair import CreatePair, NewPairDTO
 from swapmaster.application.order.create import AddOrder, NewOrderDTO
 from .create_reserve import CreateReserve, NewReserveDTO
 from .create_commission import CreateCommission, NewCommissionDTO
-from .authenticate import Authenticate
+from .create_user import CreateUser
 from .order import (
     FinishOrder,
     CancelOrder,
@@ -24,5 +24,5 @@ __all__ = (
     "AddOrder", "NewOrderDTO",
     "CreateReserve", "NewReserveDTO",
     "CreateCommission", "NewCommissionDTO",
-    "Authenticate"
+    "CreateUser"
 )

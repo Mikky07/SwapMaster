@@ -4,6 +4,8 @@ from .reserve import ReserveGatewayMock
 from .requisite import RequisiteGatewayMock
 from .pair import PairGatewayMock
 from .course import CourseGatewayMock
+from .verifier import VerifierMock
+from .user import UserGatewayMock
 
 
 __all__ = (
@@ -12,5 +14,7 @@ __all__ = (
     "ReserveGatewayMock",
     "RequisiteGatewayMock",
     "PairGatewayMock",
-    "CourseGatewayMock"
+    "CourseGatewayMock",
+    "VerifierMock",
+    "UserGatewayMock"
 )

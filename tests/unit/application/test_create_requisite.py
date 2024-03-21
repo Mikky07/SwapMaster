@@ -1,7 +1,7 @@
 import pytest
 
 from swapmaster.application.create_requisite import CreateRequisite, NewRequisiteDTO
-from swapmaster.core.models import Pair, PairId
+from swapmaster.core.models import Pair, PairId, RequisiteId
 from swapmaster.core.utils.exceptions import PairNotExists, RequisiteAlreadyExists
 from tests.mocks import UoWMock, RequisiteGatewayMock, PairGatewayMock
 
@@ -49,7 +49,7 @@ async def test_create_requisite(
     with pytest.raises(RequisiteAlreadyExists):
         await requisite_creator(data=new_requisite)
 
-    assert type(created_requisite.id) is int
+    assert type(created_requisite.id) is RequisiteId
     assert created_requisite.name == TEST_REQUISITE_NAME
     assert created_requisite.pair_id == TEST_REQUISITE_PAIR_ID
     assert created_requisite.regular_expression == TEST_REQUISITE_REGULAR_EXPRESSION

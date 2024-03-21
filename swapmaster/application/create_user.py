@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from swapmaster.application.common import UoW
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.db.user_gateway import UserSaver
-from swapmaster.application.verifier import Verifier
+from swapmaster.application.cash_verifier import Verifier
 from swapmaster.core.models import User
 from swapmaster.core.services import UserService
 
@@ -15,17 +15,17 @@ class NewUserDTO:
     password: str
 
 
-class Authenticate(Interactor):
+class CreateUser(Interactor):
     def __init__(
             self,
             uow: UoW,
-            user_saver: UserSaver,
+            user_gateway: UserSaver,
             user_service: UserService,
             verifier: Verifier
     ):
         self.user_service = user_service
         self.uow = uow
-        self.user_gateway = user_saver
+        self.user_gateway = user_gateway
         self.verifier = verifier
 
     async def __call__(self, data: NewUserDTO) -> User:
@@ -34,7 +34,7 @@ class Authenticate(Interactor):
             password=data.password,
             username=data.username
         )
-        user = await self.user_gateway.create_user(user=new_user)
+        user = await self.user_gateway.add_user(user=new_user)
         await self.uow.commit()
         await self.verifier.start_verification(user=user)
         return user

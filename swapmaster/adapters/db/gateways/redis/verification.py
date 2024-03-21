@@ -2,7 +2,7 @@ import logging
 
 from redis.asyncio.client import Redis
 
-from swapmaster.application.verifier import UserVerificationCash
+from swapmaster.application.cash_verifier import UserVerificationCash
 from swapmaster.core.models import UserId
 
 

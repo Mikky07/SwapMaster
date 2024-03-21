@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-from swapmaster.application.authenticate import NewUserDTO
+from swapmaster.application.create_user import NewUserDTO
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.core.models import User
 from swapmaster.presentation.web_api.depends.stub import Stub

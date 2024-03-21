@@ -37,6 +37,10 @@ class VerificationFailed(SMError):
     pass
 
 
+class AlreadyVerified(SMError):
+    pass
+
+
 class NoReceptionWallet(SMError):
     pass
 

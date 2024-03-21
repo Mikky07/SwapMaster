@@ -1,7 +1,7 @@
 import pytest
 
 from swapmaster.application.create_pair import NewPairDTO, CreatePair
-from swapmaster.core.models import CommissionId, WalletId, CourseId, MethodId
+from swapmaster.core.models import CommissionId, WalletId, CourseId, MethodId, PairId
 from tests.mocks import UoWMock, PairGatewayMock
 
 TEST_METHOD_FROM_ID = MethodId(1)
@@ -28,7 +28,7 @@ async def test_create_pair_(uow: UoWMock, pair_gateway: PairGatewayMock):
 
     created_pair = await pair_creator(data=new_pair)
 
-    assert type(created_pair.id) is int
+    assert type(created_pair.id) is PairId
     assert created_pair.course_id == TEST_COURSE_ID
     assert created_pair.commission == TEST_COMMISSION_ID
     assert created_pair.method_to == TEST_METHOD_TO_ID
