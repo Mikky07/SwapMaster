@@ -8,7 +8,6 @@ from .commission_gateway import CommissionReader, CommissionWriter
 from .order_requisite_gateway import (
     OrderRequisiteReader,
     OrderRequisiteWriter,
-    NewOrderRequisiteDTO
 )
 from .order_gateway import OrderUpdater, OrderWriter, OrderReader
 from .requisite_gateway import RequisiteReader, RequisiteUpdater, RequisiteWriter
@@ -21,7 +20,7 @@ __all__ = [
     "UserReader", "UserSaver", "UserUpdater",
     "CommissionReader", "CommissionWriter",
     "CourseReader", "CourseUpdater",
-    "OrderRequisiteReader", "OrderRequisiteWriter", "NewOrderRequisiteDTO",
+    "OrderRequisiteReader", "OrderRequisiteWriter",
     "OrderWriter", "OrderUpdater", "OrderReader",
     "RequisiteUpdater", "RequisiteWriter", "RequisiteReader"
 ]

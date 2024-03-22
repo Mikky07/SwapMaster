@@ -1,35 +1,36 @@
 from datetime import datetime
-from typing import Protocol, Callable, Any
+from typing import TypeAlias, Generic, TypeVar
 from abc import abstractmethod
 
+TaskId: TypeAlias = str
+T_Task = TypeVar("T_Task")
 
-class TaskManager(Protocol):
+
+class TaskManager(Generic[T_Task]):
     @abstractmethod
-    async def solve_async_task(
+    def plan_task(
+        self,
+        task: T_Task,
+        task_id: TaskId,
+        run_date: datetime,
+        *args,
+        **kwargs
+    ) -> TaskId:
+        raise NotImplementedError
+
+    @abstractmethod
+    def solve_task(
             self,
-            task: Callable[[...], Any],
-            id_: str | None = None,
-            run_date: datetime = None,
+            task: T_Task,
             *args,
             **kwargs
-    ):
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def solve_sync_task(
-            self,
-            task: Callable[[...], Any],
-            id_: str | None = None,
-            run_date: datetime = None,
-            *args,
-            **kwargs
-    ):
+    def get_planned_task(self, task_id: TaskId) -> T_Task:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_sync_task(self, task_id: str):
-        raise NotImplementedError
-
-    @abstractmethod
-    async def remove_async_task(self, task_id: str):
+    def remove_planned_task(self, task_id: TaskId) -> None:
         raise NotImplementedError

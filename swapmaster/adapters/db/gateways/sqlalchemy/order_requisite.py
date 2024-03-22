@@ -1,9 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from swapmaster.adapters.db import models
-from swapmaster.application.order.create import NewOrderRequisiteDTO
 from swapmaster.core.models import OrderId, OrderRequisite
-from swapmaster.application.common.db import (
+from swapmaster.application.common.gateways import (
     OrderRequisiteReader,
     OrderRequisiteWriter
 )
@@ -22,7 +21,7 @@ class OrderRequisiteGateway(
     @exception_mapper
     async def add_order_requisite(
             self,
-            order_requisite: NewOrderRequisiteDTO,
+            order_requisite: OrderRequisite,
             order_id: OrderId,
     ) -> None:
         await self.create_model(

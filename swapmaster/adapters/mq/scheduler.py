@@ -1,75 +1,102 @@
+"""Implementations of TaskManager ABC using APScheduler"""
 from datetime import datetime
-from typing import Callable, Any
+from typing import Callable, Coroutine, Any
 
-from apscheduler import AsyncScheduler, Scheduler, RunState
+from apscheduler import AsyncScheduler, Scheduler
 from apscheduler.triggers.date import DateTrigger
 
-from swapmaster.application.common.task_manager import TaskManager
+from swapmaster.application.common.task_manager import TaskManager, TaskId, T_Task
 
 
-class TaskManagerImp(TaskManager):
+class AsyncTaskManager(TaskManager[Coroutine[Any, Any, None]]):
     def __init__(
             self,
-            scheduler_async: AsyncScheduler,
-            scheduler_sync: Scheduler
+            scheduler: AsyncScheduler
     ):
-        self.scheduler_async = scheduler_async
-        self.scheduler_sync = scheduler_sync
+        self.scheduler = scheduler
 
-    async def solve_async_task(
+    async def solve_task(
             self,
-            task: Callable[[...], Any],
-            id_: str | None = None,
-            run_date: datetime = None,
+            task: T_Task,
             *args,
             **kwargs
-    ):
-        trigger = DateTrigger(run_time=run_date) if run_date else None
-        if trigger:
-            await self.scheduler_async.add_schedule(
-                func_or_task_id=task,
-                trigger=trigger,
-                id=id_,
-                args=args,
-                kwargs=kwargs
-            )
-        else:
-            await self.scheduler_async.add_job(
-                func_or_task_id=task,
-                args=args,
-                kwargs=kwargs
-            )
-        if self.scheduler_async.state == RunState.stopped:
-            await self.scheduler_async.start_in_background()
+    ) -> None:
+        await self.scheduler.add_job(
+            func_or_task_id=task,
+            args=args,
+            kwargs=kwargs
+        )
 
-    def solve_sync_task(
+    async def plan_task(
+        self,
+        task: T_Task,
+        task_id: TaskId,
+        run_date: datetime,
+        *args,
+        **kwargs
+    ) -> TaskId:
+        trigger = DateTrigger(run_time=run_date)
+
+        scheduled_task_id = await self.scheduler.add_schedule(
+            func_or_task_id=task,
+            trigger=trigger,
+            id=task_id,
+            args=args,
+            kwargs=kwargs
+        )
+
+        return scheduled_task_id
+
+    async def get_planned_task(self, task_id: TaskId) -> T_Task:
+        ...
+
+    async def remove_planned_task(self, task_id: TaskId) -> None:
+        await self.scheduler.remove_schedule(
+            id=task_id
+        )
+
+
+class SyncTaskManager(TaskManager[Callable[..., None]]):
+    def __init__(
             self,
-            task: Callable[[...], Any],
-            id_: str | None = None,
-            run_date: datetime = None,
+            scheduler: Scheduler
+    ):
+        self.scheduler = scheduler
+
+    def solve_task(
+            self,
+            task: T_Task,
             *args,
             **kwargs
-    ):
-        trigger = DateTrigger(run_time=run_date) if run_date else None
-        if trigger:
-            self.scheduler_sync.add_schedule(
-                func_or_task_id=task,
-                trigger=trigger,
-                id=id_,
-                args=args,
-                kwargs=kwargs
-            )
-        else:
-            self.scheduler_sync.add_job(
-                func_or_task_id=task,
-                args=args,
-                kwargs=kwargs
-            )
-        if self.scheduler_sync.state == RunState.stopped:
-            self.scheduler_sync.start_in_background()
+    ) -> None:
+        self.scheduler.add_job(
+            func_or_task_id=task,
+            args=args,
+            kwargs=kwargs
+        )
 
-    def remove_sync_task(self, task_id: str):
-        self.scheduler_sync.remove_schedule(id=task_id)
+    def plan_task(
+        self,
+        task: T_Task,
+        task_id: TaskId,
+        run_date: datetime,
+        *args,
+        **kwargs
+    ) -> TaskId:
+        trigger = DateTrigger(run_time=run_date)
 
-    async def remove_async_task(self, task_id: str):
-        await self.scheduler_async.remove_schedule(id=task_id)
+        scheduled_task_id = self.scheduler.add_schedule(
+            func_or_task_id=task,
+            trigger=trigger,
+            id=task_id,
+            args=args,
+            kwargs=kwargs
+        )
+
+        return scheduled_task_id
+
+    def get_planned_task(self, task_id: TaskId) -> T_Task:
+        ...
+
+    def remove_planned_task(self, task_id: TaskId) -> None:
+        ...

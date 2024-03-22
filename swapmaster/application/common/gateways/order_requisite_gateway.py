@@ -1,18 +1,10 @@
-from dataclasses import dataclass
 from typing import Protocol
 from abc import abstractmethod
 
 from swapmaster.core.models import (
     OrderId,
-    RequisiteId,
     OrderRequisite
 )
-
-
-@dataclass
-class NewOrderRequisiteDTO:
-    requisite_id: RequisiteId
-    data: str
 
 
 class OrderRequisiteReader(Protocol):
@@ -23,5 +15,5 @@ class OrderRequisiteReader(Protocol):
 
 class OrderRequisiteWriter(Protocol):
     @abstractmethod
-    async def add_order_requisite(self, order_requisite: NewOrderRequisiteDTO, order_id: OrderId) -> None:
+    async def add_order_requisite(self, order_requisite: OrderRequisite, order_id: OrderId) -> None:
         raise NotImplementedError
