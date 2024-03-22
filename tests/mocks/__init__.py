@@ -9,6 +9,9 @@ from .user import UserGatewayMock
 from .notifier import NotifierMock
 from .cash import VerificationCashMock
 from .method import MethodGatewayMock
+from .order import OrderGatewayMock
+from .order_requisite import OrderRequisiteGatewayMock
+from .task_manager import AsyncTaskManagerMock
 
 
 __all__ = (
@@ -22,5 +25,8 @@ __all__ = (
     "UserGatewayMock",
     "NotifierMock",
     "VerificationCashMock",
-    "MethodGatewayMock"
+    "MethodGatewayMock",
+    "OrderGatewayMock",
+    "OrderRequisiteGatewayMock",
+    "AsyncTaskManagerMock"
 )

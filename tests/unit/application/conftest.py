@@ -4,7 +4,10 @@ from tests.mocks import (
     PairGatewayMock,
     VerifierMock,
     VerificationCashMock,
-    MethodGatewayMock
+    MethodGatewayMock,
+    OrderRequisiteGatewayMock,
+    AsyncTaskManagerMock,
+    OrderGatewayMock
 )
 from tests.mocks import (
     ReserveGatewayMock,
@@ -34,6 +37,21 @@ def method_gateway() -> MethodGatewayMock:
 @fixture
 def user_gateway() -> UserGatewayMock:
     return UserGatewayMock()
+
+
+@fixture
+def async_task_manager() -> AsyncTaskManagerMock:
+    return AsyncTaskManagerMock()
+
+
+@fixture
+def order_gateway() -> OrderGatewayMock:
+    return OrderGatewayMock()
+
+
+@fixture
+def order_requisite_gateway() -> OrderRequisiteGatewayMock:
+    return OrderRequisiteGatewayMock()
 
 
 @fixture

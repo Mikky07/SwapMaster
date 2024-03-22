@@ -10,7 +10,6 @@ from .create_user import CreateUser
 from .order import (
     FinishOrder,
     CancelOrder,
-    GetFullOrder
 )
 
 
@@ -18,7 +17,6 @@ __all__ = (
     "CalculateSendTotal",
     "FinishOrder",
     "CancelOrder",
-    "GetFullOrder",
     "CreateRequisite", "NewRequisiteDTO",
     "CreateMethod", "NewMethodDTO",
     "CreatePair", "NewPairDTO",

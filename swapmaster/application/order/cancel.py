@@ -13,7 +13,7 @@ class CancelOrderDTO:
     notification: str
 
 
-class CancelOrder(Interactor[CancelOrderDTO, Order]):
+class CancelOrder(Interactor):
     def __init__(
             self,
             uow: UoW,

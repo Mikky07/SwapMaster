@@ -1,14 +1,14 @@
-"""Implementations of TaskManager ABC using APScheduler"""
+"""Implementations of BaseTaskManager and AsyncTaskManager ABC using APScheduler"""
 from datetime import datetime
-from typing import Callable, Coroutine, Any
+from typing import Callable
 
 from apscheduler import AsyncScheduler, Scheduler
 from apscheduler.triggers.date import DateTrigger
 
-from swapmaster.application.common.task_manager import TaskManager, TaskId, T_Task
+from swapmaster.application.common.task_manager import BaseTaskManager, AsyncTaskManager, TaskId, T_Task
 
 
-class AsyncTaskManager(TaskManager[Coroutine[Any, Any, None]]):
+class AsyncTaskManagerImpl(AsyncTaskManager):
     def __init__(
             self,
             scheduler: AsyncScheduler
@@ -56,7 +56,7 @@ class AsyncTaskManager(TaskManager[Coroutine[Any, Any, None]]):
         )
 
 
-class SyncTaskManager(TaskManager[Callable[..., None]]):
+class SyncTaskManager(BaseTaskManager[Callable[..., None]]):
     def __init__(
             self,
             scheduler: Scheduler

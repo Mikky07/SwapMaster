@@ -6,15 +6,14 @@ from swapmaster.application.common import Notifier
 from swapmaster.application.common.gateways import (
     RequisiteReader,
     OrderRequisiteWriter,
-    NewOrderRequisiteDTO,
     PairReader,
     OrderWriter,
     ReserveReader, UserReader, OrderUpdater
 )
-from swapmaster.application.common.task_manager import TaskManager
+from swapmaster.application.common.task_manager import AsyncTaskManager
 from swapmaster.application.order.cancel import cancel_expired_order
 from swapmaster.common.config.models.central import CentralConfig
-from swapmaster.core.models import Order, PairId, UserId
+from swapmaster.core.models import Order, PairId, UserId, OrderRequisite
 from swapmaster.core.services.order import OrderService
 from swapmaster.application.common.uow import UoW
 from swapmaster.application.common.interactor import Interactor
@@ -27,7 +26,7 @@ class NewOrderDTO:
     user_id: UserId
     to_receive: float
     to_send: float
-    requisites: list[NewOrderRequisiteDTO]
+    requisites: list[OrderRequisite]
 
 
 @dataclass
@@ -48,7 +47,7 @@ class AddOrder(Interactor):
         order_requisite_gateway: OrderRequisiteWriter,
         reserve_gateway: ReserveReader,
         notifier: Notifier,
-        task_manager: TaskManager,
+        task_manager: AsyncTaskManager,
         config: CentralConfig,
         order_gateway_factory
     ):
