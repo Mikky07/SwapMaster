@@ -8,7 +8,7 @@ from swapmaster.core.models import Order, PairId, UserId
 
 
 class OrderService:
-    def create_service(
+    def create_order(
         self,
         pair_id: PairId,
         user_id: UserId,

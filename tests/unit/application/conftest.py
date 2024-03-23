@@ -1,4 +1,5 @@
 from pytest import fixture
+
 from tests.mocks import (
     UoWMock,
     PairGatewayMock,
@@ -7,7 +8,7 @@ from tests.mocks import (
     MethodGatewayMock,
     OrderRequisiteGatewayMock,
     AsyncTaskManagerMock,
-    OrderGatewayMock
+    OrderGatewayMock, CentralConfigMock, RequisiteServiceMock
 )
 from tests.mocks import (
     ReserveGatewayMock,
@@ -87,3 +88,13 @@ def pair_gateway() -> PairGatewayMock:
 @fixture
 def uow() -> UoWMock:
     return UoWMock()
+
+
+@fixture
+def requisite_service() -> RequisiteServiceMock:
+    return RequisiteServiceMock()
+
+
+@fixture
+def central_config() -> CentralConfigMock:
+    return CentralConfigMock()

@@ -31,3 +31,11 @@ class RequisiteGatewayMock(RequisiteReader, RequisiteUpdater, RequisiteWriter):
 
     async def get_requisite(self, requisite_id: RequisiteId) -> Requisite:
         return self.requisites[requisite_id]
+
+
+class RequisiteServiceMock:
+    def __init__(self):
+        self.requisites_valid: bool = True
+
+    def check_requisites_validity(self, *args, **kwargs) -> bool:
+        return self.requisites_valid

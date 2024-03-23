@@ -33,7 +33,9 @@ class CancelOrder(Interactor):
             date_cancel=cancel_date
         )
         await self.uow.commit()
-        customer = await self.user_reader.get_user(user_id=order_canceled.user_id)
+
+        customer = await self.user_reader.get_user_by_id(user_id=order_canceled.user_id)
+
         self.notifier.notify(
             user=customer,
             notification=data.notification,
@@ -43,10 +45,13 @@ class CancelOrder(Interactor):
 
 
 async def cancel_expired_order(
+        order_canceller: CancelOrder,
         order_id: OrderId,
-        date_cancel: datetime,
-        order_gateway_factory
+        notification: str,
 ):
-    async with order_gateway_factory() as order_gateway:
-        await order_gateway.cancel_order(order_id=order_id, date_cancel=date_cancel)
-        await order_gateway.session.commit()
+    await order_canceller(
+        data=CancelOrderDTO(
+            order_id=order_id,
+            notification=notification
+        )
+    )

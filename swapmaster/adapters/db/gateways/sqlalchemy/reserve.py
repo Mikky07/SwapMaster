@@ -6,7 +6,7 @@ from sqlalchemy import select
 from swapmaster.core.models import MethodId
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
-from swapmaster.application.common.db.reserve_gateway import (
+from swapmaster.application.common.gateways.reserve_gateway import (
     ReserveWriter,
     ReserveUpdater,
     ReserveReader

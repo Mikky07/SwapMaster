@@ -25,6 +25,10 @@ class GatewayError(SMError):
     pass
 
 
+class RequisitesNotValid(SMError):
+    pass
+
+
 class AlreadyExists(SMError):
     pass
 

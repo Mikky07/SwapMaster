@@ -1,7 +1,7 @@
 from .uow import UoWMock
 from .commission import CommissionGatewayMock
 from .reserve import ReserveGatewayMock
-from .requisite import RequisiteGatewayMock
+from .requisite import RequisiteGatewayMock, RequisiteServiceMock
 from .pair import PairGatewayMock
 from .course import CourseGatewayMock
 from .verifier import VerifierMock
@@ -12,6 +12,7 @@ from .method import MethodGatewayMock
 from .order import OrderGatewayMock
 from .order_requisite import OrderRequisiteGatewayMock
 from .task_manager import AsyncTaskManagerMock
+from .config import CentralConfigMock
 
 
 __all__ = (
@@ -19,6 +20,7 @@ __all__ = (
     "CommissionGatewayMock",
     "ReserveGatewayMock",
     "RequisiteGatewayMock",
+    "RequisiteServiceMock",
     "PairGatewayMock",
     "CourseGatewayMock",
     "VerifierMock",
@@ -28,5 +30,6 @@ __all__ = (
     "MethodGatewayMock",
     "OrderGatewayMock",
     "OrderRequisiteGatewayMock",
-    "AsyncTaskManagerMock"
+    "AsyncTaskManagerMock",
+    "CentralConfigMock"
 )

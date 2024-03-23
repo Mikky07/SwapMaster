@@ -4,11 +4,12 @@ from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.models import User, UserId
 from swapmaster.application.common.gateways.user_gateway import (
     UserSaver,
-    UserUpdater
+    UserUpdater,
+    UserReader
 )
 
 
-class UserGatewayMock(UserSaver, UserUpdater):
+class UserGatewayMock(UserSaver, UserUpdater, UserReader):
     def __init__(self):
         self.users: Dict[UserId, User] = {}
 
@@ -23,3 +24,9 @@ class UserGatewayMock(UserSaver, UserUpdater):
         user = self.users[user_id]
         user.verification_status = VerificationStatusEnum.VERIFIED
         return user
+
+    async def get_user_by_id(self, user_id: UserId) -> User:
+        ...
+
+    async def get_user_by_username(self, username: str) -> User:
+        ...

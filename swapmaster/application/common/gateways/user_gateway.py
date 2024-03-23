@@ -6,7 +6,7 @@ from swapmaster.core.models.user import UserId, User
 
 class UserReader(Protocol):
     @abstractmethod
-    async def get_user(self, user_id: UserId) -> User:
+    async def get_user_by_id(self, user_id: UserId) -> User:
         raise NotImplementedError
 
     @abstractmethod
