@@ -17,7 +17,7 @@ class SetOrderPaidUp(Interactor):
         self.task_manager = task_manager
 
     async def __call__(self, order_id: OrderId) -> Order:
-        await self.task_manager.remove_planned_task("cancel-order:" + str(order_id))
+        await self.task_manager.remove_planned_task(f"cancel-order:{order_id}")
 
         order_paid = await self.order_gateway.set_as_paid(order_id=order_id)
         await self.uow.commit()

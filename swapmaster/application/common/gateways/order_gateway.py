@@ -22,7 +22,7 @@ class OrderUpdater(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def cancel_order(self, order_id: OrderId, date_cancel: datetime) -> Order:
+    async def cancel_order(self, order_id: OrderId, date_canceled: datetime) -> Order:
         raise NotImplementedError
 
     @abstractmethod

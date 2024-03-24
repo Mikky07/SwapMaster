@@ -26,7 +26,7 @@ class UserGatewayMock(UserSaver, UserUpdater, UserReader):
         return user
 
     async def get_user_by_id(self, user_id: UserId) -> User:
-        ...
+        return self.users[user_id]
 
     async def get_user_by_username(self, username: str) -> User:
         ...

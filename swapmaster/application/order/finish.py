@@ -33,7 +33,7 @@ class FinishOrder(Interactor):
     async def __call__(self, data: OrderId) -> Order:
         order = await self.order_gateway.get_order(order_id=data)
         pair = await self.pair_reader.get_pair_by_id(pair_id=order.pair_id)
-        reserve_of_method_to = await self.reserve_gateway.get_reserve_of_method(method_id=pair.method_to)
+        reserve_of_method_to = await self.reserve_gateway.ge(method_id=pair.method_to)
         reserve_of_method_from = await self.reserve_gateway.get_reserve_of_method(method_id=pair.method_from)
         await self.reserve_gateway.update_reserve_size(
             reserve_id=reserve_of_method_to.id,
@@ -47,8 +47,10 @@ class FinishOrder(Interactor):
             order_id=data,
             date_finish=datetime.now()
         )
+
         await self.uow.commit()
-        customer = await self.user_reader.get_user(user_id=order_finished.user_id)
+        
+        customer = await self.user_reader.get_user_by_id(user_id=order_finished.user_id)
         self.notifier.notify(
             user=customer,
             notification="Order successfully finished.",
