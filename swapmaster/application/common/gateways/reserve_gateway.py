@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from swapmaster.core.models import MethodId
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
 
@@ -28,5 +27,5 @@ class ReserveReader(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_reserve_of_method(self, method_id: MethodId) -> Reserve:
+    async def get_reserve_by_id(self, reserve_id: ReserveId) -> Reserve:
         raise NotImplementedError

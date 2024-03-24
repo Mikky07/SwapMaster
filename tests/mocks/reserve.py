@@ -17,8 +17,8 @@ class ReserveGatewayMock(ReserveWriter, ReserveReader):
         self.reserves[reserve.id] = reserve
         return self.reserves[reserve.id]
 
-    async def get_reserve_of_method(self, method_id: MethodId) -> Reserve:
-        ...
+    async def get_reserve_by_id(self, reserve_id: ReserveId) -> Reserve:
+        return self.reserves[reserve_id]
 
     async def get_all_remote_reserves(self) -> list[Reserve]:
         remote_reserves = []

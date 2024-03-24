@@ -25,6 +25,10 @@ class GatewayError(SMError):
     pass
 
 
+class OrderCreationError(SMError):
+    pass
+
+
 class RequisitesNotValid(SMError):
     pass
 

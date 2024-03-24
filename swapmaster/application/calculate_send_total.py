@@ -44,7 +44,7 @@ class CalculateSendTotal(Interactor):
         )
 
         course = await self.course_gateway.get_course_by_id(course_id=pair.course_id)
-        commission = await self.commission_gateway.get_commission(commission_id=pair.commission)
+        commission = await self.commission_gateway.get_commission(commission_id=pair.commission_id)
 
         quantity_on_the_course = course.value * data.to_receive_quantity
         result_course = quantity_on_the_course + quantity_on_the_course * commission.value / 100

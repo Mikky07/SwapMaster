@@ -23,11 +23,11 @@ class CreatePair(Interactor):
     async def __call__(self, data: NewPairDTO) -> Pair:
         new_pair = Pair(
             id=None,
-            method_from=data.method_from,
-            method_to=data.method_to,
-            commission=data.commission,
+            method_from_id=data.method_from,
+            method_to_id=data.method_to,
+            commission_id=data.commission,
             course_id=data.course_id,
-            reception_wallet=data.wallet_id
+            reception_wallet_id=data.wallet_id
         )
         saved_pair = await self.pair_gateway.add_pair(pair=new_pair)
         await self.uow.commit()

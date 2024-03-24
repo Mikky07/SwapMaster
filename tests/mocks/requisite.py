@@ -6,6 +6,7 @@ from swapmaster.application.common.gateways.requisite_gateway import (
     RequisiteWriter
 )
 from swapmaster.core.models import RequisiteId, Requisite, PairId
+from swapmaster.core.services.requisite import RequisiteService
 
 
 class RequisiteGatewayMock(RequisiteReader, RequisiteUpdater, RequisiteWriter):
@@ -33,7 +34,8 @@ class RequisiteGatewayMock(RequisiteReader, RequisiteUpdater, RequisiteWriter):
         return self.requisites[requisite_id]
 
 
-class RequisiteServiceMock:
+class RequisiteServiceMock(RequisiteService):
+    """We can transfer values that BL functions will return to check all cases simply"""
     def __init__(self):
         self.requisites_valid: bool = True
 

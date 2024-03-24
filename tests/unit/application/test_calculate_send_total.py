@@ -48,9 +48,9 @@ async def test_calculate_send_total_(
         TEST_PAIR_ID,
         MethodId(0),
         MethodId(0),
-        commission=commission.id,
+        commission_id=commission.id,
         course_id=course.id,
-        reception_wallet=WalletId(0)
+        reception_wallet_id=WalletId(0)
     )
 
     pair_gateway.pairs[pair.id] = pair

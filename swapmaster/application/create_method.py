@@ -24,7 +24,7 @@ class CreateMethod(Interactor):
     async def __call__(self, data: NewMethodDTO) -> Method:
         new_method = Method(
             id=None,
-            reserve=None,
+            reserve_id=None,
             currency_id=data.currency_id,
             name=data.name
         )

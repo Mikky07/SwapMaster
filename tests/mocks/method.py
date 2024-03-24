@@ -17,6 +17,9 @@ class MethodGatewayMock(MethodWriter, MethodReader):
                 return True
         return False
 
+    async def get_method_by_id(self, method_id: MethodId) -> Method:
+        return self.methods[method_id]
+
     async def add_method(self, method: Method) -> Method:
         max_of_ids = max(self.methods) if self.methods else 0
         new_method_id = max_of_ids + 1

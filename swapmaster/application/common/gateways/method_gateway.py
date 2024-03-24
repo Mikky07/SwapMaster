@@ -1,13 +1,16 @@
 from typing import Protocol
 from abc import abstractmethod
 
-from swapmaster.core.models import CurrencyId
-from swapmaster.core.models.method import Method
+from swapmaster.core.models.method import Method, MethodId
 
 
 class MethodReader(Protocol):
     @abstractmethod
     async def get_method_list(self) -> list[Method]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_method_by_id(self, method_id: MethodId) -> Method:
         raise NotImplementedError
 
 

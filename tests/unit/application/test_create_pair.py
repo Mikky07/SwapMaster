@@ -30,9 +30,9 @@ async def test_create_pair_(uow: UoWMock, pair_gateway: PairGatewayMock):
 
     assert type(created_pair.id) is PairId
     assert created_pair.course_id == TEST_COURSE_ID
-    assert created_pair.commission == TEST_COMMISSION_ID
-    assert created_pair.method_to == TEST_METHOD_TO_ID
-    assert created_pair.method_from == TEST_METHOD_FROM_ID
-    assert created_pair.reception_wallet == TEST_WALLET_ID
+    assert created_pair.commission_id == TEST_COMMISSION_ID
+    assert created_pair.method_to_id == TEST_METHOD_TO_ID
+    assert created_pair.method_from_id == TEST_METHOD_FROM_ID
+    assert created_pair.reception_wallet_id == TEST_WALLET_ID
 
     assert uow.committed

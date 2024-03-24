@@ -13,11 +13,11 @@ PairId: TypeAlias = int
 @dataclass(slots=True)
 class Pair:
     id: Optional[PairId]
-    method_from: MethodId
-    method_to: MethodId
-    commission: CommissionId
+    method_from_id: MethodId
+    method_to_id: MethodId
+    commission_id: CommissionId
     course_id: CourseId
-    reception_wallet: WalletId
+    reception_wallet_id: WalletId
 
 
 @dataclass

@@ -19,11 +19,11 @@ async def test_create_requisite(
     # stub that simulates the pair, which associated with requisite
     pair = Pair(
         id=TEST_REQUISITE_PAIR_ID,
-        method_to=1,
-        method_from=1,
-        commission=1,
+        method_to_id=1,
+        method_from_id=1,
+        commission_id=1,
         course_id=1,
-        reception_wallet=1
+        reception_wallet_id=1
     )
 
     requisite_creator = CreateRequisite(
