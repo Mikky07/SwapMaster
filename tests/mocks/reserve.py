@@ -1,14 +1,26 @@
 from typing import Dict
 
-from swapmaster.application.common.gateways.reserve_gateway import ReserveWriter, ReserveReader
-from swapmaster.application.common.reserve_obtainer import RemoteReserve
+from swapmaster.application.common.gateways.reserve_gateway import (
+    ReserveWriter,
+    ReserveReader,
+    ReserveUpdater
+)
 from swapmaster.core.constants import ReserveUpdateMethodEnum
-from swapmaster.core.models import ReserveId, Reserve, MethodId
+from swapmaster.core.models import ReserveId, Reserve, WalletId
 
 
-class ReserveGatewayMock(ReserveWriter, ReserveReader):
+class ReserveGatewayMock(ReserveWriter, ReserveReader, ReserveUpdater):
     def __init__(self):
         self.reserves: Dict[ReserveId, Reserve] = {}
+
+    async def attach_wallet(self, wallet_id: WalletId, reserve_id: ReserveId) -> Reserve:
+        ...
+
+    async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> Reserve:
+        reserve = self.reserves[reserve_id]
+        reserve.size = size
+        self.reserves[reserve_id] = reserve
+        return self.reserves[reserve_id]
 
     async def save_reserve(self, reserve: Reserve) -> Reserve:
         max_of_ids = max(self.reserves) if self.reserves else 0

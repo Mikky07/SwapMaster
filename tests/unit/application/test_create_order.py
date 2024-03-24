@@ -146,6 +146,16 @@ async def test_create_order_(
         name=""
     )
 
+    # adding order customer which has invoked the order creation, we need an email for notification
+
+    user_gateway.users[TEST_USER_ID] = User(
+        id=TEST_USER_ID,
+        username="",
+        email="test@mail.ru",
+        hashed_password="",
+        verification_status=VerificationStatusEnum.VERIFIED
+    )
+
     with pytest.raises(OrderCreationError):
         await order_creator(data=test_new_order)
 
@@ -162,16 +172,6 @@ async def test_create_order_(
         await order_creator(data=test_new_order)
 
     requisite_service.requisites_valid = True
-
-    # adding order customer which has invoked the order creation, we need an email for notification
-
-    user_gateway.users[TEST_USER_ID] = User(
-        id=TEST_USER_ID,
-        username="",
-        email="test@mail.ru",
-        hashed_password="",
-        verification_status=VerificationStatusEnum.VERIFIED
-    )
 
     created_order = await order_creator(data=test_new_order)
 
