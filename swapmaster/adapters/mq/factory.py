@@ -23,4 +23,3 @@ def create_async_scheduler() -> AsyncScheduler:
 async def async_scheduler_startup_handler(scheduler: AsyncScheduler) -> None:
     async with scheduler:
         yield
-

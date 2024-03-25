@@ -10,14 +10,15 @@ from swapmaster.application import (
     AddPair,
     AddMethod,
     GetFullOrder,
-    CreateCommission, Authenticate
+    CreateCommission,
+    Authenticate
 )
 from swapmaster.application.web_verifier import Verifier
 
 
 class InteractorFactory(ABC):
     @abstractmethod
-    async def get_verifier(self) -> AsyncContextManager[Verifier]:
+    async def get_web_verifier(self) -> AsyncContextManager[Verifier]:
         raise NotImplementedError
 
     @abstractmethod
@@ -50,10 +51,6 @@ class InteractorFactory(ABC):
 
     @abstractmethod
     async def method_creator(self) -> AsyncContextManager[AddMethod]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def full_order_fetcher(self) -> AsyncContextManager[GetFullOrder]:
         raise NotImplementedError
 
     @abstractmethod

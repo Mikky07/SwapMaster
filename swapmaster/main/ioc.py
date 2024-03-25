@@ -11,110 +11,110 @@ from swapmaster.adapters.db.gateways.sqlalchemy import (
     OrderRequisiteGateway,
     ReserveGateway,
     CommissionGateway,
-    MethodGateway,
+    MethodGateway, CourseGateway,
 )
 from swapmaster.application import (
-    Authenticate,
-    AddRequisite,
-    AddOrder,
+    CreateUser,
+    CreateRequisite,
+    CreateOrder,
     FinishOrder,
     CancelOrder,
     CalculateSendTotal,
-    AddPair,
-    AddMethod,
+    CreatePair,
+    CreateMethod,
     CreateCommission,
-    GetFullOrder,
+    WebVerifier
 )
 from swapmaster.application.common import Notifier
-from swapmaster.application.common.task_manager import TaskManager
+from swapmaster.application.common.task_manager import BaseTaskManager, AsyncTaskManager
 from swapmaster.application.order import SetOrderPaidUp
-from swapmaster.application.web_verifier import Verifier, UserVerificationCash
+from swapmaster.application.web_verifier import VerificationCash
 from swapmaster.common.config.models import Config
 from swapmaster.core.services import (
     UserService,
-    RequisiteService,
     OrderService,
-    PairService,
-    MethodService,
     CommissionService,
 )
+from swapmaster.core.services.requisite import RequisiteService
 from swapmaster.presentation.interactor_factory import InteractorFactory
 from swapmaster.main.db_uow import UowAsyncSession
-from swapmaster.main.providers import new_order_gateway
 
 
 class IoC(InteractorFactory):
     def __init__(
         self,
-        task_manager: TaskManager,
+        sync_task_manager: BaseTaskManager,
+        async_task_manager: AsyncTaskManager,
         notifier: Notifier,
         config: Config,
         db_connection_pool: async_sessionmaker[AsyncSession],
-        user_verification_cash: UserVerificationCash,
+        user_verification_cash: VerificationCash,
     ):
-        self.task_manager = task_manager
+        self.sync_task_manager = sync_task_manager
+        self.async_task_manager = async_task_manager
         self.config = config
         self.db_connection_pool = db_connection_pool
         self.user_verification_cash = user_verification_cash
         self.user_service = UserService()
-        self.requisite_service = RequisiteService()
         self.order_service = OrderService()
-        self.pair_service = PairService()
-        self.method_service = MethodService()
         self.commission_service = CommissionService()
+        self.requisite_service = RequisiteService()
         self.notifier = notifier
 
     @asynccontextmanager
-    async def get_verifier(self) -> Verifier:
+    async def get_web_verifier(self) -> WebVerifier:
         async with self.db_connection_pool() as session:
-            yield Verifier(
-                uow=UowAsyncSession(session=session),
+            yield WebVerifier(
+                user_gateway=UserGateway(session),
+                uow=UowAsyncSession(session),
                 notifier=self.notifier,
-                cash=self.user_verification_cash,
+                cash=self.user_verification_cash
             )
 
     @asynccontextmanager
-    async def get_authenticator(self) -> Authenticate:
+    async def get_authenticator(self) -> CreateUser:
         async with self.db_connection_pool() as session:
             uow_async_session = UowAsyncSession(session=session)
-            verifier = Verifier(
+            user_gateway = UserGateway(session)
+            verifier = WebVerifier(
                 uow=uow_async_session,
                 notifier=self.notifier,
                 cash=self.user_verification_cash,
+                user_gateway=user_gateway
             )
-            user_saver = UserGateway(session)
-            yield Authenticate(
-                user_saver=user_saver,
+            yield CreateUser(
+                user_gateway=user_gateway,
                 uow=uow_async_session,
                 user_service=self.user_service,
                 verifier=verifier,
             )
 
     @asynccontextmanager
-    async def requisite_creator(self) -> AddRequisite:
+    async def requisite_creator(self) -> CreateRequisite:
         async with self.db_connection_pool() as session:
-            yield AddRequisite(
+            yield CreateRequisite(
                 requisite_gateway=RequisiteGateway(session),
                 uow=UowAsyncSession(session),
-                requisite_service=self.requisite_service,
+                pair_gateway=PairGateway(session)
             )
 
     @asynccontextmanager
-    async def order_creator(self) -> AddOrder:
+    async def order_creator(self) -> CreateOrder:
         async with self.db_connection_pool() as session:
-            yield AddOrder(
+            yield CreateOrder(
                 order_service=self.order_service,
                 pair_gateway=PairGateway(session),
-                requisites_gateway=RequisiteGateway(session),
                 order_requisite_gateway=OrderRequisiteGateway(session),
+                requisite_gateway=RequisiteGateway(session),
                 reserve_gateway=ReserveGateway(session),
+                requisite_service=self.requisite_service,
+                method_gateway=MethodGateway(session),
                 notifier=self.notifier,
-                task_manager=self.task_manager,
+                task_manager=self.async_task_manager,
                 config=self.config.central,
                 order_gateway=OrderGateway(session),
-                user_reader=UserGateway(session),
+                user_gateway=UserGateway(session),
                 uow=UowAsyncSession(session),
-                order_gateway_factory=new_order_gateway(self.db_connection_pool),
             )
 
     @asynccontextmanager
@@ -123,10 +123,11 @@ class IoC(InteractorFactory):
             yield FinishOrder(
                 uow=UowAsyncSession(session),
                 reserve_gateway=ReserveGateway(session),
-                pair_reader=PairGateway(session),
-                user_reader=UserGateway(session),
+                pair_gateway=PairGateway(session),
+                user_gateway=UserGateway(session),
                 notifier=self.notifier,
                 order_gateway=OrderGateway(session),
+                method_gateway=MethodGateway(session)
             )
 
     @asynccontextmanager
@@ -134,8 +135,8 @@ class IoC(InteractorFactory):
         async with self.db_connection_pool() as session:
             yield CancelOrder(
                 uow=UowAsyncSession(session),
-                order_updater=OrderGateway(session),
-                user_reader=UserGateway(session),
+                order_gateway=OrderGateway(session),
+                user_gateway=UserGateway(session),
                 notifier=self.notifier,
             )
 
@@ -145,24 +146,23 @@ class IoC(InteractorFactory):
             yield CalculateSendTotal(
                 commission_gateway=CommissionGateway(session),
                 pair_gateway=PairGateway(session),
+                course_gateway=CourseGateway(session)
             )
 
     @asynccontextmanager
-    async def pair_creator(self) -> AddPair:
+    async def pair_creator(self) -> CreatePair:
         async with self.db_connection_pool() as session:
-            yield AddPair(
+            yield CreatePair(
                 pair_gateway=PairGateway(session),
-                pair_service=self.pair_service,
                 uow=UowAsyncSession(session),
             )
 
     @asynccontextmanager
-    async def method_creator(self) -> AsyncContextManager[AddMethod]:
+    async def method_creator(self) -> AsyncContextManager[CreateMethod]:
         async with self.db_connection_pool() as session:
-            yield AddMethod(
-                method_db_gateway=MethodGateway(session),
-                method_service=self.method_service,
-                uow=UowAsyncSession(session),
+            yield CreateMethod(
+                method_gateway=MethodGateway(session),
+                uow=UowAsyncSession(session)
             )
 
     @asynccontextmanager
@@ -175,13 +175,10 @@ class IoC(InteractorFactory):
             )
 
     @asynccontextmanager
-    async def full_order_fetcher(self) -> GetFullOrder: ...
-
-    @asynccontextmanager
     async def set_order_as_paid(self) -> AsyncContextManager[SetOrderPaidUp]:
         async with self.db_connection_pool() as session:
             yield SetOrderPaidUp(
                 uow=UowAsyncSession(session=session),
                 order_gateway=OrderGateway(session=session),
-                task_manager=self.task_manager,
+                task_manager=self.async_task_manager,
             )

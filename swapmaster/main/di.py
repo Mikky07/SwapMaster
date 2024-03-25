@@ -7,12 +7,13 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from swapmaster.adapters.db.factory import create_pool, create_redis
-from swapmaster.adapters.db.gateways.redis import UserVerificationCashImp
+from swapmaster.adapters.db.gateways.redis import VerificationCashImp
 from swapmaster.adapters.db.gateways.sqlalchemy import *
 from swapmaster.adapters.mq.notification import EmailNotifier
 from swapmaster.adapters.mq.notification.bot_notifier import TGBotNotifier
-from swapmaster.adapters.mq.scheduler import TaskManagerImp
-from swapmaster.application.common.db import *
+from swapmaster.adapters.mq.scheduler import SyncTaskManager, AsyncTaskManagerImpl
+from swapmaster.application.common.gateways import OrderRequisiteReader, UserReader, PairReader, OrderReader, \
+    OrderUpdater, MethodReader, RequisiteReader, CurrencyListReader
 from swapmaster.core.models import User
 from swapmaster.main.ioc import IoC
 from swapmaster.presentation.tgbot.config.models.main import BotConfig
@@ -45,9 +46,10 @@ def setup_bot_dependencies(
     pool = create_pool(bot_config.db)
 
     redis = create_redis(bot_config.redis)
-    user_verification_cash = UserVerificationCashImp(redis=redis)
+    user_verification_cash = VerificationCashImp(redis=redis)
 
-    task_manager = TaskManagerImp(scheduler_async=scheduler_async, scheduler_sync=scheduler_sync)
+    sync_task_manager = SyncTaskManager(scheduler=scheduler_sync)
+    async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
     notifier = TGBotNotifier()
 
     ioc = IoC(
@@ -55,7 +57,8 @@ def setup_bot_dependencies(
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
         notifier=notifier,
-        task_manager=task_manager
+        sync_task_manager=sync_task_manager,
+        async_task_manager=async_task_manager
     )
 
     setup_middlewares(dp=dp, ioc=ioc)
@@ -70,17 +73,19 @@ def setup_web_dependencies(
     pool = create_pool(api_config.db)
 
     redis = create_redis(api_config.redis)
-    user_verification_cash = UserVerificationCashImp(redis=redis)
+    user_verification_cash = VerificationCashImp(redis=redis)
 
-    task_manager = TaskManagerImp(scheduler_async=scheduler_async, scheduler_sync=scheduler_sync)
-    notifier = EmailNotifier(config=api_config.email, task_manager=task_manager)
+    sync_task_manager = SyncTaskManager(scheduler=scheduler_sync)
+    async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
+    notifier = EmailNotifier(config=api_config.email, task_manager=sync_task_manager)
 
     ioc = IoC(
         config=api_config,
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
         notifier=notifier,
-        task_manager=task_manager
+        async_task_manager=async_task_manager,
+        sync_task_manager=sync_task_manager
     )
 
     auth_provider = AuthProvider(config=api_config.auth)
@@ -93,7 +98,7 @@ def setup_web_dependencies(
             CurrencyListReader: DBGatewayProvider(CurrencyGateway),
             RequisiteReader: DBGatewayProvider(RequisiteGateway),
             OrderRequisiteGateway: DBGatewayProvider(OrderRequisiteGateway),
-            MethodListReader: DBGatewayProvider(MethodGateway),
+            MethodReader: DBGatewayProvider(MethodGateway),
             OrderReader | OrderUpdater: DBGatewayProvider(OrderGateway),
             PairReader: DBGatewayProvider(PairGateway),
             OrderRequisiteReader: DBGatewayProvider(OrderRequisiteGateway),

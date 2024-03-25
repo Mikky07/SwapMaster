@@ -54,9 +54,9 @@ class Pair(Base):
     def to_dto(self) -> dto.Pair:
         return dto.Pair(
             id=self.id,
-            method_from=self.method_from_id,
-            method_to=self.method_to_id,
-            commission=self.commission_id,
+            method_from_id=self.method_from_id,
+            method_to_id=self.method_to_id,
+            commission_id=self.commission_id,
             course_id=self.course_id,
-            reception_wallet=self.reception_wallet_id
+            reception_wallet_id=self.reception_wallet_id
         )

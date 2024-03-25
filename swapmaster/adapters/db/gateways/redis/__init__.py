@@ -1,1 +1,1 @@
-from .verification import UserVerificationCashImp
+from .verification import VerificationCashImp

@@ -39,7 +39,7 @@ class Method(Base):
     def to_dto(self) -> dto.Method:
         return dto.Method(
             id=self.id,
-            reserve=self.reserve_id,
+            reserve_id=self.reserve_id,
             currency_id=self.currency_id,
             name=self.name
         )

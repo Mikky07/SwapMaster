@@ -2,7 +2,7 @@ import typing
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from swapmaster.adapters.gateways.models import Base
+from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
 
 if typing.TYPE_CHECKING:
