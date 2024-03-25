@@ -1,8 +1,8 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
+from swapmaster.core.constants import ReserveUpdateMethodEnum
 from swapmaster.core.models import MethodId
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
@@ -11,7 +11,6 @@ from swapmaster.application.common.gateways.reserve_gateway import (
     ReserveUpdater,
     ReserveReader
 )
-from swapmaster.application.common.reserve_obtainer.reserve_size_obtainer import RemoteReserve
 from swapmaster.core.models.reserve import Reserve, ReserveId
 from swapmaster.core.models.wallet import WalletId
 from swapmaster.adapters.db.exceptions import exception_mapper
@@ -19,7 +18,12 @@ from swapmaster.adapters.db.exceptions import exception_mapper
 logger = logging.getLogger(__name__)
 
 
-class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader):
+class ReserveGateway(
+    BaseDBGateway[models.Reserve],
+    ReserveWriter,
+    ReserveUpdater,
+    ReserveReader
+):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Reserve, session)
 
@@ -40,19 +44,18 @@ class ReserveGateway(BaseDBGateway, ReserveWriter, ReserveUpdater, ReserveReader
         return saved_reserve.to_dto()
 
     @exception_mapper
-    async def get_all_remote_reserves(self) -> list[RemoteReserve]:
-        stmt = (
-            select(models.Reserve.id, models.Wallet.address)
-            .join(models.Reserve.wallet)
+    async def get_all_remote_reserves(self) -> list[Reserve]:
+        remote_reserves = await self.get_model_list(
+            [
+                models.Reserve.update_method == ReserveUpdateMethodEnum.REMOTE
+            ]
         )
-        result = await self.session.execute(stmt)
-        return [
-            RemoteReserve(
-                reserve_id=remote_reserve.id,
-                wallet_address=remote_reserve.address
-            )
-            for remote_reserve in result.all()
-        ]
+        return [reserve.to_dto() for reserve in remote_reserves]
+
+    @exception_mapper
+    async def get_reserve_by_id(self, reserve_id: ReserveId) -> Reserve:
+        reserve = await self.read_model([models.Reserve.id == reserve_id])
+        return reserve.to_dto()
 
     @exception_mapper
     async def update_reserve_size(self, reserve_id: ReserveId, size: float) -> Reserve:

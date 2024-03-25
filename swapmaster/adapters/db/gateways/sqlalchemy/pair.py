@@ -14,7 +14,11 @@ from swapmaster.core.models.pair import PairCurrencies
 logger = logging.getLogger(__name__)
 
 
-class PairGateway(BaseDBGateway, PairReader, PairWriter):
+class PairGateway(
+    BaseDBGateway[models.Pair],
+    PairReader,
+    PairWriter
+):
 
     def __init__(self, session: AsyncSession):
         super().__init__(models.Pair, session)
@@ -60,9 +64,9 @@ class PairGateway(BaseDBGateway, PairReader, PairWriter):
     @exception_mapper
     async def add_pair(self, pair: Pair) -> Pair:
         saved_pair = await self.create_model(
-            method_to_id=pair.method_to,
-            method_from_id=pair.method_from,
-            commission_id=pair.commission
+            method_to_id=pair.method_to_id,
+            method_from_id=pair.method_from_id,
+            commission_id=pair.commission_id
         )
         return saved_pair.to_dto()
 

@@ -7,11 +7,16 @@ from swapmaster.core.utils.exceptions import AlreadyExists, UserNotFound
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
 from swapmaster.core.models.user import User, UserId
-from swapmaster.application.common.db.user_gateway import UserReader, UserSaver, UserUpdater
+from swapmaster.application.common.gateways.user_gateway import UserReader, UserSaver, UserUpdater
 from swapmaster.adapters.db.exceptions import exception_mapper
 
 
-class UserGateway(BaseDBGateway, UserReader, UserSaver, UserUpdater):
+class UserGateway(
+    BaseDBGateway[models.User],
+    UserReader,
+    UserSaver,
+    UserUpdater
+):
     def __init__(self, session: AsyncSession):
         super().__init__(models.User, session)
 

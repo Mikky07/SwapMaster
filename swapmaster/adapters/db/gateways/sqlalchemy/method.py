@@ -4,15 +4,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
-from swapmaster.application.common.db.method_gateway import MethodListReader, MethodWriter
-from swapmaster.core.models import CurrencyId
+from swapmaster.application.common.gateways.method_gateway import MethodWriter, MethodReader
+from swapmaster.core.models import CurrencyId, MethodId
 from swapmaster.core.models.method import Method
 from swapmaster.adapters.db.exceptions import exception_mapper
 
 logger = logging.getLogger(__name__)
 
 
-class MethodGateway(BaseDBGateway, MethodWriter, MethodListReader):
+class MethodGateway(
+    BaseDBGateway[models.Method],
+    MethodWriter,
+    MethodReader
+):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Method, session)
 
@@ -35,3 +39,12 @@ class MethodGateway(BaseDBGateway, MethodWriter, MethodListReader):
             ]
         )
         return result is None
+
+    @exception_mapper
+    async def get_method_by_id(self, method_id: MethodId) -> Method:
+        result = await self.read_model(
+            [
+                models.Method.id == method_id
+            ]
+        )
+        return result.to_dto()

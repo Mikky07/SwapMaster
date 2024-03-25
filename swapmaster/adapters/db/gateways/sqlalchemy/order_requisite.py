@@ -11,7 +11,7 @@ from .base import BaseDBGateway
 
 
 class OrderRequisiteGateway(
-    BaseDBGateway,
+    BaseDBGateway[models.Requisite],
     OrderRequisiteReader,
     OrderRequisiteWriter
 ):

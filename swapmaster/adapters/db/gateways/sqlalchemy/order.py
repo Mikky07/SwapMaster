@@ -16,7 +16,12 @@ from swapmaster.adapters.db import models
 from swapmaster.adapters.db.exceptions import exception_mapper
 
 
-class OrderGateway(BaseDBGateway, OrderWriter, OrderReader, OrderUpdater):
+class OrderGateway(
+    BaseDBGateway[models.Order],
+    OrderWriter,
+    OrderReader,
+    OrderUpdater
+):
     def __init__(self, session: AsyncSession):
         super().__init__(models.Order, session)
 

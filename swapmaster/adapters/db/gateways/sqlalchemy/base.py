@@ -1,6 +1,6 @@
-from typing import TypeVar, Sequence
+from typing import TypeVar, Sequence, Generic
 
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, ScalarResult
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +12,7 @@ from swapmaster.core.utils.exceptions import SMError
 Model = TypeVar("Model", bound=Base)
 
 
-class BaseDBGateway[Model]:
+class BaseDBGateway(Generic[Model]):
     def __init__(self, model: type[Model], session: AsyncSession):
         self.model = model
         self.session = session
@@ -46,7 +46,7 @@ class BaseDBGateway[Model]:
     async def __read_model_with_filters(
             self,
             filters: Sequence[ExpressionElementRole] | None = None
-    ):
+    ) -> ScalarResult[Model]:
         stmt = select(self.model)
         if filters:
             stmt = stmt.filter(*filters)
@@ -66,7 +66,7 @@ class BaseDBGateway[Model]:
             self,
             filters: Sequence[ExpressionElementRole] | None = None,
             **kwargs
-    ):
+    ) -> Model:
         stmt = update(self.model).values(kwargs).returning(self.model)
         if filters:
             stmt = stmt.filter(*filters)
