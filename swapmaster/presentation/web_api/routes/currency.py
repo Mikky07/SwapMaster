@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi.routing import APIRouter
 from fastapi import Depends
 
-from swapmaster.application.common.db.currency_gateway import CurrencyListReader
+from swapmaster.application.common.gateways.currency_gateway import CurrencyListReader
 from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.core.models import Currency
 

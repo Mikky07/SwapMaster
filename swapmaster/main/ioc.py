@@ -62,16 +62,6 @@ class IoC(InteractorFactory):
         self.notifier = notifier
 
     @asynccontextmanager
-    async def get_web_verifier(self) -> WebVerifier:
-        async with self.db_connection_pool() as session:
-            yield WebVerifier(
-                user_gateway=UserGateway(session),
-                uow=UowAsyncSession(session),
-                notifier=self.notifier,
-                cash=self.user_verification_cash
-            )
-
-    @asynccontextmanager
     async def get_authenticator(self) -> CreateUser:
         async with self.db_connection_pool() as session:
             uow_async_session = UowAsyncSession(session=session)
@@ -181,4 +171,19 @@ class IoC(InteractorFactory):
                 uow=UowAsyncSession(session=session),
                 order_gateway=OrderGateway(session=session),
                 task_manager=self.async_task_manager,
+            )
+
+
+class WebIoC(IoC):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @asynccontextmanager
+    async def get_web_verifier(self) -> WebVerifier:
+        async with self.db_connection_pool() as session:
+            yield WebVerifier(
+                user_gateway=UserGateway(session),
+                uow=UowAsyncSession(session),
+                notifier=self.notifier,
+                cash=self.user_verification_cash
             )

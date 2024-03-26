@@ -10,21 +10,19 @@ from swapmaster.application.calculate_send_total import CalculateTotalDTO
 from swapmaster.application.common.gateways import OrderReader
 from swapmaster.application.order.cancel import CancelOrderDTO
 from swapmaster.application.order.create import CreatedOrderDTO
-from swapmaster.application.order.get_full_order import OrderWithRequisites
 from swapmaster.core.constants import OrderStatusEnum
 from swapmaster.core.models import Order, OrderId
 from swapmaster.core.utils.exceptions import SMError
+from swapmaster.presentation.web_api import WebInteractorFactory
 from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.presentation.web_api.models import NewOrderRequestDTO
-from swapmaster.presentation.web_api.models.responses import FullOrder
-from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)
 
 
 async def add_order(
     data: NewOrderRequestDTO,
-    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))],
+    ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))],
 ) -> CreatedOrderDTO:
     async with ioc.send_total_calculator() as calculate_send_total:
         calculated_to_send = await calculate_send_total(
@@ -40,7 +38,7 @@ async def add_order(
                     pair_id=data.pair_id,
                     to_receive=data.to_receive,
                     user_id=data.user_id,
-                    requisites=data.requisites,
+                    requisites_filled=data.requisites,
                     to_send=calculated_to_send.to_send_quantity
                 )
             )
@@ -59,21 +57,9 @@ async def get_all_orders(
     return await order_gateway.get_orders_list(status=order_status)
 
 
-async def get_full_order_information(
-        order_id: OrderId,
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
-) -> FullOrder:
-    async with ioc.full_order_fetcher() as get_full_order:
-        order_with_requisites: OrderWithRequisites = await get_full_order(data=order_id)
-    return FullOrder(
-        order_requisites=order_with_requisites.order_requisites,
-        order=order_with_requisites.order
-    )
-
-
 async def finish_order(
         order_id: OrderId,
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ) -> Order:
     async with ioc.order_finisher() as finish_order_:
         order_finished = await finish_order_(data=order_id)
@@ -82,7 +68,7 @@ async def finish_order(
 
 async def set_order_as_paid(
         order_id: OrderId,
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ):
     async with ioc.set_order_as_paid() as set_order_as_paid_:
         order_paid = await set_order_as_paid_(order_id=order_id)
@@ -91,7 +77,7 @@ async def set_order_as_paid(
 
 async def cancel_order(
         order_id: OrderId,
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ) -> Order:
     async with ioc.order_canceler() as cancel_order_:
         canceled_order = await cancel_order_(
@@ -107,7 +93,6 @@ def setup_order() -> APIRouter:
     order_router = APIRouter(prefix="/orders")
     order_router.add_api_route("", endpoint=add_order, methods=["POST"])
     order_router.add_api_route("", endpoint=get_all_orders, methods=["GET"])
-    order_router.add_api_route("/{order_id}", endpoint=get_full_order_information, methods=["GET"])
     order_router.add_api_route("/{order_id}", endpoint=finish_order, methods=["PATCH"])
     order_router.add_api_route("/pay-up/{order_id}", endpoint=set_order_as_paid, methods=["PATCH"])
     order_router.add_api_route("/{order_id}", endpoint=cancel_order, methods=["DELETE"])

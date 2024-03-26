@@ -7,16 +7,16 @@ from starlette import status
 from swapmaster.application.create_user import NewUserDTO
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.core.models import User
+from swapmaster.presentation.web_api import WebInteractorFactory
 from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.core.constants import VerificationStatusEnum
-from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)
 
 
 async def register(
     data: NewUserDTO,
-    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+    ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ):
     async with ioc.get_authenticator() as authenticator:
         try:
@@ -32,14 +32,14 @@ async def register(
 async def verify_account(
         verification_code: str,
         user: Annotated[User, Depends(Stub(User))],
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ):
     if user.verification_status == VerificationStatusEnum.VERIFIED:
         raise HTTPException(
             status_code=status.HTTP_417_EXPECTATION_FAILED,
             detail="User already verified"
         )
-    async with ioc.get_verifier() as verifier:
+    async with ioc.get_web_verifier() as verifier:
         try:
             user_verified = await verifier.finish_verification(
                 verification_code=verification_code

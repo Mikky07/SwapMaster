@@ -8,16 +8,16 @@ from swapmaster.application.calculate_send_total import (
     CalculateTotalDTO,
     CalculatedTotalDTO
 )
+from swapmaster.presentation.web_api import WebInteractorFactory
 from swapmaster.presentation.web_api.depends.stub import Stub
 from swapmaster.presentation.web_api.models import CalculateData
-from swapmaster.presentation.interactor_factory import InteractorFactory
 
 logger = logging.getLogger(__name__)
 
 
 async def calculate_send_total(
     data: CalculateData,
-    ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+    ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ) -> CalculatedTotalDTO:
     async with ioc.send_total_calculator() as calculate_send_total_:
         total = await calculate_send_total_(

@@ -7,13 +7,13 @@ from swapmaster.application.common.gateways import PairReader
 from swapmaster.application.create_pair import NewPairDTO
 from swapmaster.core.models import Pair, MethodId
 from swapmaster.core.utils.exceptions import SMError
+from swapmaster.presentation.web_api import WebInteractorFactory
 from swapmaster.presentation.web_api.depends.stub import Stub
-from swapmaster.presentation.interactor_factory import InteractorFactory
 
 
 async def add_pair(
         data: NewPairDTO,
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))],
+        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))],
 ) -> Pair:
     async with ioc.pair_creator() as create_pair:
         new_pair = await create_pair(data=data)

@@ -2,16 +2,16 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from swapmaster.application.common.db import RequisiteReader, OrderRequisiteReader
+from swapmaster.application.common.gateways import RequisiteReader, OrderRequisiteReader
 from swapmaster.application.create_requisite import NewRequisiteDTO
 from swapmaster.core.models import OrderId, OrderRequisite, PairId, Requisite
+from swapmaster.presentation.web_api import WebInteractorFactory
 from swapmaster.presentation.web_api.depends.stub import Stub
-from swapmaster.presentation.interactor_factory import InteractorFactory
 
 
 async def add_requisite(
         data: NewRequisiteDTO,
-        ioc: Annotated[InteractorFactory, Depends(Stub(InteractorFactory))]
+        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
 ):
     async with ioc.requisite_creator() as create_requisite:
         await create_requisite(data)

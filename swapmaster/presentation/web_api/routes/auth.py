@@ -7,7 +7,7 @@ from fastapi import Response
 from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from swapmaster.application.common.db import UserReader
+from swapmaster.application.common.gateways import UserReader
 from swapmaster.core.utils.exceptions import SMError
 from swapmaster.presentation.web_api.depends.auth import AuthProvider
 from swapmaster.presentation.web_api.depends.stub import Stub

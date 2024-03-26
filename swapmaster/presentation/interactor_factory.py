@@ -2,35 +2,29 @@ from typing import AsyncContextManager
 from abc import abstractmethod, ABC
 
 from swapmaster.application import (
-    AddRequisite,
-    AddOrder,
+    CreateRequisite,
+    CreateOrder,
     FinishOrder,
     CancelOrder,
     CalculateSendTotal,
-    AddPair,
-    AddMethod,
-    GetFullOrder,
+    CreatePair,
+    CreateMethod,
     CreateCommission,
-    Authenticate
+    CreateUser
 )
-from swapmaster.application.web_verifier import Verifier
 
 
 class InteractorFactory(ABC):
     @abstractmethod
-    async def get_web_verifier(self) -> AsyncContextManager[Verifier]:
+    async def get_authenticator(self) -> AsyncContextManager[CreateUser]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_authenticator(self) -> AsyncContextManager[Authenticate]:
+    async def requisite_creator(self) -> AsyncContextManager[CreateRequisite]:
         raise NotImplementedError
 
     @abstractmethod
-    async def requisite_creator(self) -> AsyncContextManager[AddRequisite]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def order_creator(self) -> AsyncContextManager[AddOrder]:
+    async def order_creator(self) -> AsyncContextManager[CreateOrder]:
         raise NotImplementedError
 
     @abstractmethod
@@ -46,11 +40,11 @@ class InteractorFactory(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def pair_creator(self) -> AsyncContextManager[AddPair]:
+    async def pair_creator(self) -> AsyncContextManager[CreatePair]:
         raise NotImplementedError
 
     @abstractmethod
-    async def method_creator(self) -> AsyncContextManager[AddMethod]:
+    async def method_creator(self) -> AsyncContextManager[CreateMethod]:
         raise NotImplementedError
 
     @abstractmethod

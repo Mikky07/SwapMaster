@@ -12,10 +12,18 @@ from swapmaster.adapters.db.gateways.sqlalchemy import *
 from swapmaster.adapters.mq.notification import EmailNotifier
 from swapmaster.adapters.mq.notification.bot_notifier import TGBotNotifier
 from swapmaster.adapters.mq.scheduler import SyncTaskManager, AsyncTaskManagerImpl
-from swapmaster.application.common.gateways import OrderRequisiteReader, UserReader, PairReader, OrderReader, \
-    OrderUpdater, MethodReader, RequisiteReader, CurrencyListReader
+from swapmaster.application.common.gateways import (
+    OrderRequisiteReader,
+    UserReader,
+    PairReader,
+    OrderReader,
+    OrderUpdater,
+    MethodReader,
+    RequisiteReader,
+    CurrencyListReader
+)
 from swapmaster.core.models import User
-from swapmaster.main.ioc import IoC
+from swapmaster.main.ioc import IoC, WebIoC
 from swapmaster.presentation.tgbot.config.models.main import BotConfig
 from swapmaster.presentation.web_api.config.models.main import APIConfig
 from swapmaster.presentation.interactor_factory import InteractorFactory
@@ -79,14 +87,14 @@ def setup_web_dependencies(
     async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
     notifier = EmailNotifier(config=api_config.email, task_manager=sync_task_manager)
 
-    ioc = IoC(
+    ioc = singleton(WebIoC(
         config=api_config,
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
         notifier=notifier,
         async_task_manager=async_task_manager,
         sync_task_manager=sync_task_manager
-    )
+    ))
 
     auth_provider = AuthProvider(config=api_config.auth)
 
