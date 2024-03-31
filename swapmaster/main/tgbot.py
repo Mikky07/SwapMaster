@@ -2,16 +2,17 @@ import logging
 
 from aiohttp import web
 from aiogram import Dispatcher, Bot
+from aiogram_dialog import setup_dialogs
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from apscheduler import AsyncScheduler
 
 from swapmaster.adapters.mq import create_async_scheduler, create_sync_scheduler, async_scheduler_startup_handler
 from swapmaster.common.config.parser import logging_setup
 from swapmaster.main.web import get_paths_common
-from swapmaster.main.di import setup_bot_dependencies
+from swapmaster.main.di import setup_bot_di
 from swapmaster.presentation.tgbot.config.models.webhook import WebhookConfig
 from swapmaster.presentation.tgbot.config.parser.main import get_bot_config
-from swapmaster.presentation.tgbot.factory import create_bot, create_dispatcher
+from swapmaster.presentation.tgbot.factory import create_bot
 from swapmaster.presentation.tgbot.handlers import setup_handlers
 
 logger = logging.getLogger(__name__)
@@ -48,14 +49,15 @@ def main():
     config = get_bot_config(paths=paths)
     logging_setup(paths)
 
-    dispatcher = create_dispatcher()
+    dispatcher = Dispatcher()
     bot = create_bot(config)
 
     scheduler_async = create_async_scheduler()
     scheduler_sync = create_sync_scheduler()
 
+    setup_dialogs(dispatcher)
     setup_handlers(dp=dispatcher)
-    setup_bot_dependencies(
+    setup_bot_di(
         dp=dispatcher,
         bot_config=config,
         scheduler_sync=scheduler_sync,

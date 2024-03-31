@@ -9,7 +9,7 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.exc import NoResultFound
 
-from swapmaster.application.common.db.user_gateway import UserReader
+from swapmaster.application.common.gateways.user_gateway import UserReader
 from swapmaster.core.models import User
 from swapmaster.core.models.token import Token
 from swapmaster.core.utils.exceptions import SMError, UserNotFound
@@ -71,7 +71,7 @@ class AuthProvider:
         except Exception:
             raise
         try:
-            user = await user_reader.get_user(user_id=user_id)
+            user = await user_reader.get_user_by_id(user_id=user_id)
         except UserNotFound:
             raise recognition_error
         return user

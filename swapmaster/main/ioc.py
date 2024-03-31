@@ -38,6 +38,8 @@ from swapmaster.core.services import (
 from swapmaster.core.services.requisite import RequisiteService
 from swapmaster.presentation.interactor_factory import InteractorFactory
 from swapmaster.main.db_uow import UowAsyncSession
+from swapmaster.presentation.tgbot import BotInteractorFactory
+from swapmaster.presentation.web_api import WebInteractorFactory
 
 
 class IoC(InteractorFactory):
@@ -174,7 +176,7 @@ class IoC(InteractorFactory):
             )
 
 
-class WebIoC(IoC):
+class WebIoC(IoC, WebInteractorFactory):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -187,3 +189,8 @@ class WebIoC(IoC):
                 notifier=self.notifier,
                 cash=self.user_verification_cash
             )
+
+
+class BotIoC(IoC, BotInteractorFactory):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

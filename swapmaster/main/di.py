@@ -23,7 +23,7 @@ from swapmaster.application.common.gateways import (
     CurrencyListReader
 )
 from swapmaster.core.models import User
-from swapmaster.main.ioc import IoC, WebIoC
+from swapmaster.main.ioc import WebIoC, BotIoC
 from swapmaster.presentation.tgbot.config.models.main import BotConfig
 from swapmaster.presentation.web_api.config.models.main import APIConfig
 from swapmaster.presentation.interactor_factory import InteractorFactory
@@ -45,7 +45,7 @@ def singleton(value: T):
     return get_value
 
 
-def setup_bot_dependencies(
+def setup_bot_di(
     dp: Dispatcher,
     bot_config: BotConfig,
     scheduler_sync: Scheduler,
@@ -60,19 +60,19 @@ def setup_bot_dependencies(
     async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
     notifier = TGBotNotifier()
 
-    ioc = IoC(
+    ioc = singleton(BotIoC(
         config=bot_config,
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
         notifier=notifier,
         sync_task_manager=sync_task_manager,
         async_task_manager=async_task_manager
-    )
+    ))
 
-    setup_middlewares(dp=dp, ioc=ioc)
+    setup_middlewares(dp=dp, ioc=ioc())
 
 
-def setup_web_dependencies(
+def setup_web_di(
     app: FastAPI,
     api_config: APIConfig,
     scheduler_sync: Scheduler,
@@ -87,14 +87,14 @@ def setup_web_dependencies(
     async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
     notifier = EmailNotifier(config=api_config.email, task_manager=sync_task_manager)
 
-    ioc = singleton(WebIoC(
+    ioc = WebIoC(
         config=api_config,
         db_connection_pool=pool,
         user_verification_cash=user_verification_cash,
         notifier=notifier,
         async_task_manager=async_task_manager,
         sync_task_manager=sync_task_manager
-    ))
+    )
 
     auth_provider = AuthProvider(config=api_config.auth)
 
