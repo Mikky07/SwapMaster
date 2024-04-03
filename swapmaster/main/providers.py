@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Callable
+from typing import Callable, TypeVar, Generic
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -28,7 +28,10 @@ def new_order_gateway(
     return factory
 
 
-class DBGatewayProvider[TDBGateway: BaseDBGateway]:
+TDBGateway = TypeVar("TDBGateway", bound=BaseDBGateway, covariant=True)
+
+
+class DBGatewayProvider(Generic[TDBGateway]):
     def __init__(self, gateway: type[TDBGateway]):
         self.gateway = gateway
 

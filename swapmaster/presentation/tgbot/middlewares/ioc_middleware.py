@@ -16,5 +16,5 @@ class IoCMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any]
     ) -> Any:
-        data["ioc"] = self.ioc
+        data['ioc'] = self.ioc
         await handler(event, data)

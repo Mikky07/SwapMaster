@@ -24,8 +24,9 @@ dependencies = [
     "anyio>=4.3.0",
     "pytest-asyncio>=0.23.5.post1",
     "aiogram-dialog>=2.1.0",
+    "dishka>=1.0.0",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 
