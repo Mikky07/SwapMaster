@@ -1,9 +1,8 @@
-from contextlib import asynccontextmanager
-from typing import AsyncContextManager, Iterable
-
-from dishka import Provider, provide, Scope
+from apscheduler import Scheduler, AsyncScheduler
+from dishka import Provider, provide, Scope, from_context, alias
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from swapmaster.adapters.db.gateways.redis import VerificationCashImp
 from swapmaster.adapters.db.gateways.sqlalchemy import (
     UserGateway,
     RequisiteGateway,
@@ -12,8 +11,10 @@ from swapmaster.adapters.db.gateways.sqlalchemy import (
     OrderRequisiteGateway,
     ReserveGateway,
     CommissionGateway,
-    MethodGateway, CourseGateway,
+    MethodGateway,
+    CourseGateway,
 )
+from swapmaster.adapters.mq.scheduler import SyncTaskManager, AsyncTaskManagerImpl
 from swapmaster.application import (
     CreateUser,
     CreateRequisite,
@@ -28,35 +29,44 @@ from swapmaster.application import (
 )
 from swapmaster.application.common import Notifier, UoW
 from swapmaster.application.common.task_manager import BaseTaskManager, AsyncTaskManager
-from swapmaster.application.common.verifier import Verifier
+from swapmaster.application.common.verifier import VerificationCash
 from swapmaster.application.order import SetOrderPaidUp
-from swapmaster.application.web_verifier import VerificationCash
-from swapmaster.common.config.models import Config
+from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.services import (
     UserService,
     OrderService,
     CommissionService,
+    RequisiteService
 )
-from swapmaster.core.services.requisite import RequisiteService
 from swapmaster.main.db_uow import UowAsyncSession
+
+
+class ServiceProvider(Provider):
+    scope = Scope.APP
+
+    user_service = provide(UserService)
+    commission_service = provide(CommissionService)
+    order_service = provide(OrderService)
+    requisite_service = provide(RequisiteService)
 
 
 class TaskManagerProvider(Provider):
     scope = Scope.APP
 
-    @provide
-    async def get_async_task_manager(self) -> AsyncTaskManager:
-        ...
+    sync_scheduler = from_context(provides=Scheduler)
+    async_scheduler = from_context(provides=AsyncScheduler)
 
+    sync_task_manager = provide(SyncTaskManager)
+    async_task_manager = provide(AsyncTaskManagerImpl)
 
-class NotifierProvider(Provider):
-    @provide
-    async def get_notifier(self) -> Notifier:
-        ...
+    sync_task_manager_proto = alias(source=SyncTaskManager, provides=BaseTaskManager)
+    async_task_manager_proto = alias(source=AsyncTaskManagerImpl, provides=AsyncTaskManager)
 
 
 class GatewayProvider(Provider):
     scope = Scope.REQUEST
+
+    pool = from_context(provides=async_sessionmaker[AsyncSession], scope=Scope.APP)
 
     @provide
     async def get_session(self, pool: async_sessionmaker[AsyncSession]) -> AsyncSession:
@@ -68,6 +78,7 @@ class GatewayProvider(Provider):
         yield UowAsyncSession(session)
 
     user_gateway = provide(UserGateway)
+    course_gateway = provide(CourseGateway)
     pair_gateway = provide(PairGateway)
     requisite_gateway = provide(RequisiteGateway)
     order_gateway = provide(OrderGateway)
@@ -80,18 +91,64 @@ class GatewayProvider(Provider):
 class InteractorProvider(Provider):
     scope = Scope.REQUEST
 
-    authenticator = provide(CreateUser)
-    requisite_creator = provide(CreateRequisite)
-    order_creator = provide(CreateOrder)
-    order_finisher = provide(FinishOrder)
-    order_canceler = provide(CancelOrder)
-    pair_creator = provide(CreatePair)
-    send_total_calculator = provide(CalculateSendTotal)
-    method_creator = provide(CreateMethod)
-    payer = provide(SetOrderPaidUp)
-    commission_creator = provide(CreateCommission)
+    central_config = from_context(provides=CentralConfig, scope=Scope.APP)
+    verification_cash = from_context(provides=VerificationCash)
+
+    @provide
+    async def get_authenticator(self) -> CreateUser:
+        yield CreateUser
+
+    @provide
+    async def get_requisite_creator(self) -> CreateRequisite:
+        yield CreateRequisite
+
+    @provide
+    async def get_order_creator(self) -> CreateOrder:
+        yield CreateOrder
+
+    @provide
+    async def get_requisite_creator(self) -> FinishOrder:
+        yield FinishOrder
+
+    @provide
+    async def get_order_canceler(self) -> CancelOrder:
+        yield CancelOrder
+
+    @provide
+    async def get_pair_creator(self) -> CreatePair:
+        yield CreatePair
+
+    @provide
+    async def get_send_total_calculator(self) -> CalculateSendTotal:
+        yield CalculateSendTotal
+
+    @provide
+    async def get_requisite_creator(self) -> CreateMethod:
+        yield CreateMethod
+
+    @provide
+    async def get_payer(self) -> SetOrderPaidUp:
+        yield SetOrderPaidUp
+
+    @provide
+    async def get_commission_creator(self) -> CreateCommission:
+        yield CreateRequisite
 
 
 class WebInteractorProvider(Provider):
-    web_verifier = provide(WebVerifier)
+    notifier = from_context(provides=Notifier)
 
+    @provide
+    async def get_web_verifier(
+            self,
+            notifier: Notifier,
+            cash: VerificationCashImp,
+            uow: UoW,
+            user_gateway: UserGateway
+    ) -> WebVerifier:
+        yield WebVerifier(
+            notifier=notifier,
+            cash=cash,
+            uow=uow,
+            user_gateway=user_gateway
+        )

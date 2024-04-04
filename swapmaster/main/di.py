@@ -3,33 +3,30 @@ from typing import TypeVar
 
 from aiogram import Dispatcher
 from apscheduler import Scheduler, AsyncScheduler
+from dishka import make_async_container
+from dishka.integrations.fastapi import setup_dishka as setup_dishka_fastapi
+from dishka.integrations.aiogram import setup_dishka as setup_dishka_aiogram
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from swapmaster.adapters.db.factory import create_pool, create_redis
 from swapmaster.adapters.db.gateways.redis import VerificationCashImp
-from swapmaster.adapters.db.gateways.sqlalchemy import *
 from swapmaster.adapters.mq.notification import EmailNotifier
 from swapmaster.adapters.mq.notification.bot_notifier import TGBotNotifier
-from swapmaster.adapters.mq.scheduler import SyncTaskManager, AsyncTaskManagerImpl
-from swapmaster.application.common.gateways import (
-    OrderRequisiteReader,
-    UserReader,
-    PairReader,
-    OrderReader,
-    OrderUpdater,
-    MethodReader,
-    RequisiteReader,
-    CurrencyListReader
-)
-from swapmaster.core.models import User
-from swapmaster.main.ioc import WebIoC, BotIoC
+from swapmaster.adapters.mq.scheduler import SyncTaskManager
+from swapmaster.application.common import Notifier
+from swapmaster.application.common.verifier import VerificationCash
+from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.presentation.tgbot.config.models.main import BotConfig
 from swapmaster.presentation.web_api.config.models.main import APIConfig
-from swapmaster.presentation.interactor_factory import InteractorFactory
-from swapmaster.presentation.web_api.depends.auth import AuthProvider
+from swapmaster.main.ioc import (
+    InteractorProvider,
+    GatewayProvider,
+    WebInteractorProvider,
+    ServiceProvider,
+    TaskManagerProvider
+)
 from swapmaster.presentation.tgbot.middlewares.setup import setup_middlewares
-from swapmaster.main.providers import DBGatewayProvider, async_session_provider
 
 
 logger = logging.getLogger(__name__)
@@ -56,20 +53,25 @@ def setup_bot_di(
     redis = create_redis(bot_config.redis)
     user_verification_cash = VerificationCashImp(redis=redis)
 
-    sync_task_manager = SyncTaskManager(scheduler=scheduler_sync)
-    async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
     notifier = TGBotNotifier()
 
-    ioc = singleton(BotIoC(
-        config=bot_config,
-        db_connection_pool=pool,
-        user_verification_cash=user_verification_cash,
-        notifier=notifier,
-        sync_task_manager=sync_task_manager,
-        async_task_manager=async_task_manager
-    ))
+    container = make_async_container(
+        InteractorProvider(),
+        GatewayProvider(),
+        WebInteractorProvider(),
+        ServiceProvider(),
+        TaskManagerProvider(),
+        context={
+            Scheduler: scheduler_sync,
+            AsyncScheduler: scheduler_async,
+            CentralConfig: bot_config.central,
+            VerificationCash: user_verification_cash,
+            Notifier: notifier,
+            async_sessionmaker[AsyncSession]: pool
+        }
+    )
 
-    setup_middlewares(dp=dp, ioc=ioc())
+    setup_dishka_aiogram(container=container, router=dp)
 
 
 def setup_web_di(
@@ -84,35 +86,22 @@ def setup_web_di(
     user_verification_cash = VerificationCashImp(redis=redis)
 
     sync_task_manager = SyncTaskManager(scheduler=scheduler_sync)
-    async_task_manager = AsyncTaskManagerImpl(scheduler=scheduler_async)
     notifier = EmailNotifier(config=api_config.email, task_manager=sync_task_manager)
 
-    ioc = WebIoC(
-        config=api_config,
-        db_connection_pool=pool,
-        user_verification_cash=user_verification_cash,
-        notifier=notifier,
-        async_task_manager=async_task_manager,
-        sync_task_manager=sync_task_manager
-    )
-
-    auth_provider = AuthProvider(config=api_config.auth)
-
-    app.dependency_overrides.update(
-        {
-            InteractorFactory: singleton(ioc),
-            AuthProvider: lambda: auth_provider,
-            AsyncSession: async_session_provider(pool),
-            CurrencyListReader: DBGatewayProvider(CurrencyGateway),
-            RequisiteReader: DBGatewayProvider(RequisiteGateway),
-            OrderRequisiteGateway: DBGatewayProvider(OrderRequisiteGateway),
-            MethodReader: DBGatewayProvider(MethodGateway),
-            OrderReader | OrderUpdater: DBGatewayProvider(OrderGateway),
-            PairReader: DBGatewayProvider(PairGateway),
-            OrderRequisiteReader: DBGatewayProvider(OrderRequisiteGateway),
-            UserReader: DBGatewayProvider(UserReader),
-            User: auth_provider.get_current_user,
+    container = make_async_container(
+        InteractorProvider(),
+        GatewayProvider(),
+        WebInteractorProvider(),
+        ServiceProvider(),
+        TaskManagerProvider(),
+        context={
+            Scheduler: scheduler_sync,
+            AsyncScheduler: scheduler_async,
+            CentralConfig: api_config.central,
+            VerificationCash: user_verification_cash,
+            Notifier: notifier,
+            async_sessionmaker[AsyncSession]: pool
         }
     )
 
-    logger.info("dependencies set up!")
+    setup_dishka_fastapi(container=container, app=app)
