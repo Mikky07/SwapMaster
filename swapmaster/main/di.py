@@ -29,6 +29,7 @@ from swapmaster.main.ioc import (
     RedisVerificationCashProvider
 )
 from swapmaster.presentation.tgbot.middlewares.setup import setup_middlewares
+from swapmaster.presentation.web_api.providers.auth import AuthProvider
 
 
 logger = logging.getLogger(__name__)
@@ -97,6 +98,7 @@ def setup_web_di(
         ServiceProvider(),
         TaskManagerProvider(),
         RedisVerificationCashProvider(),
+        AuthProvider(),
         context={
             Scheduler: scheduler_sync,
             AsyncScheduler: scheduler_async,

@@ -1,16 +1,14 @@
 import logging
 from typing import Annotated
 
-from starlette import status
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Depends
 from fastapi import Response
-from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from swapmaster.application.common.gateways import UserReader
-from swapmaster.core.utils.exceptions import SMError
-from swapmaster.presentation.web_api.depends.auth import AuthProvider
-from swapmaster.presentation.web_api.depends.stub import Stub
+from swapmaster.presentation.web_api.providers.auth import AuthHandler
 
 logger = logging.getLogger(__name__)
 
@@ -18,16 +16,10 @@ logger = logging.getLogger(__name__)
 async def login(
         response: Response,
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-        auth_provider: Annotated[AuthProvider, Depends(Stub(AuthProvider))],
-        user_reader: Annotated[UserReader, Depends(Stub(UserReader))]
+        user_reader: FromDishka[UserReader],
+        auth_handler: FromDishka[AuthHandler]
 ):
-    try:
-        token = await auth_provider.auth(form_data=form_data, user_reader=user_reader)
-    except SMError as s:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=s.text
-        )
+    token = await auth_handler.auth(form_data=form_data, user_reader=user_reader)
     response.set_cookie(
         "Authorization",
         httponly=True,
@@ -37,6 +29,6 @@ async def login(
 
 
 def setup_auth() -> APIRouter:
-    auth_router = APIRouter(prefix="/auth")
+    auth_router = APIRouter(prefix="/auth", route_class=DishkaRoute)
     auth_router.add_api_route("/token", endpoint=login, methods=["POST"])
     return auth_router

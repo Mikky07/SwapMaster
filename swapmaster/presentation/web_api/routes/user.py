@@ -1,59 +1,38 @@
 import logging
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
-from starlette import status
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaRoute
+from fastapi import APIRouter
 
-from swapmaster.application.create_user import NewUserDTO
-from swapmaster.core.utils.exceptions import SMError
+from swapmaster.application import WebVerifier
+from swapmaster.application.create_user import NewUserDTO, CreateUser
 from swapmaster.core.models import User
-from swapmaster.presentation.web_api import WebInteractorFactory
-from swapmaster.presentation.web_api.depends.stub import Stub
-from swapmaster.core.constants import VerificationStatusEnum
 
 logger = logging.getLogger(__name__)
 
 
 async def register(
     data: NewUserDTO,
-    ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
+    user_creator: FromDishka[CreateUser]
 ):
-    async with ioc.get_authenticator() as authenticator:
-        try:
-            registered_user = await authenticator(data=data)
-        except SMError as e:
-            raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail=str(e)
-            )
+    registered_user = await user_creator(data=data)
     return registered_user
 
 
 async def verify_account(
         verification_code: str,
-        user: Annotated[User, Depends(Stub(User))],
-        ioc: Annotated[WebInteractorFactory, Depends(Stub(WebInteractorFactory))]
+        web_verifier: FromDishka[WebVerifier],
+        user: FromDishka[User]
 ):
-    if user.verification_status == VerificationStatusEnum.VERIFIED:
-        raise HTTPException(
-            status_code=status.HTTP_417_EXPECTATION_FAILED,
-            detail="User already verified"
-        )
-    async with ioc.get_web_verifier() as verifier:
-        try:
-            user_verified = await verifier.finish_verification(
-                verification_code=verification_code
-            )
-        except SMError as e:
-            raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail=str(e)
-            )
+    user_verified = await web_verifier.finish_verification(
+        verification_code=verification_code,
+        user=user
+    )
     return user_verified
 
 
 def setup_user() -> APIRouter:
-    user_router = APIRouter(prefix="/users")
+    user_router = APIRouter(prefix="/users", route_class=DishkaRoute)
     user_router.add_api_route("/", endpoint=register, methods=["POST"])
     user_router.add_api_route('/verify-account/{verification_code}', endpoint=verify_account, methods=["GET"])
     return user_router

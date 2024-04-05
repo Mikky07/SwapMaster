@@ -8,6 +8,7 @@ from swapmaster.common.config.models import Paths
 from swapmaster.common.config.parser import get_paths
 from swapmaster.common.config.parser import logging_setup
 from swapmaster.presentation.web_api import load_api_config
+from swapmaster.presentation.web_api.exceptions import setup_exception_handler
 from swapmaster.presentation.web_api.routes import setup_routers
 from swapmaster.main.di import setup_web_di
 from swapmaster.adapters.mq import (
@@ -43,6 +44,8 @@ def setup() -> FastAPI:
         scheduler_async=scheduler_async,
         scheduler_sync=scheduler_sync,
     )
+
+    setup_exception_handler(app=app)
 
     return app
 

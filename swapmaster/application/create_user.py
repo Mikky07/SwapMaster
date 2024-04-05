@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from swapmaster.application.common import UoW
 from swapmaster.application.common.interactor import Interactor
-from swapmaster.application.common.gateways.user_gateway import UserSaver
+from swapmaster.application.common.gateways.user_gateway import UserWriter
 from swapmaster.application.web_verifier import Verifier
 from swapmaster.core.models import User
 from swapmaster.core.services import UserService
@@ -19,7 +19,7 @@ class CreateUser(Interactor):
     def __init__(
             self,
             uow: UoW,
-            user_gateway: UserSaver,
+            user_gateway: UserWriter,
             user_service: UserService,
             verifier: Verifier
     ):

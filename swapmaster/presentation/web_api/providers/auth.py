@@ -2,25 +2,24 @@ import logging
 from datetime import datetime, timedelta
 
 import jwt
-from fastapi import Depends
+from dishka import Scope, Provider, provide, from_context
 from starlette import status
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.exc import NoResultFound
+from starlette.requests import Request
 
 from swapmaster.application.common.gateways.user_gateway import UserReader
 from swapmaster.core.models import User
 from swapmaster.core.models.token import Token
-from swapmaster.core.utils.exceptions import SMError, UserNotFound
+from swapmaster.core.utils.exceptions import AuthFailed, UserNotFound
 from swapmaster.presentation.web_api.config.models.auth import AuthConfig
-from swapmaster.presentation.web_api.depends.stub import Stub
 
 logger = logging.getLogger(__name__)
-oauth2_scheme = OAuth2PasswordBearer("/auth/token")
 
 
-class AuthProvider:
+class AuthHandler:
     def __init__(self, config: AuthConfig):
         self.algorithm = "HS256"
         self.config = config
@@ -37,7 +36,7 @@ class AuthProvider:
             form_data: OAuth2PasswordRequestForm,
             user_reader: UserReader
     ) -> Token:
-        auth_incorrect = SMError("Incorrect username or password")
+        auth_incorrect = AuthFailed("Incorrect username or password")
         try:
             user = await user_reader.get_user_by_username(username=form_data.username)
         except NoResultFound:
@@ -49,8 +48,8 @@ class AuthProvider:
 
     async def get_current_user(
             self,
-            token=Depends(oauth2_scheme),
-            user_reader: UserReader = Depends(Stub(UserReader))
+            user_reader: UserReader,
+            token: OAuth2PasswordBearer,
     ) -> User:
         recognition_error = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -93,3 +92,25 @@ class AuthProvider:
     def create_token(self, user: User) -> Token:
         access_token = self.create_access_token(user=user)
         return Token(access_token=access_token, token_type="bearer")
+
+
+class AuthProvider(Provider):
+    scope = Scope.REQUEST
+
+    request = from_context(provides=Request)
+    config = from_context(provides=AuthConfig, scope=Scope.APP)
+    auth_handler = provide(AuthHandler, scope=Scope.APP)
+
+    oauth2_scheme = provide(source=OAuth2PasswordBearer("/auth/token"), provides=OAuth2PasswordBearer)
+
+    @provide
+    async def get_current_user(
+            self,
+            auth_handler: AuthHandler,
+            token: OAuth2PasswordBearer,
+            user_reader: UserReader
+    ) -> User:
+        return await auth_handler.get_current_user(
+            user_reader=user_reader,
+            token=token
+        )

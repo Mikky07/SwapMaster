@@ -25,6 +25,10 @@ class GatewayError(SMError):
     pass
 
 
+class AuthFailed(SMError):
+    pass
+
+
 class OrderCreationError(SMError):
     pass
 

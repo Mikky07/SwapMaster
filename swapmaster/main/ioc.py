@@ -1,7 +1,7 @@
 from typing import AsyncGenerator
 
 from apscheduler import Scheduler, AsyncScheduler
-from dishka import Provider, provide, Scope, from_context, alias
+from dishka import Provider, provide, Scope, from_context, alias, AnyOf
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -31,6 +31,25 @@ from swapmaster.application import (
     WebVerifier
 )
 from swapmaster.application.common import Notifier, UoW
+from swapmaster.application.common.gateways import (
+    CommissionReader,
+    OrderRequisiteReader,
+    CourseReader,
+    UserReader,
+    UserUpdater,
+    UserWriter,
+    PairReader,
+    RequisiteReader,
+    OrderReader,
+    MethodReader,
+    ReserveReader,
+    CommissionWriter,
+    MethodWriter,
+    PairWriter,
+    OrderWriter,
+    ReserveWriter,
+    RequisiteWriter, OrderUpdater, ReserveUpdater, OrderRequisiteWriter,
+)
 from swapmaster.application.common.task_manager import BaseTaskManager, AsyncTaskManager
 from swapmaster.application.common.verifier import VerificationCash, Verifier
 from swapmaster.application.order import SetOrderPaidUp
@@ -90,15 +109,48 @@ class GatewayProvider(Provider):
     async def get_uow(self, session: AsyncSession) -> AsyncGenerator[UoW, None]:
         yield UowAsyncSession(session)
 
-    user_gateway = provide(UserGateway)
-    course_gateway = provide(CourseGateway)
-    pair_gateway = provide(PairGateway)
-    requisite_gateway = provide(RequisiteGateway)
-    order_gateway = provide(OrderGateway)
-    method_gateway = provide(MethodGateway)
-    reserve_gateway = provide(ReserveGateway)
-    order_requisite_gateway = provide(OrderRequisiteGateway)
-    commission_gateway = provide(CommissionGateway)
+    user_gateway = provide(
+        source=UserGateway,
+        provides=AnyOf[UserGateway, UserReader, UserWriter, UserUpdater]
+    )
+    course_gateway = provide(
+        source=CourseGateway,
+        provides=AnyOf[CourseGateway, CourseReader]
+    )
+    pair_gateway = provide(
+        source=PairGateway,
+        provides=AnyOf[PairGateway, PairReader, PairWriter]
+    )
+    requisite_gateway = provide(
+        source=RequisiteGateway,
+        provides=AnyOf[ReserveGateway, RequisiteReader, RequisiteReader | RequisiteWriter]
+    )
+    order_gateway = provide(
+        source=OrderGateway,
+        provides=AnyOf[
+            OrderGateway,
+            OrderUpdater,
+            OrderReader,
+            OrderWriter | OrderUpdater,
+            OrderUpdater | OrderReader
+        ]
+    )
+    method_gateway = provide(
+        source=MethodGateway,
+        provides=AnyOf[MethodReader, MethodWriter]
+    )
+    reserve_gateway = provide(
+        source=ReserveGateway,
+        provides=AnyOf[ReserveGateway, ReserveReader, ReserveWriter, ReserveUpdater | ReserveReader]
+    )
+    order_requisite_gateway = provide(
+        source=OrderRequisiteGateway,
+        provides=AnyOf[OrderRequisiteGateway, OrderRequisiteReader, OrderRequisiteWriter]
+    )
+    commission_gateway = provide(
+        source=CommissionGateway,
+        provides=AnyOf[CommissionGateway, CommissionReader, CommissionWriter]
+    )
 
 
 class InteractorProvider(Provider):
@@ -107,162 +159,16 @@ class InteractorProvider(Provider):
     central_config = from_context(provides=CentralConfig, scope=Scope.APP)
     verification_cash = from_context(provides=VerificationCash)
 
-    @provide
-    async def get_authenticator(
-            self,
-            verifier: Verifier,
-            uow: UoW,
-            user_gateway: UserGateway,
-            user_service: UserService
-    ) -> AsyncGenerator[CreateUser, None]:
-        yield CreateUser(
-            uow=uow,
-            user_gateway=user_gateway,
-            user_service=user_service,
-            verifier=verifier
-        )
-
-    @provide
-    async def get_requisite_creator(
-            self,
-            uow: UoW,
-            requisite_gateway: RequisiteGateway,
-            pair_gateway: PairGateway,
-    ) -> AsyncGenerator[CreateRequisite, None]:
-        yield CreateRequisite(
-            uow=uow,
-            requisite_gateway=requisite_gateway,
-            pair_gateway=pair_gateway
-        )
-
-    @provide
-    async def get_order_creator(
-            self,
-            uow: UoW,
-            task_manager: AsyncTaskManager,
-            requisite_gateway: RequisiteGateway,
-            user_gateway: UserGateway,
-            order_gateway: OrderGateway,
-            order_requisite_gateway: OrderRequisiteGateway,
-            pair_gateway: PairGateway,
-            method_gateway: MethodGateway,
-            config: CentralConfig,
-            notifier: Notifier,
-            order_service: OrderService,
-            requisite_service: RequisiteService,
-            reserve_gateway: ReserveGateway
-    ) -> AsyncGenerator[CreateOrder, None]:
-        yield CreateOrder(
-            uow=uow,
-            requisite_gateway=requisite_gateway,
-            pair_gateway=pair_gateway,
-            user_gateway=user_gateway,
-            order_gateway=order_gateway,
-            order_requisite_gateway=order_requisite_gateway,
-            method_gateway=method_gateway,
-            task_manager=task_manager,
-            config=config,
-            notifier=notifier,
-            order_service=order_service,
-            requisite_service=requisite_service,
-            reserve_gateway=reserve_gateway
-        )
-
-    @provide
-    async def get_requisite_creator(
-            self,
-            uow: UoW,
-            user_gateway: UserGateway,
-            order_gateway: OrderGateway,
-            pair_gateway: PairGateway,
-            method_gateway: MethodGateway,
-            notifier: Notifier,
-            reserve_gateway: ReserveGateway
-    ) -> AsyncGenerator[FinishOrder, None]:
-        yield FinishOrder(
-            uow=uow,
-            pair_gateway=pair_gateway,
-            user_gateway=user_gateway,
-            order_gateway=order_gateway,
-            method_gateway=method_gateway,
-            notifier=notifier,
-            reserve_gateway=reserve_gateway
-        )
-
-    @provide
-    async def get_order_canceler(
-            self,
-            uow: UoW,
-            user_gateway: UserGateway,
-            order_gateway: OrderGateway,
-            notifier: Notifier,
-    ) -> AsyncGenerator[CancelOrder, None]:
-        yield CancelOrder(
-            uow=uow,
-            order_gateway=order_gateway,
-            user_gateway=user_gateway,
-            notifier=notifier
-        )
-
-    @provide
-    async def get_pair_creator(
-            self,
-            uow: UoW,
-            pair_gateway: PairGateway,
-    ) -> AsyncGenerator[CreatePair, None]:
-        yield CreatePair(
-            pair_gateway=pair_gateway,
-            uow=uow
-        )
-
-    @provide
-    async def get_send_total_calculator(
-            self,
-            commission_gateway: CommissionGateway,
-            pair_gateway: PairGateway,
-            course_gateway: CourseGateway,
-    ) -> AsyncGenerator[CalculateSendTotal, None]:
-        yield CalculateSendTotal(
-            commission_gateway=commission_gateway,
-            pair_gateway=pair_gateway,
-            course_gateway=course_gateway
-        )
-
-    @provide
-    async def get_requisite_creator(
-            self,
-            uow: UoW,
-            method_gateway: MethodGateway
-    ) -> AsyncGenerator[CreateMethod, None]:
-        yield CreateMethod(
-            method_gateway=method_gateway,
-            uow=uow
-        )
-
-    @provide
-    async def get_payer(
-            self,
-            uow: UoW,
-            order_gateway: OrderGateway,
-            task_manager: AsyncTaskManager
-    ) -> AsyncGenerator[SetOrderPaidUp, None]:
-        yield SetOrderPaidUp(
-            task_manager=task_manager,
-            order_gateway=order_gateway,
-            uow=uow
-        )
-
-    @provide
-    async def get_commission_creator(
-            self,
-            uow: UoW,
-            requisite_gateway: RequisiteGateway,
-            pair_gateway: PairGateway,
-    ) -> AsyncGenerator[CreateCommission, None]:
-        yield CreateRequisite(
-            requisite_gateway=requisite_gateway,
-            uow=uow,pair_gateway=pair_gateway
-        )
+    user_creator = provide(CreateUser)
+    requisite_creator = provide(CreateRequisite)
+    order_creator = provide(CreateOrder)
+    order_finisher = provide(FinishOrder)
+    order_canceler = provide(CancelOrder)
+    pair_creator = provide(CreatePair)
+    send_total_calculator = provide(CalculateSendTotal)
+    method_creator = provide(CreateMethod)
+    payer = provide(SetOrderPaidUp)
+    commission_creator = provide(CreateCommission)
 
 
 class WebInteractorProvider(Provider):
@@ -270,17 +176,4 @@ class WebInteractorProvider(Provider):
 
     notifier = from_context(provides=Notifier, scope=Scope.APP)
 
-    @provide
-    async def get_web_verifier(
-            self,
-            notifier: Notifier,
-            cash: VerificationCash,
-            uow: UoW,
-            user_gateway: UserGateway
-    ) -> AsyncGenerator[Verifier, None]:
-        yield WebVerifier(
-            notifier=notifier,
-            cash=cash,
-            uow=uow,
-            user_gateway=user_gateway
-        )
+    web_verifier = provide(source=WebVerifier, provides=Verifier)

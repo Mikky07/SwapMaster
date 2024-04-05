@@ -20,7 +20,7 @@ class UserUpdater(Protocol):
         raise NotImplementedError
 
 
-class UserSaver(Protocol):
+class UserWriter(Protocol):
     @abstractmethod
     async def add_user(self, user: User) -> User:
         raise NotImplementedError
