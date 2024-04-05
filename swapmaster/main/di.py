@@ -7,6 +7,7 @@ from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka as setup_dishka_fastapi
 from dishka.integrations.aiogram import setup_dishka as setup_dishka_aiogram
 from fastapi import FastAPI
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from swapmaster.adapters.db.factory import create_pool, create_redis
@@ -24,7 +25,8 @@ from swapmaster.main.ioc import (
     GatewayProvider,
     WebInteractorProvider,
     ServiceProvider,
-    TaskManagerProvider
+    TaskManagerProvider,
+    RedisVerificationCashProvider
 )
 from swapmaster.presentation.tgbot.middlewares.setup import setup_middlewares
 
@@ -67,7 +69,7 @@ def setup_bot_di(
             CentralConfig: bot_config.central,
             VerificationCash: user_verification_cash,
             Notifier: notifier,
-            async_sessionmaker[AsyncSession]: pool
+            async_sessionmaker[AsyncSession]: pool,
         }
     )
 
@@ -94,13 +96,15 @@ def setup_web_di(
         WebInteractorProvider(),
         ServiceProvider(),
         TaskManagerProvider(),
+        RedisVerificationCashProvider(),
         context={
             Scheduler: scheduler_sync,
             AsyncScheduler: scheduler_async,
             CentralConfig: api_config.central,
             VerificationCash: user_verification_cash,
             Notifier: notifier,
-            async_sessionmaker[AsyncSession]: pool
+            async_sessionmaker[AsyncSession]: pool,
+            Redis: redis
         }
     )
 

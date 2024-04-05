@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class VerificationCashImp(VerificationCash):
-    def __init__(self, redis: Redis, prefix="user-verification:"):
-        self.prefix = prefix
+    def __init__(self, redis: Redis):
+        self.prefix = "user-verification:"
         self.redis = redis
 
     def get_key(self, user_id: UserId):
