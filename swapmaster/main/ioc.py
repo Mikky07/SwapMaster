@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import AsyncGenerator
 
 from apscheduler import Scheduler, AsyncScheduler
@@ -17,6 +18,8 @@ from swapmaster.adapters.db.gateways.sqlalchemy import (
     MethodGateway,
     CourseGateway,
 )
+from swapmaster.adapters.mq.notification import EmailNotifier
+from swapmaster.adapters.mq.notification.config import EmailConfig
 from swapmaster.adapters.mq.scheduler import SyncTaskManager, AsyncTaskManagerImpl
 from swapmaster.application import (
     CreateUser,
@@ -75,8 +78,18 @@ class ServiceProvider(Provider):
 class TaskManagerProvider(Provider):
     scope = Scope.APP
 
-    sync_scheduler = from_context(provides=Scheduler)
-    async_scheduler = from_context(provides=AsyncScheduler)
+    logger = from_context(provides=Logger)
+
+    @provide
+    def get_sync_scheduler(self, logger: Logger) -> Scheduler:
+        scheduler = Scheduler(logger=logger)
+        return scheduler
+
+    @provide
+    async def get_async_scheduler(self, logger: Logger) -> AsyncGenerator[AsyncScheduler, None]:
+        scheduler_async = AsyncScheduler(logger=logger)
+        async with scheduler_async:
+            yield scheduler_async
 
     sync_task_manager = provide(SyncTaskManager)
     async_task_manager = provide(AsyncTaskManagerImpl)
@@ -157,7 +170,6 @@ class InteractorProvider(Provider):
     scope = Scope.REQUEST
 
     central_config = from_context(provides=CentralConfig, scope=Scope.APP)
-    verification_cash = from_context(provides=VerificationCash)
 
     user_creator = provide(CreateUser)
     requisite_creator = provide(CreateRequisite)
@@ -174,6 +186,12 @@ class InteractorProvider(Provider):
 class WebInteractorProvider(Provider):
     scope = Scope.REQUEST
 
-    notifier = from_context(provides=Notifier, scope=Scope.APP)
-
     web_verifier = provide(source=WebVerifier, provides=Verifier)
+
+
+class EmailNotifierProvider(Provider):
+    scope = Scope.APP
+
+    email_config = from_context(provides=EmailConfig)
+
+    email_notifier = provide(source=EmailNotifier, provides=Notifier)

@@ -1,20 +1,22 @@
 import functools
-from typing import Callable, TypeVar, ParamSpec
+from typing import Callable, TypeVar, ParamSpec, Coroutine, Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from swapmaster.core.utils.exceptions import GatewayError
 
 Params = ParamSpec("Params")
-ReturnValue = TypeVar("ReturnValue")
+TReturn = TypeVar("TReturn")
 
 
-def exception_mapper(func: Callable[Params, ReturnValue]):
+def exception_mapper(
+        func: Callable[Params, Coroutine[Any, Any, TReturn]]
+) -> Callable[Params, Coroutine[Any, Any, TReturn]]:
     """Application layer won't know about sqlalchemy errors"""
-    @functools.wraps
-    def wrapped_func(*args: Params.args, **kwargs: Params.kwargs):
+    @functools.wraps(func)
+    def wrapped_func(*args: Params.args, **kwargs: Params.kwargs) -> TReturn:
         try:
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except SQLAlchemyError as error:
             raise GatewayError from error
     return wrapped_func

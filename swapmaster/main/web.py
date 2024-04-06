@@ -1,7 +1,4 @@
-from typing import AsyncContextManager
-
 import uvicorn
-from apscheduler import AsyncScheduler
 from fastapi import FastAPI
 
 from swapmaster.common.config.models import Paths
@@ -11,19 +8,13 @@ from swapmaster.presentation.web_api import load_api_config
 from swapmaster.presentation.web_api.exceptions import setup_exception_handler
 from swapmaster.presentation.web_api.routes import setup_routers
 from swapmaster.main.di import setup_web_di
-from swapmaster.adapters.mq import (
-    create_async_scheduler,
-    create_sync_scheduler,
-    async_scheduler_startup_handler,
-)
 
 
-def get_lifespan(scheduler_async: AsyncScheduler):
-    async def lifespan(_) -> AsyncContextManager[None]:
-        async with async_scheduler_startup_handler(scheduler=scheduler_async):
-            yield
-
-    return lifespan
+def create_app() -> FastAPI:
+    app = FastAPI()
+    setup_routers(app)
+    setup_exception_handler(app=app)
+    return app
 
 
 def setup() -> FastAPI:
@@ -32,20 +23,12 @@ def setup() -> FastAPI:
     api_config = load_api_config(paths=paths)
     logging_setup(paths=paths)
 
-    scheduler_async = create_async_scheduler()
-    scheduler_sync = create_sync_scheduler()
-
-    app = FastAPI(lifespan=get_lifespan(scheduler_async=scheduler_async))
-    setup_routers(app)
+    app = create_app()
 
     setup_web_di(
         app=app,
         api_config=api_config,
-        scheduler_async=scheduler_async,
-        scheduler_sync=scheduler_sync,
     )
-
-    setup_exception_handler(app=app)
 
     return app
 

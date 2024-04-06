@@ -2,6 +2,7 @@ import logging
 
 from fastapi import FastAPI, HTTPException
 from starlette import status
+from starlette.responses import JSONResponse
 
 from swapmaster.core.utils.exceptions import SMError, AuthFailed
 
@@ -10,17 +11,13 @@ logger = logging.getLogger(__name__)
 
 
 async def exception_handler(request, exc: SMError):
+    response = JSONResponse(content={"message": str(exc)})
     match exc:
         case AuthFailed():
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=str(exc)
-            )
+            response.status_code = status.HTTP_401_UNAUTHORIZED
         case _:
-            raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail=str(exc)
-            )
+            response.status_code = status.HTTP_406_NOT_ACCEPTABLE
+    return response
 
 
 def setup_exception_handler(app: FastAPI):

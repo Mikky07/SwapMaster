@@ -21,6 +21,14 @@ class UserGateway(
         super().__init__(models.User, session)
 
     @exception_mapper
+    async def get_user_by_id(self, user_id: UserId) -> User:
+        try:
+            user = await self.read_model([models.User.id == user_id])
+        except NoResultFound:
+            raise UserNotFound("That user does not exists!")
+        return user
+
+    @exception_mapper
     async def add_user(self, user: User) -> User:
         is_user_exists = await self.is_model_exists([
             or_(
@@ -36,14 +44,6 @@ class UserGateway(
             username=user.username
         )
         return user_saved.to_dto()
-
-    @exception_mapper
-    async def get_user(self, user_id: UserId) -> User:
-        try:
-            user = await self.read_model([models.User.id == user_id])
-        except NoResultFound:
-            raise UserNotFound("That user does not exists!")
-        return user
 
     @exception_mapper
     async def get_user_by_username(self, username: str) -> User:

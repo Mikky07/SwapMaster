@@ -6,7 +6,7 @@ from swapmaster.core.models import User, UserId
 from swapmaster.core.services import UserService
 from swapmaster.application.create_user import CreateUser, NewUserDTO
 from tests.mocks import UoWMock, VerifierMock
-from tests.mocks.user import UserGatewayMock
+from tests.mocks.gateways.user import UserGatewayMock
 
 TEST_USERNAME = "username"
 TEST_EMAIL = "email"
