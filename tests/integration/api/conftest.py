@@ -1,13 +1,10 @@
-import pytest
 import pytest_asyncio
 from dishka.integrations.fastapi import setup_dishka
-
 from httpx import AsyncClient
 
 from swapmaster.main.web import create_app
 
 
-@pytest.mark.anyio
 @pytest_asyncio.fixture(scope="session")
 async def client(mock_container):
     app = create_app()

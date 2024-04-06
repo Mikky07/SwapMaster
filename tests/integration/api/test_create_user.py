@@ -12,7 +12,7 @@ async def test_create_user(client: AsyncClient, user_creator: CreateUserMock):
 
     response = await client.post(
         "/users/",
-        data={
+        json={
             "username": test_username,
             "email": test_email,
             "password": test_password
@@ -21,5 +21,3 @@ async def test_create_user(client: AsyncClient, user_creator: CreateUserMock):
 
     assert response.status_code == 200
     assert user_creator.called
-
-    print(response)

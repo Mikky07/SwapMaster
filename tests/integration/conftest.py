@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 from dishka import Provider, make_async_container, provide, Scope
 
 from swapmaster.application import CreateUser
@@ -17,6 +18,6 @@ def mock_container():
     yield container
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def user_creator(mock_container):
     return await mock_container.get(CreateUser)
