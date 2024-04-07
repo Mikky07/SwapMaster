@@ -7,6 +7,7 @@ from swapmaster.application.common.gateways.user_gateway import (
     UserUpdater,
     UserReader
 )
+from swapmaster.core.utils.exceptions import UserNotFound
 
 
 class UserGatewayMock(UserWriter, UserUpdater, UserReader):
@@ -26,7 +27,10 @@ class UserGatewayMock(UserWriter, UserUpdater, UserReader):
         return user
 
     async def get_user_by_id(self, user_id: UserId) -> User:
-        return self.users[user_id]
+        user = self.users.get(user_id, None)
+        if not user:
+            raise UserNotFound("Can't find user by id")
+        return user
 
     async def get_user_by_username(self, username: str) -> User:
         ...

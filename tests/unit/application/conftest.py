@@ -14,7 +14,6 @@ from tests.mocks import (
     ReserveGatewayMock,
     CommissionGatewayMock,
     RequisiteGatewayMock,
-    UserGatewayMock,
     CourseGatewayMock,
     NotifierMock
 )
@@ -33,11 +32,6 @@ def commission_gateway() -> CommissionGatewayMock:
 @fixture
 def method_gateway() -> MethodGatewayMock:
     return MethodGatewayMock()
-
-
-@fixture
-def user_gateway() -> UserGatewayMock:
-    return UserGatewayMock()
 
 
 @fixture

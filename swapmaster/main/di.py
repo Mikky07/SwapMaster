@@ -27,7 +27,6 @@ from swapmaster.main.ioc import (
     RedisVerificationCashProvider,
     EmailNotifierProvider
 )
-from swapmaster.presentation.tgbot.middlewares.setup import setup_middlewares
 from swapmaster.presentation.web_api.providers.auth import AuthProvider
 
 

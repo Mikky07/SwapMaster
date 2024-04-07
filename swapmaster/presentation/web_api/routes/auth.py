@@ -8,7 +8,7 @@ from fastapi import Response
 from fastapi.security import OAuth2PasswordRequestForm
 
 from swapmaster.application.common.gateways import UserReader
-from swapmaster.presentation.web_api.providers.auth import AuthHandler
+from swapmaster.presentation.web_api.auth import AuthHandler
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,11 @@ async def login(
         user_reader: FromDishka[UserReader],
         auth_handler: FromDishka[AuthHandler]
 ):
-    token = await auth_handler.auth(form_data=form_data, user_reader=user_reader)
+    token = await auth_handler.auth(
+        username=form_data.username,
+        password=form_data.password,
+        user_reader=user_reader
+    )
     response.set_cookie(
         "Authorization",
         httponly=True,
