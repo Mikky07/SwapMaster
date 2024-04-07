@@ -1,9 +1,11 @@
-from unittest.mock import Mock, AsyncMock
-
 import pytest
 import pytest_asyncio
 from dishka import Provider, make_async_container, provide, Scope, AnyOf
+from dishka.integrations.fastapi import setup_dishka
+from httpx import AsyncClient
+from unittest.mock import Mock, AsyncMock
 
+from swapmaster.main.web import create_app
 from swapmaster.application import CreateUser
 from swapmaster.application.common.gateways import UserReader
 from swapmaster.presentation.web_api.auth import AuthHandler
@@ -43,3 +45,10 @@ async def user_creator(mock_container):
 async def auth_handler(mock_container):
     return await mock_container.get(AuthHandler)
 
+
+@pytest_asyncio.fixture(scope="session")
+async def client(mock_container):
+    app = create_app()
+    setup_dishka(mock_container, app)
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client

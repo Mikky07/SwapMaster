@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 from passlib.context import CryptContext
@@ -55,10 +55,10 @@ class AuthHandler:
                 algorithms=[self.algorithm]
             )
             user_id = payload.get("user_id", None)
-            expires_datetime = payload.get("exp")
+            expires_datetime = datetime.fromtimestamp(payload.get("exp"))
             if not user_id:
                 raise recognition_error
-            if not expires_datetime or (expires_datetime <= datetime.now().microsecond):
+            if not expires_datetime or (expires_datetime <= datetime.now()):
                 raise recognition_error
         except Exception:
             raise recognition_error
@@ -69,10 +69,10 @@ class AuthHandler:
         return user
 
     def create_access_token(self, user: User) -> str:
-        expires_datetime = datetime.now() + timedelta(minutes=self.config.expire_minutes)
+        expires_datetime = datetime.now(tz=timezone.utc) + timedelta(minutes=self.config.expire_minutes)
         token_payload = {
             "sub": "auth",
-            "exp": expires_datetime.microsecond,
+            "exp": expires_datetime.timestamp(),
             "user_id": user.id,
         }
         access_token = jwt.encode(
