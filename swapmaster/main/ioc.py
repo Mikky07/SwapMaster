@@ -2,6 +2,7 @@ from logging import Logger
 from typing import AsyncGenerator
 
 from apscheduler import Scheduler, AsyncScheduler
+from adaptix import Retort
 from dishka import Provider, provide, Scope, from_context, alias, AnyOf
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -112,6 +113,7 @@ class GatewayProvider(Provider):
     scope = Scope.REQUEST
 
     pool = from_context(provides=async_sessionmaker[AsyncSession], scope=Scope.APP)
+    retort = from_context(provides=Retort, scope=scope.APP)
 
     @provide
     async def get_session(self, pool: async_sessionmaker[AsyncSession]) -> AsyncGenerator[AsyncSession, None]:

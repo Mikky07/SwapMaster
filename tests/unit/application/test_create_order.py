@@ -153,7 +153,8 @@ async def test_create_order_(
         username="",
         email="test@mail.ru",
         hashed_password="",
-        verification_status=VerificationStatusEnum.VERIFIED
+        verification_status=VerificationStatusEnum.VERIFIED,
+        tg_id=None
     )
 
     with pytest.raises(OrderCreationError):

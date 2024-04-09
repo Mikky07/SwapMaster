@@ -6,7 +6,7 @@ from swapmaster.application.order.create import CreateOrder, NewOrderDTO
 from .create_reserve import CreateReserve, NewReserveDTO
 from .create_commission import CreateCommission, NewCommissionDTO
 from .web_verifier import WebVerifier
-from .create_user import CreateUser
+from swapmaster.application.user.create_user import CreateUser
 from .order import (
     FinishOrder,
     CancelOrder,

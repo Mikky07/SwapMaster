@@ -6,7 +6,6 @@ from aiogram_dialog import setup_dialogs
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from apscheduler import AsyncScheduler
 
-from swapmaster.adapters.mq import create_async_scheduler, create_sync_scheduler, async_scheduler_startup_handler
 from swapmaster.common.config.parser import logging_setup
 from swapmaster.main.web import get_paths_common
 from swapmaster.main.di import setup_bot_di
@@ -18,13 +17,11 @@ from swapmaster.presentation.tgbot.handlers import setup_handlers
 logger = logging.getLogger(__name__)
 
 
-def get_on_startup(bot: Bot, config_: WebhookConfig, scheduler_async: AsyncScheduler):
+def get_on_startup(bot: Bot, config_: WebhookConfig):
     async def on_startup() -> None:
         await bot.set_webhook(
             config_.url, secret_token=config_.secret
         )
-        async with async_scheduler_startup_handler(scheduler=scheduler_async):
-            yield
 
     return on_startup
 
@@ -52,22 +49,16 @@ def main():
     dispatcher = Dispatcher()
     bot = create_bot(config)
 
-    scheduler_async = create_async_scheduler()
-    scheduler_sync = create_sync_scheduler()
-
     setup_dialogs(dispatcher)
     setup_handlers(dp=dispatcher)
     setup_bot_di(
         dp=dispatcher,
         bot_config=config,
-        scheduler_sync=scheduler_sync,
-        scheduler_async=scheduler_async
     )
     dispatcher.startup.register(
         get_on_startup(
             bot=bot,
             config_=config.webhook,
-            scheduler_async=scheduler_async
         )
     )
     run_web_application(

@@ -1,12 +1,13 @@
+from adaptix import Retort
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import or_
+from sqlalchemy import or_, insert
 
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.utils.exceptions import AlreadyExists, UserNotFound
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
-from swapmaster.core.models.user import User, UserId
+from swapmaster.core.models.user import User, UserId, ExtraDataId
 from swapmaster.application.common.gateways.user_gateway import UserReader, UserWriter, UserUpdater
 from swapmaster.adapters.db.exceptions import exception_mapper
 
@@ -17,8 +18,10 @@ class UserGateway(
     UserWriter,
     UserUpdater
 ):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession, retort: Retort):
         super().__init__(models.User, session)
+
+        self.retort = retort
 
     @exception_mapper
     async def get_user_by_id(self, user_id: UserId) -> User:
@@ -27,6 +30,12 @@ class UserGateway(
         except NoResultFound:
             raise UserNotFound("That user does not exists!")
         return user
+
+    @exception_mapper
+    async def attach_extra_data(self, user_id: UserId) -> ExtraDataId:
+        stmt = insert(models.UserExtraData).values(user_id=user_id).returning(models.UserExtraData)
+        new_extra_data = await self.session.execute(stmt)
+        return new_extra_data.scalar_one().id
 
     @exception_mapper
     async def add_user(self, user: User) -> User:
@@ -41,7 +50,7 @@ class UserGateway(
         user_saved = await self.create_model(
             hashed_password=user.hashed_password,
             email=user.email,
-            username=user.username
+            username=user.username,
         )
         return user_saved.to_dto()
 

@@ -27,6 +27,7 @@ dependencies = [
     "dishka>=1.0.0",
     "httpx>=0.27.0",
     "bcrypt==4.0.1",
+    "adaptix>=3.0.0b4",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

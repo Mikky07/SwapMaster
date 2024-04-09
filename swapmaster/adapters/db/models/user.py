@@ -1,9 +1,23 @@
-from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy.dialects.postgresql import ENUM
+from typing import Optional
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy.dialects.postgresql import ENUM, BIGINT
 
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
+
+
+class UserExtraData(Base):
+    __tablename__ = "users_extra_data"
+    __mapper_args__ = {"eager_defaults": True}
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    telegram_id: Mapped[int] = mapped_column(BIGINT)
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user: Mapped['User'] = relationship(foreign_keys=user_id, back_populates="extra_data")
 
 
 class User(Base):
@@ -34,5 +48,5 @@ class User(Base):
             username=self.username,
             hashed_password=self.hashed_password,
             email=self.email,
-            verification_status=self.verification_status
+            verification_status=self.verification_status,
         )

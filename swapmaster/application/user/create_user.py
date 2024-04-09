@@ -4,15 +4,17 @@ from swapmaster.application.common import UoW
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.gateways.user_gateway import UserWriter
 from swapmaster.application.web_verifier import Verifier
+from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.models import User
 from swapmaster.core.services import UserService
+from swapmaster.core.utils.exceptions import VerificationFailed
 
 
 @dataclass
 class NewUserDTO:
     username: str
-    email: str
-    password: str
+    email: str | None
+    password: str | None
 
 
 class CreateUser(Interactor):
@@ -36,5 +38,8 @@ class CreateUser(Interactor):
         )
         user = await self.user_gateway.add_user(user=new_user)
         await self.uow.commit()
-        await self.verifier.start_verification(user=user)
+        try:
+            await self.verifier.start_verification(user=user)
+        except Exception:
+            raise VerificationFailed("Some troubles with verification happened")
         return user

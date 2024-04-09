@@ -1,7 +1,7 @@
 from abc import abstractmethod
-from typing import Protocol
+from typing import Protocol, Any
 
-from swapmaster.core.models.user import UserId, User
+from swapmaster.core.models.user import UserId, User, ExtraDataId
 
 
 class UserReader(Protocol):
@@ -23,4 +23,8 @@ class UserUpdater(Protocol):
 class UserWriter(Protocol):
     @abstractmethod
     async def add_user(self, user: User) -> User:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def add_extra_data(self, key: str, value: Any, user_id: UserId) -> None:
         raise NotImplementedError

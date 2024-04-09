@@ -1,5 +1,5 @@
 from .base import Base
-from .user import User
+from .user import User, UserExtraData
 from .currency import Currency
 from .method import Method
 from .commission import Commission

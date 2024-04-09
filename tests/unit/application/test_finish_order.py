@@ -108,7 +108,8 @@ async def test_finish_order_(
         username="",
         email="",
         hashed_password="",
-        verification_status=VerificationStatusEnum.VERIFIED
+        verification_status=VerificationStatusEnum.VERIFIED,
+        tg_id=None
     )
 
     user_gateway.users[test_user.id] = test_user

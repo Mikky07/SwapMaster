@@ -18,7 +18,8 @@ TEST_USER = User(
     username="",
     hashed_password="",
     email="",
-    verification_status=VerificationStatusEnum.UNVERIFIED
+    verification_status=VerificationStatusEnum.UNVERIFIED,
+    tg_id=None
 )
 
 

@@ -41,7 +41,8 @@ async def test_cancel_order_(
         username="",
         email="",
         hashed_password="",
-        verification_status=VerificationStatusEnum.VERIFIED
+        verification_status=VerificationStatusEnum.VERIFIED,
+        tg_id=None
     )
 
     user_gateway.users[TEST_USER_ID] = test_customer

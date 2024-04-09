@@ -5,7 +5,7 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 
 from swapmaster.application import WebVerifier
-from swapmaster.application.create_user import NewUserDTO, CreateUser
+from swapmaster.application.user.create_user import NewUserDTO, CreateUser
 from swapmaster.core.models import User
 
 logger = logging.getLogger(__name__)

@@ -25,7 +25,8 @@ async def test_auth_handler(
         username='username',
         email='email@gmail.com',
         hashed_password='hash',
-        verification_status=VerificationStatusEnum.VERIFIED
+        verification_status=VerificationStatusEnum.VERIFIED,
+        extra_data_id=1
     )
 
     handler_obj = AuthHandler(

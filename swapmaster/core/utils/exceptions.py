@@ -29,6 +29,10 @@ class AuthFailed(SMError):
     pass
 
 
+class VerificationFailed(SMError):
+    pass
+
+
 class OrderCreationError(SMError):
     pass
 

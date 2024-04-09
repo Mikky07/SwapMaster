@@ -23,16 +23,17 @@ class UserService:
 
     def create_user(
             self,
-            email: str,
-            password: str,
+            email: str | None,
+            password: str | None,
             username: str,
     ) -> User:
         self.is_email_correct(email_address=email)
-        password_hash = self.get_password_hash(password=password)
+        password_hash = self.get_password_hash(password=password) if password else None
         return User(
             id=None,
             email=email,
             hashed_password=password_hash,
             username=username,
-            verification_status=VerificationStatusEnum.UNVERIFIED
+            verification_status=VerificationStatusEnum.UNVERIFIED,
+            extra_data_id=None
         )

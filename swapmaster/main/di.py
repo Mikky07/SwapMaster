@@ -1,6 +1,7 @@
 import logging
 from typing import TypeVar
 
+from adaptix import Retort
 from aiogram import Dispatcher
 from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka as setup_dishka_fastapi
@@ -52,12 +53,13 @@ def setup_bot_di(
     redis = create_redis(bot_config.redis)
     user_verification_cash = VerificationCashImp(redis=redis)
 
+    retort = Retort()
+
     notifier = TGBotNotifier()
 
     container = make_async_container(
         InteractorProvider(),
         GatewayProvider(),
-        WebInteractorProvider(),
         ServiceProvider(),
         TaskManagerProvider(),
         context={
@@ -65,6 +67,7 @@ def setup_bot_di(
             VerificationCash: user_verification_cash,
             Notifier: notifier,
             async_sessionmaker[AsyncSession]: pool,
+            Retort: retort
         }
     )
 
