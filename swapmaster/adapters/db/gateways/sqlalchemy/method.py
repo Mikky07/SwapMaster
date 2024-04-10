@@ -48,3 +48,8 @@ class MethodGateway(
             ]
         )
         return result.to_dto()
+
+    @exception_mapper
+    async def get_methods_for_currency(self, currency_id: CurrencyId) -> list[Method]:
+        result = await self.get_model_list([models.Method.currency_id == currency_id])
+        return [method.to_dto() for method in result]

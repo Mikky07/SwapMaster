@@ -1,6 +1,7 @@
 from typing import Protocol
 from abc import abstractmethod
 
+from swapmaster.core.models import CurrencyId
 from swapmaster.core.models.method import Method, MethodId
 
 
@@ -11,6 +12,10 @@ class MethodReader(Protocol):
 
     @abstractmethod
     async def get_method_by_id(self, method_id: MethodId) -> Method:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_methods_for_currency(self, currency_id: CurrencyId) -> list[Method]:
         raise NotImplementedError
 
 

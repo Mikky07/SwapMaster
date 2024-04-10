@@ -1,6 +1,11 @@
 from aiogram.filters.state import StatesGroup, State
 
 
-class OrderState(StatesGroup):
+class OrderSG(StatesGroup):
+    main = State()
     currency_to = State()
     method_to = State()
+
+
+class MainSG(StatesGroup):
+    main = State()

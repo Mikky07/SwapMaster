@@ -2,8 +2,8 @@ import logging
 
 from aiogram import Dispatcher
 
-from .order import setup_order_handlers, order_dialog
-from .user import setup_user_handlers
+from .order import order_dialog
+from .user import setup_user_handlers, user_dialog
 
 
 logger = logging.getLogger(__name__)
@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 def setup_handlers(dp: Dispatcher):
     routers = [
         setup_user_handlers(),
-        setup_order_handlers(),
-        order_dialog
+        order_dialog,
+        user_dialog
     ]
 
     for router in routers:
