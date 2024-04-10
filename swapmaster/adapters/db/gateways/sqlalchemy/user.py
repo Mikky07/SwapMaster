@@ -1,13 +1,13 @@
 from adaptix import Retort
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import or_, insert
+from sqlalchemy import or_
 
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.core.utils.exceptions import AlreadyExists, UserNotFound
 from .base import BaseDBGateway
 from swapmaster.adapters.db import models
-from swapmaster.core.models.user import User, UserId, ExtraDataId
+from swapmaster.core.models.user import User, UserId
 from swapmaster.application.common.gateways.user_gateway import UserReader, UserWriter, UserUpdater
 from swapmaster.adapters.db.exceptions import exception_mapper
 
@@ -30,12 +30,6 @@ class UserGateway(
         except NoResultFound:
             raise UserNotFound("That user does not exists!")
         return user
-
-    @exception_mapper
-    async def attach_extra_data(self, user_id: UserId) -> ExtraDataId:
-        stmt = insert(models.UserExtraData).values(user_id=user_id).returning(models.UserExtraData)
-        new_extra_data = await self.session.execute(stmt)
-        return new_extra_data.scalar_one().id
 
     @exception_mapper
     async def add_user(self, user: User) -> User:
@@ -66,3 +60,13 @@ class UserGateway(
             verification_status=VerificationStatusEnum.VERIFIED
         )
         return verified_user.to_dto()
+
+    @exception_mapper
+    async def get_user_by_tg_id(self, tg_id: int) -> User:
+        user = await self.read_model([models.User.tg_id == tg_id])
+        return user
+
+    @exception_mapper
+    async def attach_tg_id(self, tg_id: int, user_id: UserId) -> User:
+        user_with_tg_id = await self.update_model(filters=[models.User.id == user_id], tg_id=tg_id)
+        return user_with_tg_id

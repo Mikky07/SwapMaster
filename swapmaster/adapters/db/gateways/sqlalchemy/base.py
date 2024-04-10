@@ -39,9 +39,7 @@ class BaseDBGateway(Generic[Model]):
             filters: Sequence[ExpressionElementRole] | None = None
     ) -> Model:
         model_read = await self.__read_model_with_filters(filters=filters)
-        if not (result := model_read.first()):
-            raise NoResultFound
-        return result
+        return model_read.first()
 
     async def __read_model_with_filters(
             self,

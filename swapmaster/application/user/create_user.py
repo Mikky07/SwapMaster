@@ -4,8 +4,7 @@ from swapmaster.application.common import UoW
 from swapmaster.application.common.interactor import Interactor
 from swapmaster.application.common.gateways.user_gateway import UserWriter
 from swapmaster.application.web_verifier import Verifier
-from swapmaster.core.constants import VerificationStatusEnum
-from swapmaster.core.models import User
+from swapmaster.core.models import User, UserId
 from swapmaster.core.services import UserService
 from swapmaster.core.utils.exceptions import VerificationFailed
 
@@ -43,3 +42,9 @@ class CreateUser(Interactor):
         except Exception:
             raise VerificationFailed("Some troubles with verification happened")
         return user
+
+
+async def attach_tg_id(user_id: UserId, tg_id: int, uow: UoW, user_gateway: UserWriter):
+    await user_gateway.attach_tg_id(tg_id=tg_id, user_id=user_id)
+    await uow.commit()
+

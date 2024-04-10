@@ -12,12 +12,11 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from swapmaster.adapters.db.factory import create_pool, create_redis
 from swapmaster.adapters.db.gateways.redis import VerificationCashImp
-from swapmaster.adapters.mq.notification.bot_notifier import TGBotNotifier
 from swapmaster.adapters.mq.notification.config import EmailConfig
-from swapmaster.application.common import Notifier
 from swapmaster.application.common.verifier import VerificationCash
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.presentation.tgbot.config.models.main import BotConfig
+from swapmaster.presentation.tgbot.providers import TGUserProvider, TGBotNotifierProvider, TGBotVerifierProvider
 from swapmaster.presentation.web_api.config.models.main import APIConfig
 from swapmaster.main.ioc import (
     InteractorProvider,
@@ -55,23 +54,23 @@ def setup_bot_di(
 
     retort = Retort()
 
-    notifier = TGBotNotifier()
-
     container = make_async_container(
         InteractorProvider(),
         GatewayProvider(),
         ServiceProvider(),
         TaskManagerProvider(),
+        TGUserProvider(),
+        TGBotNotifierProvider(),
+        TGBotVerifierProvider(),
         context={
             CentralConfig: bot_config.central,
             VerificationCash: user_verification_cash,
-            Notifier: notifier,
             async_sessionmaker[AsyncSession]: pool,
             Retort: retort
         }
     )
 
-    setup_dishka_aiogram(container=container, router=dp)
+    setup_dishka_aiogram(container=container, router=dp, auto_inject=True)
 
 
 def setup_web_di(

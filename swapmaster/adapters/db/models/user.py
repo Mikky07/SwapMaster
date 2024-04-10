@@ -1,23 +1,12 @@
 from typing import Optional
 
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy.dialects.postgresql import ENUM, BIGINT
+from sqlalchemy import BIGINT
+from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.dialects.postgresql import ENUM
 
 from swapmaster.core.constants import VerificationStatusEnum
 from swapmaster.adapters.db.models import Base
 from swapmaster.core import models as dto
-
-
-class UserExtraData(Base):
-    __tablename__ = "users_extra_data"
-    __mapper_args__ = {"eager_defaults": True}
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    telegram_id: Mapped[int] = mapped_column(BIGINT)
-
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    user: Mapped['User'] = relationship(foreign_keys=user_id, back_populates="extra_data")
 
 
 class User(Base):
@@ -26,8 +15,9 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str] = mapped_column(unique=True)
-    hashed_password: Mapped[str]
+    email: Mapped[Optional[str]] = mapped_column(unique=True)
+    hashed_password: Mapped[Optional[str]]
+    tg_id: Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
     verification_status: Mapped[VerificationStatusEnum] = mapped_column(
         ENUM(VerificationStatusEnum), default=VerificationStatusEnum.UNVERIFIED
     )
@@ -38,6 +28,7 @@ class User(Base):
             f" id={self.id}"
             f" email={self.email}"
             f" username={self.username}"
+            f" tg_id={self.tg_id}"
             f" hashed_password={self.hashed_password}"
             f" verification_status={self.verification_status}>"
         )
@@ -49,4 +40,5 @@ class User(Base):
             hashed_password=self.hashed_password,
             email=self.email,
             verification_status=self.verification_status,
+            tg_id=self.tg_id
         )

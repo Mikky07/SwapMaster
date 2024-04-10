@@ -126,7 +126,13 @@ class GatewayProvider(Provider):
 
     user_gateway = provide(
         source=UserGateway,
-        provides=AnyOf[UserGateway, UserReader, UserWriter, UserUpdater]
+        provides=AnyOf[
+            UserGateway,
+            UserReader,
+            UserWriter,
+            UserUpdater,
+            UserReader | UserWriter
+        ]
     )
     course_gateway = provide(
         source=CourseGateway,

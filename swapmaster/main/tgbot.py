@@ -4,7 +4,6 @@ from aiohttp import web
 from aiogram import Dispatcher, Bot
 from aiogram_dialog import setup_dialogs
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
-from apscheduler import AsyncScheduler
 
 from swapmaster.common.config.parser import logging_setup
 from swapmaster.main.web import get_paths_common

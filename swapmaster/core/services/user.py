@@ -27,7 +27,8 @@ class UserService:
             password: str | None,
             username: str,
     ) -> User:
-        self.is_email_correct(email_address=email)
+        if email:
+            self.is_email_correct(email_address=email)
         password_hash = self.get_password_hash(password=password) if password else None
         return User(
             id=None,
@@ -35,5 +36,5 @@ class UserService:
             hashed_password=password_hash,
             username=username,
             verification_status=VerificationStatusEnum.UNVERIFIED,
-            extra_data_id=None
+            tg_id=None
         )
