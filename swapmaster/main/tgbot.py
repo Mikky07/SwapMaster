@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from aiohttp import web
@@ -40,6 +41,11 @@ def run_web_application(dp: Dispatcher, bot: Bot, config_: WebhookConfig):
     web.run_app(app, host=config_.host, port=config_.port)
 
 
+async def start(bot: Bot, dp: Dispatcher):
+    await bot.delete_webhook()
+    await dp.start_polling(bot)
+
+
 def main():
     paths = get_paths_common()
     config = get_bot_config(paths=paths)
@@ -54,17 +60,18 @@ def main():
         dp=dispatcher,
         bot_config=config,
     )
-    dispatcher.startup.register(
-        get_on_startup(
-            bot=bot,
-            config_=config.webhook,
-        )
-    )
-    run_web_application(
-        dp=dispatcher,
-        bot=bot,
-        config_=config.webhook
-    )
+    # dispatcher.startup.register(
+    #     get_on_startup(
+    #         bot=bot,
+    #         config_=config.webhook,
+    #     )
+    # )
+    # run_web_application(
+    #     dp=dispatcher,
+    #     bot=bot,
+    #     config_=config.webhook
+    # )
+    asyncio.run(start(bot, dispatcher))
 
 
 if __name__ == "__main__":

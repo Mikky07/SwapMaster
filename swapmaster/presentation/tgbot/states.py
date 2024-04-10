@@ -2,5 +2,5 @@ from aiogram.filters.state import StatesGroup, State
 
 
 class OrderState(StatesGroup):
-    method_from = State()
+    currency_to = State()
     method_to = State()

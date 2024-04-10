@@ -17,7 +17,7 @@ from swapmaster.adapters.db.gateways.sqlalchemy import (
     ReserveGateway,
     CommissionGateway,
     MethodGateway,
-    CourseGateway,
+    CourseGateway, CurrencyGateway,
 )
 from swapmaster.adapters.mq.notification import EmailNotifier
 from swapmaster.adapters.mq.notification.config import EmailConfig
@@ -52,7 +52,7 @@ from swapmaster.application.common.gateways import (
     PairWriter,
     OrderWriter,
     ReserveWriter,
-    RequisiteWriter, OrderUpdater, ReserveUpdater, OrderRequisiteWriter,
+    RequisiteWriter, OrderUpdater, ReserveUpdater, OrderRequisiteWriter, CurrencyListReader,
 )
 from swapmaster.application.common.task_manager import BaseTaskManager, AsyncTaskManager
 from swapmaster.application.common.verifier import VerificationCash, Verifier
@@ -171,6 +171,10 @@ class GatewayProvider(Provider):
     commission_gateway = provide(
         source=CommissionGateway,
         provides=AnyOf[CommissionGateway, CommissionReader, CommissionWriter]
+    )
+    currency_gateway = provide(
+        CurrencyGateway,
+        provides=AnyOf[CurrencyListReader]
     )
 
 

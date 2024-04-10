@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 from aiogram.enums import ParseMode
 
 from swapmaster.presentation.tgbot.config.models.main import BotConfig

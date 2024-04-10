@@ -16,6 +16,7 @@ from swapmaster.adapters.mq.notification.config import EmailConfig
 from swapmaster.application.common.verifier import VerificationCash
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.presentation.tgbot.config.models.main import BotConfig
+from swapmaster.presentation.tgbot.middlewares import setup_middlewares
 from swapmaster.presentation.tgbot.providers import TGUserProvider, TGBotNotifierProvider, TGBotVerifierProvider
 from swapmaster.presentation.web_api.config.models.main import APIConfig
 from swapmaster.main.ioc import (
@@ -70,6 +71,7 @@ def setup_bot_di(
         }
     )
 
+    setup_middlewares(dp=dp)
     setup_dishka_aiogram(container=container, router=dp, auto_inject=True)
 
 
