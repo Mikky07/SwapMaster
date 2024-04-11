@@ -14,7 +14,7 @@ class NewReserveDTO:
     update_method: ReserveUpdateMethodEnum
 
 
-class CreateReserve(Interactor):
+class CreateReserve(Interactor[NewReserveDTO, Reserve]):
     def __init__(
             self,
             uow: UoW,

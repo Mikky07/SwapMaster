@@ -42,7 +42,7 @@ class CreatedOrderDTO:
     payment_expires_at: datetime
 
 
-class CreateOrder(Interactor):
+class CreateOrder(Interactor[NewOrderDTO, CreatedOrderDTO]):
     def __init__(
         self,
         uow: UoW,

@@ -15,7 +15,7 @@ from swapmaster.application.common.uow import UoW
 from swapmaster.core.models import OrderId, Order
 
 
-class FinishOrder(Interactor):
+class FinishOrder(Interactor[OrderId, Order]):
     def __init__(
             self,
             uow: UoW,

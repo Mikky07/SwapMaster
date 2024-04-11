@@ -56,6 +56,7 @@ from swapmaster.application.common.gateways import (
 )
 from swapmaster.application.common.task_manager import BaseTaskManager, AsyncTaskManager
 from swapmaster.application.common.verifier import VerificationCash, Verifier
+from swapmaster.application.get_available_transfer_info import GetAvailableTransferInformation
 from swapmaster.application.order import SetOrderPaidUp
 from swapmaster.common.config.models.central import CentralConfig
 from swapmaster.core.services import (
@@ -193,6 +194,7 @@ class InteractorProvider(Provider):
     method_creator = provide(CreateMethod)
     payer = provide(SetOrderPaidUp)
     commission_creator = provide(CreateCommission)
+    available_transfer_information_fetcher = provide(GetAvailableTransferInformation)
 
 
 class WebInteractorProvider(Provider):

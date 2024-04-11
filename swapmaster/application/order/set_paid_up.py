@@ -5,7 +5,7 @@ from swapmaster.application.common.task_manager import AsyncTaskManager
 from swapmaster.core.models import OrderId, Order
 
 
-class SetOrderPaidUp(Interactor):
+class SetOrderPaidUp(Interactor[OrderId, Order]):
     def __init__(
             self,
             uow: UoW,

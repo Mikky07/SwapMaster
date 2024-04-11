@@ -1,6 +1,6 @@
 import pytest
 
-from swapmaster.application.create_pair import NewPairDTO, CreatePair
+from swapmaster.application.pair.create_pair import NewPairDTO, CreatePair
 from swapmaster.core.models import CommissionId, WalletId, CourseId, MethodId, PairId
 from tests.mocks import UoWMock, PairGatewayMock
 

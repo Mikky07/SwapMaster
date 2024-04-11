@@ -16,7 +16,7 @@ class NewUserDTO:
     password: str | None
 
 
-class CreateUser(Interactor):
+class CreateUser(Interactor[NewUserDTO, User]):
     def __init__(
             self,
             uow: UoW,

@@ -24,7 +24,7 @@ class CalculatedTotalDTO:
 logger = logging.getLogger(__name__)
 
 
-class CalculateSendTotal(Interactor):
+class CalculateSendTotal(Interactor[CalculateTotalDTO, CalculateTotalDTO]):
     def __init__(
         self,
         commission_gateway: CommissionReader,

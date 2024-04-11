@@ -9,7 +9,8 @@ from dishka import AsyncContainer
 from dishka.integrations.aiogram import CONTAINER_NAME
 
 from swapmaster.application.common.gateways import CurrencyListReader, MethodReader
-from swapmaster.core.models import Currency, CurrencyId, Method
+from swapmaster.application.get_available_transfer_info import GetAvailableTransferInformation
+from swapmaster.core.models import Currency, CurrencyId, Method, MethodId
 from swapmaster.presentation.tgbot.states import OrderSG, MainSG
 
 
@@ -44,11 +45,26 @@ async def handle_method_choose(
         dialog_manager: DialogManager,
         item_id: str
 ):
+    container = dialog_manager.middleware_data[CONTAINER_NAME]
+    available_transfer_information_fetcher = await container.get(GetAvailableTransferInformation)
+    available_transfer_methods = await available_transfer_information_fetcher(MethodId(item_id))
+    dialog_manager.dialog_data['transfer_methods'] = available_transfer_methods
+    dialog_manager.dialog_data['method'] = item_id
+    await dialog_manager.next()
+
+
+async def handle_transfer_method_choose(
+        _callback: CallbackQuery,
+        _widget: Any,
+        dialog_manager: DialogManager,
+        item_id: str
+):
     ...
 
 
 def currency_id_getter(currency: Currency) -> str:
     return str(currency.id)
+
 
 def method_id_getter(method: Method) -> str:
     return str(method.id)
@@ -89,16 +105,31 @@ order_dialog = Dialog(
         state=OrderSG.currency_to,
     ),
     Window(
-        Const("Choose service, when you have to receive:"),
+        Const("Choose network or bank:"),
         Column(
             Select(
-                Format("item.name"),
+                Format("{item.name}"),
                 id="methods",
                 items=F["dialog_data"]["methods"],
                 item_id_getter=method_id_getter,
                 on_click=handle_method_choose
             )
         ),
+        OrderMenuButton,
         state=OrderSG.method_to
-    )
+    ),
+    Window(
+        Const("Choose method for payment:"),
+        Column(
+            Select(
+                Format("Method: {item.method_from.name} Course: {item.course_value}"),
+                id="methods_for_payment",
+                items=F["dialog_data"]["transfer_methods"],
+                item_id_getter=lambda m: str(m.pair_id),
+                on_click=handle_transfer_method_choose
+            )
+        ),
+        OrderMenuButton,
+        state=OrderSG.method_from
+    ),
 )

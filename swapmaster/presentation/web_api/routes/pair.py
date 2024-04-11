@@ -3,7 +3,7 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 
 from swapmaster.application.common.gateways import PairReader
-from swapmaster.application.create_pair import NewPairDTO, CreatePair
+from swapmaster.application.pair.create_pair import NewPairDTO, CreatePair
 from swapmaster.core.models import Pair, MethodId
 
 

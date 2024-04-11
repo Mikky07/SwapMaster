@@ -1,13 +1,14 @@
 import logging
+from typing import Tuple
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, ScalarResult
 from sqlalchemy.exc import NoResultFound
 
 from swapmaster.adapters.db.exceptions import exception_mapper
 from swapmaster.adapters.db.gateways.sqlalchemy.base import BaseDBGateway
 from swapmaster.application.common.gateways.pair_gateway import PairReader, PairWriter
-from swapmaster.core.models import Pair, PairId, MethodId, Wallet, WalletId
+from swapmaster.core.models import Pair, PairId, MethodId, Wallet, WalletId, Commission, Method, Course
 from swapmaster.adapters.db import models
 from swapmaster.core.models.pair import PairCurrencies
 
@@ -82,3 +83,30 @@ class PairGateway(
         if not (reception_wallet := result.first()):
             raise NoResultFound("Reception wallet not found!")
         return reception_wallet
+
+    @exception_mapper
+    async def get_pair_for_exchange(
+            self, method_id: MethodId
+    ) -> list[Tuple[PairId, Commission, Method, Course]]:
+        stmt = (
+            select(
+                models.Pair,
+                models.Method,
+                models.Course,
+                models.Commission
+            )
+            .join(
+                models.Pair.method_to
+            )
+            .join(
+                models.Pair.course
+            )
+            .join(
+                models.Pair.commission
+            )
+        )
+        result = await self.session.execute(stmt)
+        return [
+            (pair.id, commission, method, course)
+            for pair, method, course, commission in result.all()
+        ]

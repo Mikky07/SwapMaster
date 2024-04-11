@@ -21,7 +21,7 @@ redis:
 central:
   order-payment-expire-minutes: 1
 bot:
-  token: 5892927600:AAEiH7jfjavqkg5zeHjqK8-9mS4iRp_-Ca8
+  token: test
 bot-webhook:
   server-host: 127.0.0.1
   server-port: 8000
